@@ -50,8 +50,6 @@ public class OAuthData {
 			REQUEST_TOKEN_ENDPOINT, ACCESS_TOKEN_ENDPOINT,
 			AUTHORIZATION_ENDPOINT);
 
-	// public static String accessToken =
-	// "3cf72426-1154-47d1-b602-0c4bf4734655";
 	public static String accessToken = "";
 	public static boolean signedIn = false;
 
