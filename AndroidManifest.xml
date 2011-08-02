@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This is the Android component of Immopoly
+  ~ http://immopoly.appspot.com
+  ~ Copyright (C) 2011 Tobias Sasse
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see http://www.gnu.org/licenses/.
+  -->
+
+<manifest
+	package="org.immopoly.android"
+	android:versionName="1.2"
+	android:versionCode="2"
+	android:installLocation="auto"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<uses-sdk
+		android:minSdkVersion="4" />
+	<uses-permission
+		android:name="android.permission.INTERNET" />
+	<uses-permission
+		android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission
+		android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+	<uses-permission
+		android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+	<uses-permission
+		android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"></uses-permission>
+	<application
+		android:icon="@drawable/ic_launcher"
+		android:label="@string/app_name"
+		android:name="org.immopoly.android.ImmopolyApplication"
+		debuggable="true">
+		<activity
+			android:name=".UserSignupActivity"
+			android:launchMode="singleTop">
+			<intent-filter>
+				<action
+					android:name="android.intent.action.MAIN" />
+				<category
+					android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+			<intent-filter>
+				<action
+					android:name="android.intent.action.SEARCH" />
+				<category
+					android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<meta-data
+				android:name="android.app.searchable"
+				android:resource="@xml/region_searchable" />
+		</activity>
+		<activity
+			android:label="@string/app_name"
+			android:name=".PlacesMap"
+			android:launchMode="singleTop">
+
+		</activity>
+		<activity
+			android:name=".DashboardActivity"
+			android:launchMode="singleTop" />
+		<activity
+			android:name=".FlatDetailActivity"
+			android:launchMode="singleTop" />
+		<activity
+			android:name=".ExposeWebViewActivity"
+			android:noHistory="true"
+			android:launchMode="singleTop"></activity>
+		<service
+			android:name="org.immopoly.android.api.IS24ApiService" />
+		<activity
+			android:name="org.immopoly.android.WebViewActivityity"
+			android:noHistory="true"
+			android:launchMode="singleTop" />
+		<provider
+			android:authorities="org.immopoly.android.provider.flats_provider"
+			android:name=".provider.FlatsProvider" />
+		<!-- Provides search suggestions for words and their definitions. -->
+		<provider
+			android:authorities="org.immopoly.android.provider.region_provider"
+			android:name="org.immopoly.android.provider.RegionProvider"
+			android:syncable="false" />
+
+		<uses-library
+			android:name="com.google.android.maps" />
+	</application>
+</manifest>

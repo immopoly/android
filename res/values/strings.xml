@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This is the Android component of Immopoly
+  ~ http://immopoly.appspot.com
+  ~ Copyright (C) 2011 Tobias Sasse
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see http://www.gnu.org/licenses/.
+  -->
+
+<resources>
+	<string
+		name="app_name">Immopoly</string>
+	<string
+		name="region_hint">Region Suche</string>
+	<string
+		name="settings_description">Beschreibung</string>
+	<string
+		name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string>
+	<!-- <string name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string> -->
+	<!-- <string name="google_maps_key_debug">0bLS0H9J6frq-jJZADgTjmyp_hq84tDcy_BznUw</string> -->
+	<string
+		name="webview_back_button">Zurück</string>
+	<string
+		name="username_hint">Benutzername</string>
+	<string
+		name="password_hint">Passwort</string>
+	<string
+		name="password_confirm_hint">Passwort bestätigen</string>
+	<string name="password_min_lenght">Passwort muss mindestens %1$s Zeichen lang sein</string>
+	<string name="username_min_lenght">Username muss mindestens %1$s Zeichen lang sein"</string>
+	<string name="username_already_used">Benutzername ist bereits vergeben, wähl doch einen anderen!</string>
+	<string name="no_internet_connection">Keine Internet Verbindung, diese ist notwending um das Spiel zu spielen.</string>
+	<string name="ok_button">OK</string>
+	<string name="no_history_entries">History (Keine Einträge)</string>
+	<string name="history_title">History</string>
+</resources>

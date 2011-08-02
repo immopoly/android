@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This is the Android component of Immopoly
+  ~ http://immopoly.appspot.com
+  ~ Copyright (C) 2011 Tobias Sasse
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see http://www.gnu.org/licenses/.
+  -->
+
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:gravity="center_vertical|center_horizontal"
+	android:layout_height="match_parent">
+	<LinearLayout
+		android:id="@+id/loginview"
+		android:visibility="gone"
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView
+				android:layout_margin="15dip"
+				android:layout_weight="1"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Willkommen zu Immopoly, vergrößere dein Portfolio und somit deine Provision- und Mieteinamen!" />
+
+			<ImageButton
+				android:id="@+id/aboutImmopoly"
+				android:background="@android:drawable/ic_menu_help"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:onClick="showInfo" />
+		</LinearLayout>
+
+		<EditText
+			android:layout_height="wrap_content"
+			android:id="@+id/user_name"
+			android:hint="@string/username_hint"
+			android:layout_width="match_parent">
+			<requestFocus></requestFocus>
+		</EditText>
+		<EditText
+			android:layout_height="wrap_content"
+			android:id="@+id/user_password"
+			android:hint="@string/password_hint"
+			android:layout_width="match_parent"
+			android:inputType="textPassword"></EditText>
+		<EditText
+			android:layout_height="wrap_content"
+			android:id="@+id/user_password_confirm"
+			android:layout_width="match_parent"
+			android:hint="@string/password_confirm_hint"
+			android:inputType="textPassword"
+			android:visibility="gone" />
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+			<Button
+				android:id="@+id/register"
+				android:onClick="registerUser"
+				android:layout_height="wrap_content"
+				android:text="Registrieren"
+				android:layout_width="0dip"
+				android:layout_weight="1"></Button>
+			<Button
+				android:text="Anmelden"
+				android:onClick="loginUser"
+				android:id="@+id/login"
+				android:layout_width="0dip"
+				android:layout_height="wrap_content"
+				android:layout_weight="1" />
+		</LinearLayout>
+		<!--
+			<Button android:text="cheat" android:onClick="cheat"
+			android:id="@+id/cheat" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+		-->
+	</LinearLayout>
+	<ProgressBar
+		android:layout_gravity="center_vertical|center_horizontal"
+		android:layout_height="wrap_content"
+
+		style="?android:attr/progressBarStyleLarge"
+		android:layout_width="wrap_content"
+		android:id="@+id/progressBar1"></ProgressBar>
+</LinearLayout>
