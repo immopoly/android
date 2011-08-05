@@ -42,15 +42,22 @@ import android.content.Context;
 
 public class WebHelper {
 
+// appengine on immopoly.appspot.com
+	public static final String SERVER_URL_PREFIX       = "http://immopoly.appspot.com";
+	public static final String SERVER_HTTPS_URL_PREFIX = "https://immopoly.appspot.com";
+// appengine on emulator host (http only)
+//	public static final String SERVER_URL_PREFIX       = "http://10.0.2.2:8888";
+//	public static final String SERVER_HTTPS_URL_PREFIX = "http://10.0.2.2:8888";
+	
 	public static final int SOCKET_TIMEOUT = 30000;
 
 	public static JSONObject getHttpsData(URL url, boolean signed,
 			Context context) throws JSONException {
 		JSONObject obj = null;
 		if (Settings.isOnline(context)) {
-			HttpsURLConnection request;
+			HttpURLConnection request;
 			try {
-				request = (HttpsURLConnection) url.openConnection();
+				request = (HttpURLConnection) url.openConnection();
 
 				if (signed)
 					OAuthData.consumer.sign(request);

@@ -49,7 +49,7 @@ public abstract class GetUserInfoTask extends
 		ImmopolyUser user = null;
 		try {
 			obj = WebHelper.getHttpData(new URL(
-					"http://immopoly.appspot.com/user/info?token=" + token),
+					WebHelper.SERVER_URL_PREFIX + "/user/info?token=" + token),
 					false, mContext);
 
 		} catch (MalformedURLException e) {

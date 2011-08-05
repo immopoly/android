@@ -21,6 +21,7 @@ package org.immopoly.android;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.Settings;
@@ -186,8 +187,8 @@ public class UserSignupActivity extends Activity {
 			ImmopolyUser user;
 			try {
 				obj = WebHelper.getHttpsData(new URL(
-						"https://immopoly.appspot.com/user/register?username="
-								+ username + "&password=" + password), false,
+						WebHelper.SERVER_HTTPS_URL_PREFIX + "/user/register?username="
+								+ URLEncoder.encode( username ) + "&password=" + URLEncoder.encode(password) ), false,
 						UserSignupActivity.this);
 
 			} catch (MalformedURLException e) {
@@ -243,8 +244,8 @@ public class UserSignupActivity extends Activity {
 			ImmopolyUser user;
 			try {
 				obj = WebHelper.getHttpsData(new URL(
-						"https://immopoly.appspot.com/user/login?username="
-								+ username + "&password=" + password), false,
+						WebHelper.SERVER_HTTPS_URL_PREFIX + "/user/login?username="
+								+ URLEncoder.encode(username) + "&password=" + URLEncoder.encode(password) ), false,
 						UserSignupActivity.this);
 
 			} catch (MalformedURLException e) {
@@ -345,7 +346,7 @@ public class UserSignupActivity extends Activity {
 		myWebView.getSettings().setSupportZoom(true);
 		myWebView.getSettings().setUseWideViewPort(true);
 
-		myWebView.loadUrl("http://immopoly.appspot.com/");
+		myWebView.loadUrl( WebHelper.SERVER_URL_PREFIX );
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				UserSignupActivity.this);
 		builder.setView(alertDialogView);

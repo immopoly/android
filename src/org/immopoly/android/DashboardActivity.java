@@ -524,7 +524,7 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 		myWebView.getSettings().setSupportZoom(true);
 		myWebView.getSettings().setUseWideViewPort(true);
 
-		myWebView.loadUrl("http://immopoly.appspot.com/");
+		myWebView.loadUrl( WebHelper.SERVER_URL_PREFIX );
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				DashboardActivity.this);
 		builder.setView(alertDialogView);

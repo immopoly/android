@@ -501,7 +501,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 			try {
 				ImmopolyUser.getInstance().readToken(PlacesMap.this);
 				obj = WebHelper.getHttpData(new URL(
-						"http://immopoly.appspot.com/portfolio/add?token="
+						WebHelper.SERVER_URL_PREFIX + "/portfolio/add?token="
 								+ ImmopolyUser.getInstance().getToken()
 								+ "&expose=" + params[0]), false,
 						PlacesMap.this);
@@ -638,7 +638,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 		myWebView.getSettings().setSupportZoom(true);
 		myWebView.getSettings().setUseWideViewPort(true);
 
-		myWebView.loadUrl("http://immopoly.appspot.com/");
+		myWebView.loadUrl( WebHelper.SERVER_URL_PREFIX );
 		AlertDialog.Builder builder = new AlertDialog.Builder(PlacesMap.this);
 		builder.setView(alertDialogView);
 		builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
