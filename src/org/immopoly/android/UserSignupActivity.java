@@ -25,11 +25,14 @@ import java.net.URLEncoder;
 
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.Settings;
+import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.helper.WebHelper;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.tasks.GetUserInfoTask;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -53,10 +56,18 @@ public class UserSignupActivity extends Activity {
 	public static final int MIN_PASSWORTH_LENGTH = 4;
 	private static final int MIN_USERNAME_LENGTH = 1;
 
+	private GoogleAnalyticsTracker tracker;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		
+		tracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+	    tracker.startNewSession(TrackingManager.UA_ACCOUNT, this);
+	    tracker.trackPageView(TrackingManager.VIEW_LOGIN);
+	    
 		// init login
 		setContentView(R.layout.user_signup_activity);
 		// check if user as token and is already logedin
@@ -358,5 +369,11 @@ public class UserSignupActivity extends Activity {
 			}
 		}).show();
 
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		tracker.stopSession();
 	}
 }

@@ -44,4 +44,12 @@
 	<string name="ok_button">OK</string>
 	<string name="no_history_entries">History (Keine Einträge)</string>
 	<string name="history_title">History</string>
+	<string name="link_share_flat">Schau mal habe ich bei @immopoly gefunden</string>
+	<string name="no_location_value">&lt;Keine Lokation></string>
+	<string name="flat_already_in_portifolio">Die Wohnung ist bereits in deinem Portfolio!</string>
+	<string name="flat_does_not_exist_anymore">"Expose gibt es nicht mehr."</string>
+	<string name="flat_has_no_raw_rent">Expose hat keine Kaltmiete und kann nicht übernommen werden</string>
+	<string name="take_over_try">Übernahme Versuch!</string>
+	<string name="share_item">Share</string>
+	<string name="expose_couldnt_add">Expose konnte nicht hinzugefügt werden.</string>
 </resources>

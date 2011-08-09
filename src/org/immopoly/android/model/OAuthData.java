@@ -36,6 +36,7 @@ public class OAuthData {
 	public static final String REQUEST_TOKEN_ENDPOINT = SERVER
 			+ OAUTH_SECURITY_PREFIX + "request_token";
 
+
 	public static final String CONSUMER_KEY = ""; // e. g. a system
 	// identifier
 	public static final String CONSUMER_SECRET = "";

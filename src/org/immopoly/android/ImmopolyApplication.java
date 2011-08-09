@@ -26,7 +26,6 @@ public class ImmopolyApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-
 	}
 
 }

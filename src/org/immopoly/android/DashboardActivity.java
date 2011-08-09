@@ -43,6 +43,7 @@ import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.MapLocationCallback;
 import org.immopoly.android.helper.Settings;
+import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.helper.WebHelper;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyUser;
@@ -54,6 +55,8 @@ import org.immopoly.android.tasks.GetUserInfoTask;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -83,7 +86,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 public class DashboardActivity extends BaseListActivity implements Receiver,
 		MapLocationCallback {
 
@@ -99,9 +101,17 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 	private Button mRefreshButton;
 	private AsyncTask<String, Void, ImmopolyUser> mGetUserInfoTask;
 
+	private GoogleAnalyticsTracker tracker;
+
 	@Override
 	protected void onCreate(android.os.Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		tracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT, this);
+		tracker.trackPageView(TrackingManager.VIEW_DASHBOARD);
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dashboard);
 		LocationHelper.callback = this;
@@ -448,18 +458,17 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 
 		@Override
 		protected void onPostExecute(ImmopolyUser result) {
-			if (result != null ) {
+			if (result != null) {
 				initDashboard();
 			} else if (Settings.isOnline(DashboardActivity.this)) {
 				Intent intent = new Intent(DashboardActivity.this,
 						UserSignupActivity.class);
-				
+
 				startActivity(intent);
 			} else {
-				Toast.makeText(
-						DashboardActivity.this,
-						R.string.no_internet_connection,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(DashboardActivity.this,
+						R.string.no_internet_connection, Toast.LENGTH_LONG)
+						.show();
 			}
 		}
 	}
@@ -524,17 +533,24 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 		myWebView.getSettings().setSupportZoom(true);
 		myWebView.getSettings().setUseWideViewPort(true);
 
-		myWebView.loadUrl( WebHelper.SERVER_URL_PREFIX );
+		myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				DashboardActivity.this);
 		builder.setView(alertDialogView);
-		builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.ok_button,
+				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-			}
-		}).show();
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				}).show();
 
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		tracker.stopSession();
 	}
 }

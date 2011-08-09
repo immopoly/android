@@ -36,10 +36,12 @@ import oauth.signpost.exception.OAuthNotAuthorizedException;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
 import org.immopoly.android.api.ApiResultReciever.Receiver;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.MapLocationCallback;
 import org.immopoly.android.helper.MapMarkerCallback;
 import org.immopoly.android.helper.Settings;
+import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.helper.WebHelper;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
@@ -78,13 +80,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
-
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-
 
 public class PlacesMap extends MapActivity implements Receiver,
 		MapMarkerCallback, MapLocationCallback {
@@ -102,11 +103,18 @@ public class PlacesMap extends MapActivity implements Receiver,
 	private int mNumberGeoCodeTry;
 	private Button mRefreshButton;
 	private Flat mCurrentFlat;
-	
+
+	private GoogleAnalyticsTracker tracker;
 
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
+
+		tracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT, this);
+		tracker.trackPageView(TrackingManager.VIEW_MAP);
+
 		mState = (ReceiverState) getLastNonConfigurationInstance();
 		if (mState != null) {
 			// Start listening for Service updates again
@@ -166,8 +174,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 			}
 
 		});
-		
-	    
+
 		// signIn();
 	}
 
@@ -284,7 +291,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 							null, FlatsProvider.Flat.FLAT_ID + "=" + f.uid,
 							null, null);
 					final int myFlat = cur.getCount();
-					
+
 					myLocationOverlay = new PlaceOverlayItem(new GeoPoint(
 							(int) (f.lat * 1E6), (int) (f.lng * 1E6)), f, this);
 					if (myFlat == 1) {
@@ -310,7 +317,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 					count++;
 				}
 			}
-			
+
 			if (LocationHelper.sLng < minX)
 				minX = LocationHelper.sLng;
 			if (LocationHelper.sLng > maxX)
@@ -370,7 +377,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 
 			// Login in web view
 			Intent i = new Intent(this, WebViewActivity.class);
-			i.putExtra("oauth_url", authUrl);
+			i.putExtra(Const.AUTH_URL, authUrl);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);
 		}
@@ -382,8 +389,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == 1 && resultCode == RESULT_OK) {
-			String exposeID = data.getExtras().getString("exposeID");
-			
+			String exposeID = data.getExtras().getString(Const.EXPOSE_ID);
 			new AddToPortifolioTask().execute(exposeID);
 		}
 	}
@@ -392,11 +398,13 @@ public class PlacesMap extends MapActivity implements Receiver,
 	public void callbackCall(Flat f) {
 		mCurrentFlat = f;
 		Intent i = new Intent(this, ExposeWebViewActivity.class);
-		i.putExtra("exposeID", String.valueOf(f.uid));
-		i.putExtra("exposeName", String.valueOf(f.name));
-		i.putExtra("exposeDescription", String.valueOf(f.description));
-		i.putExtra("exposeURL", String.valueOf(f.titlePictureSmall));
-		i.putExtra("exposeInPortfolio", f.owned);
+		i.putExtra(Const.EXPOSE_ID, String.valueOf(f.uid));
+		i.putExtra(Const.EXPOSE_NAME, String.valueOf(f.name));
+		i.putExtra(Const.EXPOSE_DESC, String.valueOf(f.description));
+		i.putExtra(Const.EXPOSE_PICTURE_SMALL,
+				String.valueOf(f.titlePictureSmall));
+		i.putExtra(Const.EXPOSE_IN_PORTOFOLIO, f.owned);
+		i.putExtra(Const.SOURCE, MapActivity.class.getSimpleName());
 		startActivityForResult(i, 1);
 
 	}
@@ -437,7 +445,6 @@ public class PlacesMap extends MapActivity implements Receiver,
 						// ((TextView)findViewById(R.id.header_location)).setText(result);
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else {
@@ -473,7 +480,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 			}
 		} else {
 			((TextView) findViewById(R.id.header_location))
-					.setText("<Keine Lokation>");
+					.setText(R.string.no_location_value);
 		}
 	}
 
@@ -487,7 +494,6 @@ public class PlacesMap extends MapActivity implements Receiver,
 
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
-			// TODO Auto-generated method stub
 			return super.onSingleTapConfirmed(e);
 		}
 	}
@@ -500,31 +506,36 @@ public class PlacesMap extends MapActivity implements Receiver,
 			ImmopolyHistory history = null;
 			try {
 				ImmopolyUser.getInstance().readToken(PlacesMap.this);
-				obj = WebHelper.getHttpData(new URL(
-						WebHelper.SERVER_URL_PREFIX + "/portfolio/add?token="
-								+ ImmopolyUser.getInstance().getToken()
-								+ "&expose=" + params[0]), false,
-						PlacesMap.this);
+				obj = WebHelper.getHttpData(new URL(WebHelper.SERVER_URL_PREFIX
+						+ "/portfolio/add?token="
+						+ ImmopolyUser.getInstance().getToken() + "&expose="
+						+ params[0]), false, PlacesMap.this);
 				if (obj != null
 						&& !obj.has("org.immopoly.common.ImmopolyException")) {
 					history = new ImmopolyHistory();
 					history.fromJSON(obj);
+					tracker.trackEvent(TrackingManager.CATEGORY_ALERT,
+							TrackingManager.ACTION_TAKE_OVER,
+							TrackingManager.LABEL_RESPONSE_OK, 0);
 				} else if (obj != null) {
 					history = new ImmopolyHistory();
 					switch (obj.getJSONObject(
 							"org.immopoly.common.ImmopolyException").getInt(
 							"errorCode")) {
 					case 201:
-						history.mText = "Die Wohnung ist bereits in deinem Portfolio!";
+						history.mText = getString(R.string.flat_already_in_portifolio);
 						break;
 					case 301:
-						history.mText = "Expose gibt es nicht mehr.";
+						history.mText = getString(R.string.flat_does_not_exist_anymore);
+
 						break;
 					case 302:
-						history.mText = "Expose hat keine Kaltmiete und kann nicht übernommer werden";
+						history.mText = getString(R.string.flat_has_no_raw_rent);
 						break;
 					}
-
+					tracker.trackEvent(TrackingManager.CATEGORY_ALERT,
+							TrackingManager.ACTION_TAKE_OVER,
+							TrackingManager.LABEL_RESPONSE_FAIL, 0);
 				}
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
@@ -543,26 +554,35 @@ public class PlacesMap extends MapActivity implements Receiver,
 					&& result.mText.length() > 0) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						PlacesMap.this);
-				builder.setTitle("Übernahme Versuch!");
+				builder.setTitle(getString(R.string.take_over_try));
 				builder.setMessage(result.mText);
-				builder.setCancelable(true).setNegativeButton("Share",
+				builder.setCancelable(true).setNegativeButton(
+						getString(R.string.share_item),
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								Settings.getFlatLink(
 										mCurrentFlat.uid.toString(), false);
 								Settings.shareMessage(PlacesMap.this,
-										"Übernahme Versuch:", res.mText,
-										Settings.getFlatLink(
+										getString(R.string.take_over_try),
+										res.mText, Settings.getFlatLink(
 												mCurrentFlat.uid.toString(),
 												false) /* LINk */);
+								tracker.trackEvent(
+										TrackingManager.CATEGORY_ALERT,
+										TrackingManager.ACTION_TAKE_OVER_SHARE,
+										TrackingManager.LABEL_RESPONSE_OK, 0);
 							}
+
 						});
 				builder.setPositiveButton(R.string.ok_button,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
-
+								tracker.trackEvent(
+										TrackingManager.CATEGORY_ALERT,
+										TrackingManager.ACTION_TAKE_OVER_SHARE,
+										TrackingManager.LABEL_RESPONSE_FAIL, 0);
 							}
 						});
 				AlertDialog alert = builder.create();
@@ -572,13 +592,10 @@ public class PlacesMap extends MapActivity implements Receiver,
 				new GetUserInfoUpdateTask(PlacesMap.this).execute(ImmopolyUser
 						.getInstance().getToken());
 			} else if (Settings.isOnline(PlacesMap.this)) {
-				Toast.makeText(PlacesMap.this,
-						"Expose konnte nicht hinzugefügt werden.",
+				Toast.makeText(PlacesMap.this, R.string.expose_couldnt_add,
 						Toast.LENGTH_LONG).show();
 			} else {
-				Toast.makeText(
-						PlacesMap.this,
-						"Keine Internet Verbindung, diese ist notwending um das Spiel zu spielen.",
+				Toast.makeText(PlacesMap.this, R.string.no_internet_connection,
 						Toast.LENGTH_LONG).show();
 			}
 			super.onPostExecute(result);
@@ -601,9 +618,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 						UserSignupActivity.class);
 				startActivity(intent);
 			} else {
-				Toast.makeText(
-						PlacesMap.this,
-						"Keine Internet Verbindung, diese ist notwending um das Spiel zu spielen.",
+				Toast.makeText(PlacesMap.this, R.string.no_internet_connection,
 						Toast.LENGTH_LONG).show();
 			}
 		}
@@ -638,16 +653,23 @@ public class PlacesMap extends MapActivity implements Receiver,
 		myWebView.getSettings().setSupportZoom(true);
 		myWebView.getSettings().setUseWideViewPort(true);
 
-		myWebView.loadUrl( WebHelper.SERVER_URL_PREFIX );
+		myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
 		AlertDialog.Builder builder = new AlertDialog.Builder(PlacesMap.this);
 		builder.setView(alertDialogView);
-		builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.ok_button,
+				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-			}
-		}).show();
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				}).show();
 
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		tracker.stopSession();
 	}
 }
