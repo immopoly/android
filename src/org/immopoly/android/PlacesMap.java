@@ -316,6 +316,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 						//schtief issue #7
 						long diff=CURRENTTIME-f.creationDate;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> d231b0e... #7 neue und alte exposes
 						myLocationOverlay.setMarker(mapMarkerIcon);
 =======
@@ -326,9 +327,15 @@ public class PlacesMap extends MapActivity implements Receiver,
 						if(diff>Const.EXPOSE_THRESHOLD_OLD)
 							myLocationOverlay.setMarker(mapMarkerIcon_old);
 						else if(diff>Const.EXPOSE_THRESHOLD_NEW)
+=======
+//						Log.i(TAG, "creationDate: "+Long.toString(f.creationDate)+" diff: "+diff+" : "+Long.toString(Const.EXPOSE_THRESHOLD_OLD)+"->"+Long.toString(Const.EXPOSE_THRESHOLD_NEW));
+						if(diff<Const.EXPOSE_THRESHOLD_NEW)
+>>>>>>> 5237a00... finished issue #7
 							myLocationOverlay.setMarker(mapMarkerIcon_new);
-						else
+						else if(diff<Const.EXPOSE_THRESHOLD_OLD)
 							myLocationOverlay.setMarker(mapMarkerIcon);
+						else
+							myLocationOverlay.setMarker(mapMarkerIcon_old);
 
 <<<<<<< HEAD
 >>>>>>> fefcd5a... #7

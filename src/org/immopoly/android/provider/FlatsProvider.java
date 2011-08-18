@@ -40,7 +40,7 @@ public class FlatsProvider extends ContentProvider {
 
 	private static final String DATABASE_NAME = "flats.db";
 
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	private static final String FLATS_TABLE_NAME = "flats";
 
@@ -67,7 +67,7 @@ public class FlatsProvider extends ContentProvider {
 							+ Flat.FLAT_NAME + " VARCHAR(255),"
 							+ Flat.FLAT_DESCRIPTION + " LONGTEXT,"
 							+ Flat.FLAT_LATITUDE + " REAL,"
-							+ Flat.FLAT_LONGITUDE + " REAL"
+							+ Flat.FLAT_LONGITUDE + " REAL,"
 							+ Flat.FLAT_CREATIONDATE + " INTEGER"
 							+ " );");
 		}

@@ -177,8 +177,9 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 					"currency");
 		}
 		//schtief issue #7 2006-09-19T15:27:19.000+02:00
-		if (objRealEstate.has("creationDate")) {
-			String creationDateS=objRealEstate.getString("creationDate");
+		if (jsonObject.has("@modification")) {
+			String creationDateS=jsonObject.getString("@modification");
+//			Log.i(PlacesMap.TAG,"creationDate "+creationDateS);
 			creationDateS=creationDateS.replace('T', ' ');
 			creationDateS=creationDateS.substring(0,creationDateS.indexOf("+"));
 			try {
@@ -186,6 +187,8 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 			} catch (ParseException e) {
 				Log.e(PlacesMap.TAG, "could not parse creationDate", e);
 			}
+		}else{
+//			Log.e(PlacesMap.TAG,"no creationDate "+jsonObject.toString());
 		}
 	}
 
