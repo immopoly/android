@@ -692,7 +692,16 @@ public class PlacesMap extends MapActivity implements Receiver,
 						dialog.cancel();
 					}
 				}).show();
+<<<<<<< HEAD
+=======
 
+	}
+>>>>>>> 85d9791... extracted strings to constants and localized strings
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		tracker.stopSession();
 	}
 
 	@Override
