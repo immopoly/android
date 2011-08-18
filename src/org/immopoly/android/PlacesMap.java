@@ -315,11 +315,14 @@ public class PlacesMap extends MapActivity implements Receiver,
 =======
 						//schtief issue #7
 						long diff=CURRENTTIME-f.creationDate;
+<<<<<<< HEAD
 >>>>>>> d231b0e... #7 neue und alte exposes
 						myLocationOverlay.setMarker(mapMarkerIcon);
 =======
 						//schtief issue #7
 						long diff=CURRENTTIME-f.creationDate;
+=======
+>>>>>>> f9cf012... #7
 						if(diff>Const.EXPOSE_THRESHOLD_OLD)
 							myLocationOverlay.setMarker(mapMarkerIcon_old);
 						else if(diff>Const.EXPOSE_THRESHOLD_NEW)
@@ -327,7 +330,10 @@ public class PlacesMap extends MapActivity implements Receiver,
 						else
 							myLocationOverlay.setMarker(mapMarkerIcon);
 
+<<<<<<< HEAD
 >>>>>>> fefcd5a... #7
+=======
+>>>>>>> f9cf012... #7
 						f.owned = false;
 					}
 					overlays.addOverlay(myLocationOverlay);
