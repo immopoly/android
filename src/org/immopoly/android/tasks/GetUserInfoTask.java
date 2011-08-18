@@ -116,16 +116,12 @@ public abstract class GetUserInfoTask extends
 	private void addFlat(org.immopoly.android.model.Flat f) {
 		ContentValues values;
 		values = new ContentValues();
-		values
-				.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_ID,
-						f.uid);
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_NAME,
-				f.name);
-		values.put(
-				org.immopoly.android.provider.FlatsProvider.Flat.FLAT_DESCRIPTION,
-				"-");
+		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_ID,f.uid);
+		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_NAME,f.name);
+		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_DESCRIPTION,"-");
 		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_LATITUDE, f.lat);
 		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_LONGITUDE, f.lng);
+		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_CREATIONDATE, f.creationDate);
 		mContext.getContentResolver().insert(FlatsProvider.CONTENT_URI, values);
 	}
 }

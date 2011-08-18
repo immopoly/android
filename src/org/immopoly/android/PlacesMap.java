@@ -89,6 +89,9 @@ import com.google.android.maps.Overlay;
 
 public class PlacesMap extends MapActivity implements Receiver,
 		MapMarkerCallback, MapLocationCallback {
+	public static final String TAG = "Immopoly";
+	private static long CURRENTTIME=System.currentTimeMillis();
+	
 	private MapController mMapController;
 	private List<Overlay> mMapOverlays;
 	private PlaceOverlayItem myLocationOverlay;
@@ -96,6 +99,8 @@ public class PlacesMap extends MapActivity implements Receiver,
 	private ImmoscoutPlacesOverlay overlays;
 	private Flats mFlats;
 	private StateListDrawable mapMarkerIcon;
+	private StateListDrawable mapMarkerIcon_old;
+	private StateListDrawable mapMarkerIcon_new;
 	public static final int RELOAD_DELAY_MILLIS = 800;
 	ReceiverState mState;
 
@@ -146,8 +151,14 @@ public class PlacesMap extends MapActivity implements Receiver,
 		LocationHelper.callback = this;
 		LocationHelper.getLastLocation(this);
 		// this is the bounding box container
+		
 		mapMarkerIcon = (StateListDrawable) getResources().getDrawable(
 				R.drawable.map_marker_icon);
+		mapMarkerIcon_new = (StateListDrawable) getResources().getDrawable(
+				R.drawable.map_marker_icon_new);
+		mapMarkerIcon_old = (StateListDrawable) getResources().getDrawable(
+				R.drawable.map_marker_icon_old);
+		
 		myLocationOverlay = new PlaceOverlayItem(point, "my city",
 				"This is wher you are");
 		overlays = new ImmoscoutPlacesOverlay(mapMarkerIcon, this, mMapView,
@@ -300,6 +311,11 @@ public class PlacesMap extends MapActivity implements Receiver,
 						f.owned = true;
 					} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+						//schtief issue #7
+						long diff=CURRENTTIME-f.creationDate;
+>>>>>>> d231b0e... #7 neue und alte exposes
 						myLocationOverlay.setMarker(mapMarkerIcon);
 =======
 						//schtief issue #7

@@ -23,15 +23,21 @@ import java.sql.SQLData;
 import java.sql.SQLException;
 import java.sql.SQLInput;
 import java.sql.SQLOutput;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
+import org.immopoly.android.PlacesMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.format.DateFormat;
+import android.util.Log;
 
 public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 
+	private static SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	// http://developer.immobilienscout24.de/wiki/Expose/GET
 	public Integer uid;
 	public String name;
@@ -61,7 +67,8 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 	public String priceValue;
 	public String priceIntervaleType;
 	public String currency;
-
+	public long creationDate=0;
+	
 	public int describeContents() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -78,6 +85,7 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 		dest.writeString(priceIntervaleType);
 		dest.writeDouble(lat);
 		dest.writeDouble(lng);
+		dest.writeLong(creationDate);
 	}
 
 	public static final Parcelable.Creator<Flat> CREATOR = new Parcelable.Creator<Flat>() {
@@ -101,6 +109,7 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 		priceIntervaleType = in.readString();
 		lat = in.readDouble();
 		lng = in.readDouble();
+		creationDate=in.readLong();
 	}
 
 	public Flat() {
@@ -166,6 +175,17 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 					.optString("priceIntervalType");
 			currency = objRealEstate.getJSONObject("price").optString(
 					"currency");
+		}
+		//schtief issue #7 2006-09-19T15:27:19.000+02:00
+		if (objRealEstate.has("creationDate")) {
+			String creationDateS=objRealEstate.getString("creationDate");
+			creationDateS=creationDateS.replace('T', ' ');
+			creationDateS=creationDateS.substring(0,creationDateS.indexOf("+"));
+			try {
+				creationDate=DF.parse(creationDateS).getTime();
+			} catch (ParseException e) {
+				Log.e(PlacesMap.TAG, "could not parse creationDate", e);
+			}
 		}
 	}
 

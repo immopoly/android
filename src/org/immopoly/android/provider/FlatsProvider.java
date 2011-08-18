@@ -68,6 +68,7 @@ public class FlatsProvider extends ContentProvider {
 							+ Flat.FLAT_DESCRIPTION + " LONGTEXT,"
 							+ Flat.FLAT_LATITUDE + " REAL,"
 							+ Flat.FLAT_LONGITUDE + " REAL"
+							+ Flat.FLAT_CREATIONDATE + " INTEGER"
 							+ " );");
 		}
 
@@ -88,6 +89,7 @@ public class FlatsProvider extends ContentProvider {
 		String FLAT_DESCRIPTION = "flat_description";
 		String FLAT_LATITUDE = "flat_lat";
 		String FLAT_LONGITUDE = "flat_lng";
+		String FLAT_CREATIONDATE = "flat_creationDate";
 	}
 
 	static {
@@ -100,6 +102,7 @@ public class FlatsProvider extends ContentProvider {
 		flatsProjectionMap.put(Flat.FLAT_DESCRIPTION, Flat.FLAT_DESCRIPTION);
 		flatsProjectionMap.put(Flat.FLAT_LATITUDE, Flat.FLAT_LATITUDE);
 		flatsProjectionMap.put(Flat.FLAT_LONGITUDE, Flat.FLAT_LONGITUDE);
+		flatsProjectionMap.put(Flat.FLAT_CREATIONDATE, Flat.FLAT_CREATIONDATE);
 
 	}
 
