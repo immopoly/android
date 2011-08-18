@@ -299,7 +299,19 @@ public class PlacesMap extends MapActivity implements Receiver,
 								R.drawable.map_marker_property_icon));
 						f.owned = true;
 					} else {
+<<<<<<< HEAD
 						myLocationOverlay.setMarker(mapMarkerIcon);
+=======
+						//schtief issue #7
+						long diff=CURRENTTIME-f.creationDate;
+						if(diff>Const.EXPOSE_THRESHOLD_OLD)
+							myLocationOverlay.setMarker(mapMarkerIcon_old);
+						else if(diff>Const.EXPOSE_THRESHOLD_NEW)
+							myLocationOverlay.setMarker(mapMarkerIcon_new);
+						else
+							myLocationOverlay.setMarker(mapMarkerIcon);
+
+>>>>>>> fefcd5a... #7
 						f.owned = false;
 					}
 					overlays.addOverlay(myLocationOverlay);
