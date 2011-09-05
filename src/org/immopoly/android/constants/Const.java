@@ -25,21 +25,6 @@ public class Const {
 	
 	
 	public static final String AUTH_URL = "oauth_url";
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-	public static final long EXPOSE_THRESHOLD_OLD = 1000*60*60*24*30;
-	public static final long EXPOSE_THRESHOLD_NEW = 1000*60*60*24*7;
-=======
-	
-	
->>>>>>> 85d9791... extracted strings to constants and localized strings
-=======
-	public static final long EXPOSE_THRESHOLD_OLD = 1000*60*60*24*30;
-	public static final long EXPOSE_THRESHOLD_NEW = 1000*60*60*24*7;
->>>>>>> f9cf012... #7
-=======
 	public static final long EXPOSE_THRESHOLD_OLD = 1000L*60L*60L*24L*30L;
 	public static final long EXPOSE_THRESHOLD_NEW = 1000L*60L*60L*24L*7L;
->>>>>>> 5237a00... finished issue #7
 }
