@@ -76,6 +76,7 @@ import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
@@ -94,13 +95,11 @@ public class PlacesMap extends MapActivity implements Receiver,
 	
 	private MapController mMapController;
 	private List<Overlay> mMapOverlays;
-	private PlaceOverlayItem myLocationOverlay;
+	private PlaceOverlayItem myLocationOverlayItem;
 	private MapView mMapView;
 	private ImmoscoutPlacesOverlay overlays;
 	private Flats mFlats;
-	private StateListDrawable mapMarkerIcon;
-	private StateListDrawable mapMarkerIcon_old;
-	private StateListDrawable mapMarkerIcon_new;
+
 	public static final int RELOAD_DELAY_MILLIS = 800;
 	ReceiverState mState;
 
@@ -110,6 +109,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 	private Flat mCurrentFlat;
 
 	private GoogleAnalyticsTracker tracker;
+	private RelativeLayout contentView;
 
 	@Override
 	protected void onCreate(Bundle icicle) {
@@ -130,7 +130,9 @@ public class PlacesMap extends MapActivity implements Receiver,
 		}
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.places_map);
+		this.contentView = (RelativeLayout) getLayoutInflater().inflate( R.layout.places_map, null );
+		setContentView( this.contentView );
+
 		mMapView = (MapView) findViewById(R.id.mapview);
 
 		mMapController = mMapView.getController();
@@ -152,26 +154,18 @@ public class PlacesMap extends MapActivity implements Receiver,
 		LocationHelper.getLastLocation(this);
 		// this is the bounding box container
 		
-		mapMarkerIcon = (StateListDrawable) getResources().getDrawable(
-				R.drawable.map_marker_icon);
-		mapMarkerIcon_new = (StateListDrawable) getResources().getDrawable(
-				R.drawable.map_marker_icon_new);
-		mapMarkerIcon_old = (StateListDrawable) getResources().getDrawable(
-				R.drawable.map_marker_icon_old);
-		
-		myLocationOverlay = new PlaceOverlayItem(point, "my city",
+		myLocationOverlayItem = new PlaceOverlayItem(point, "my city",
 				"This is wher you are");
-		overlays = new ImmoscoutPlacesOverlay(mapMarkerIcon, this, mMapView,
+		overlays = new ImmoscoutPlacesOverlay( this, mMapView,
 				getLayoutInflater());
-		myLocationOverlays = new MyPositionOverlay(mapMarkerIcon, this,
+		myLocationOverlays = new MyPositionOverlay( this.getResources().getDrawable(R.drawable.house_icon), this,
 				mMapView, getLayoutInflater());
-		myLocationOverlay.setMarker(this.getResources().getDrawable(
-				R.drawable.house_icon));
+		myLocationOverlayItem.setMarker(this.getResources().getDrawable( R.drawable.house_icon) );
 
-		myLocationOverlays.addOverlay(myLocationOverlay);
+		myLocationOverlays.addOverlay(myLocationOverlayItem);
 		mMapOverlays.add(myLocationOverlays);
 		// setMapViewWithZoom(R.id.mapview, R.id.map_zoom_controls);
-
+		mMapView.setBuiltInZoomControls( true );
 		mMapView.invalidate();
 
 		// maybe do this in your init or something
@@ -204,7 +198,11 @@ public class PlacesMap extends MapActivity implements Receiver,
 	public MapView getMapView() {
 		return mMapView;
 	}
-
+	
+	public RelativeLayout getContentView() {
+		return contentView;
+	}
+	
 	public void setMapViewWithZoom(int mapLayoutId, int zoomControlsLayoutId) {
 		mMapView = (MapView) findViewById(mapLayoutId);
 
@@ -280,17 +278,16 @@ public class PlacesMap extends MapActivity implements Receiver,
 			double minX = 999, minY = 999, maxX = -999, maxY = -999;
 			myLocationOverlays.clear();
 			mMapOverlays.clear();
-			overlays.clear();
 
 			GeoPoint point = new GeoPoint((int) (LocationHelper.sLat * 1E6),
 					(int) (LocationHelper.sLng * 1E6));
 
-			myLocationOverlay = new PlaceOverlayItem(point, "my city",
+			myLocationOverlayItem = new PlaceOverlayItem(point, "my city",
 					"THis is wher you are");
-			myLocationOverlay.setMarker(this.getResources().getDrawable(
-					R.drawable.house_icon));
+			myLocationOverlayItem.setMarker(this.getResources().getDrawable(
+					R.drawable.house_icon) );
 
-			myLocationOverlays.addOverlay(myLocationOverlay);
+			myLocationOverlays.addOverlay(myLocationOverlayItem);
 
 			mMapOverlays.add(myLocationOverlays);
 
@@ -301,49 +298,8 @@ public class PlacesMap extends MapActivity implements Receiver,
 					cur = getContentResolver().query(FlatsProvider.CONTENT_URI,
 							null, FlatsProvider.Flat.FLAT_ID + "=" + f.uid,
 							null, null);
-					final int myFlat = cur.getCount();
-
-					myLocationOverlay = new PlaceOverlayItem(new GeoPoint(
-							(int) (f.lat * 1E6), (int) (f.lng * 1E6)), f, this);
-					if (myFlat == 1) {
-						myLocationOverlay.setMarker(getResources().getDrawable(
-								R.drawable.map_marker_property_icon));
-						f.owned = true;
-					} else {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-						//schtief issue #7
-						long diff=CURRENTTIME-f.creationDate;
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> d231b0e... #7 neue und alte exposes
-						myLocationOverlay.setMarker(mapMarkerIcon);
-=======
-						//schtief issue #7
-						long diff=CURRENTTIME-f.creationDate;
-=======
->>>>>>> f9cf012... #7
-						if(diff>Const.EXPOSE_THRESHOLD_OLD)
-							myLocationOverlay.setMarker(mapMarkerIcon_old);
-						else if(diff>Const.EXPOSE_THRESHOLD_NEW)
-=======
-//						Log.i(TAG, "creationDate: "+Long.toString(f.creationDate)+" diff: "+diff+" : "+Long.toString(Const.EXPOSE_THRESHOLD_OLD)+"->"+Long.toString(Const.EXPOSE_THRESHOLD_NEW));
-						if(diff<Const.EXPOSE_THRESHOLD_NEW)
->>>>>>> 5237a00... finished issue #7
-							myLocationOverlay.setMarker(mapMarkerIcon_new);
-						else if(diff<Const.EXPOSE_THRESHOLD_OLD)
-							myLocationOverlay.setMarker(mapMarkerIcon);
-						else
-							myLocationOverlay.setMarker(mapMarkerIcon_old);
-
-<<<<<<< HEAD
->>>>>>> fefcd5a... #7
-=======
->>>>>>> f9cf012... #7
-						f.owned = false;
-					}
-					overlays.addOverlay(myLocationOverlay);
+					f.owned = cur.getCount() == 1;
+					cur.close();
 
 					if (f.lng < minX)
 						minX = f.lng;
@@ -358,7 +314,8 @@ public class PlacesMap extends MapActivity implements Receiver,
 					count++;
 				}
 			}
-
+			overlays.setFlats( mFlats );
+			
 			if (LocationHelper.sLng < minX)
 				minX = LocationHelper.sLng;
 			if (LocationHelper.sLng > maxX)
@@ -705,16 +662,6 @@ public class PlacesMap extends MapActivity implements Receiver,
 						dialog.cancel();
 					}
 				}).show();
-<<<<<<< HEAD
-=======
-
-	}
->>>>>>> 85d9791... extracted strings to constants and localized strings
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		tracker.stopSession();
 	}
 
 	@Override
@@ -722,4 +669,5 @@ public class PlacesMap extends MapActivity implements Receiver,
 		super.onDestroy();
 		tracker.stopSession();
 	}
+
 }

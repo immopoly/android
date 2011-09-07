@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.immopoly.android.PlacesMap;
+import org.immopoly.android.constants.Const;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,6 +38,10 @@ import android.util.Log;
 
 public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 
+	public static final int AGE_OLD    = 0;
+	public static final int AGE_NORMAL = 1;
+	public static final int AGE_NEW    = 2;
+	
 	private static SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	// http://developer.immobilienscout24.de/wiki/Expose/GET
 	public Integer uid;
@@ -68,6 +73,7 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 	public String priceIntervaleType;
 	public String currency;
 	public long creationDate=0;
+	public int age;
 	
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -110,6 +116,10 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 		lat = in.readDouble();
 		lng = in.readDouble();
 		creationDate=in.readLong();
+		long ageMs = System.currentTimeMillis() - creationDate;
+		age = ageMs < Const.EXPOSE_THRESHOLD_NEW ? AGE_NEW
+				: ageMs < Const.EXPOSE_THRESHOLD_OLD ? AGE_NORMAL
+			    : AGE_OLD;
 	}
 
 	public Flat() {
@@ -190,6 +200,10 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 		}else{
 //			Log.e(PlacesMap.TAG,"no creationDate "+jsonObject.toString());
 		}
+		long ageMs = System.currentTimeMillis() - creationDate;
+		age = ageMs < Const.EXPOSE_THRESHOLD_NEW ? AGE_NEW
+				: ageMs < Const.EXPOSE_THRESHOLD_OLD ? AGE_NORMAL
+			    : AGE_OLD;
 	}
 
 	@Override

@@ -302,8 +302,11 @@ public class ImageListDownloader {
 
 			if (imageViewReference != null) {
 				ImageView imageView = imageViewReference.get();
+				if ( imageView == null )
+					return;
 				BitmapDownloaderTask bitmapDownloaderTask = getBitmapDownloaderTask(imageView);
-				imageView.getAnimation().cancel();
+				if ( imageView.getAnimation() != null )
+					imageView.getAnimation().cancel();
 				// Change bitmap only if this process is still associated with
 				// it
 				// Or if we don't use any bitmap to task association

@@ -27,4 +27,11 @@ public class Const {
 	public static final String AUTH_URL = "oauth_url";
 	public static final long EXPOSE_THRESHOLD_OLD = 1000L*60L*60L*24L*30L;
 	public static final long EXPOSE_THRESHOLD_NEW = 1000L*60L*60L*24L*7L;
+	
+	// background colors by flat 'state' for map_marker_popup  
+	public static final int OWNED_FLAT_BACKGROUND_COLOR  = 0xFF255788;
+	public static final int OLD_FLAT_BACKGROUND_COLOR    = 0xFF5B605A;
+	public static final int NEW_FLAT_BACKGROUND_COLOR    = 0xFF3A882D;
+	public static final int NORMAL_FLAT_BACKGROUND_COLOR = 0xFFFFBC38;
+	
 }

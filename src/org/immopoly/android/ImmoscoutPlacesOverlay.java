@@ -21,137 +21,119 @@ package org.immopoly.android;
 
 import java.util.ArrayList;
 
-import org.immopoly.android.helper.ImageListDownloader;
+import org.immopoly.android.model.Flat;
+import org.immopoly.android.model.Flats;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Canvas;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
+import android.view.MotionEvent;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
+import com.google.android.maps.OverlayItem;
+import com.google.android.maps.Projection;
 
 
 
-public class ImmoscoutPlacesOverlay extends ItemizedOverlay<PlaceOverlayItem> {
+public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 
-	private final ArrayList<PlaceOverlayItem> mOverlayItems = new ArrayList<PlaceOverlayItem>();
+	private static final float MIN_INTERSECTION_AMOUNT = 0.25f;
+	private static int 		   MIN_INTERSECTION_AREA;
+	
+	private final ArrayList<ClusterItem> tmpItems = new ArrayList<ClusterItem>();
 	private MapView mMapView;
-	private Context mContext;
-	private LayoutInflater mLayoutInflater;
-	private View mMarkerView;
-	private static ImageListDownloader imageDownloader = new ImageListDownloader();
-
-	public ImmoscoutPlacesOverlay(Drawable defaultMarker) {
-		super(defaultMarker);
-	}
-
-	public ImmoscoutPlacesOverlay(Drawable defaultMarker, Context context,
-			MapView map, LayoutInflater inflator) {
-		super(defaultMarker);
+	private Rect markerBounds;
+	private Flats mFlats;
+	private PlacesMap placesMap;
+	private int prevLatProjection = -1;
+	private ViewPager flatsPager; 			// TODO move to PlacesMap
+	
+	static Drawable mapMarkerIcon;
+	static Drawable mapMarkerIcon_old;
+	static Drawable mapMarkerIcon_new;
+	static Drawable mapMarkerIcon_owned;
+	static Drawable mapMarkerIcon_cluster;
+	
+	public ImmoscoutPlacesOverlay( PlacesMap placesMap, MapView map, LayoutInflater inflator) {
+		super( boundCenterBottom( placesMap.getResources().getDrawable( R.drawable.map_marker_icon)) );
 		mMapView = map;
-		mContext = context;
-		mLayoutInflater = inflator;
+		this.placesMap = placesMap;
+		
+		Resources resources = placesMap.getResources();
+		mapMarkerIcon         = boundCenterBottom( resources.getDrawable( R.drawable.map_marker_icon));
+		mapMarkerIcon_new     = boundCenterBottom( resources.getDrawable( R.drawable.map_marker_icon_new ));
+		mapMarkerIcon_old     = boundCenterBottom( resources.getDrawable( R.drawable.map_marker_icon_old ));
+		mapMarkerIcon_owned   = boundCenterBottom( resources.getDrawable( R.drawable.map_marker_property_icon ));
+		mapMarkerIcon_cluster = boundCenterBottom( resources.getDrawable( R.drawable.map_marker_icon_cluster ));
+		
+		markerBounds = mapMarkerIcon.getBounds();
+		
+		MIN_INTERSECTION_AREA = (int) (markerBounds.width() * markerBounds.height() * MIN_INTERSECTION_AMOUNT);
+		
+		ClusterMarker.init( resources.getDisplayMetrics(), mapMarkerIcon.getIntrinsicHeight() );
+		
 	}
 
+	public void setFlats(Flats mFlats) {
+		this.mFlats = mFlats;
+		clusterize();
+	}
+	
 	@Override
-	protected PlaceOverlayItem createItem(int i) {
-		PlaceOverlayItem item = mOverlayItems.get(i);
-		boundCenterBottom(item.getMarker(0));
-		return item;
+	protected OverlayItem createItem(int i) {
+		return tmpItems.get(i).getOverlayItem();
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return mOverlayItems.size();
+		return tmpItems.size(); 
 	}
-
-	public void addOverlay(PlaceOverlayItem overlay) {
-		mOverlayItems.add(overlay);
-		populate();
-	}
-
+	
 	@Override
 	protected boolean onTap(int index) {
-		if (mOverlayItems != null && index < mOverlayItems.size()) {
-			final PlaceOverlayItem item = mOverlayItems.get(index);
-			if (mMarkerView == null) {
-				mMarkerView = mLayoutInflater.inflate(
-						R.layout.map_marker_popup, mMapView, false);
-			}
-			mMapView.removeAllViews();
+		if ( tmpItems != null && index < tmpItems.size()) {
+			final ClusterItem item = tmpItems.get(index);
 
-			((TextView) mMarkerView.findViewById(R.id.titleMarkerText))
-					.setText(item.getTitle());
-			// ((TextView) mMarkerView.findViewById(R.id.snippetMarkerText))
-			// .setText(item.getSnippet());
-			if (item.flat != null) {
-				if (item.flat.titlePictureSmall.trim().length() > 0) {
-					((ImageView) mMarkerView.findViewById(R.id.imagePreview))
-							.startAnimation(AnimationUtils.loadAnimation(
-									mContext, R.anim.loading_animation));
-					imageDownloader.download(item.flat.titlePictureSmall,
-							(ImageView) mMarkerView
-									.findViewById(R.id.imagePreview));
-				} else {
-					((ImageView) mMarkerView.findViewById(R.id.imagePreview))
-							.setImageDrawable(mContext.getResources()
-									.getDrawable(R.drawable.house_drawn));
-				}
-				if (item.flat.priceValue.length() > 0) {
-					((TextView) mMarkerView.findViewById(R.id.priceInfo))
-							.setText(item.flat.priceValue + " "
-									+ item.flat.currency + " / "
-									+ item.flat.priceIntervaleType);
-				}
+			if ( flatsPager != null )
+				placesMap.getContentView().removeView( flatsPager );
 
-				((Button) mMarkerView.findViewById(R.id.btnOpenExpose))
-						.setOnClickListener(new OnClickListener() {
+			flatsPager = new ViewPager( placesMap ) {
+		    	public boolean onTouchEvent(MotionEvent arg0) {
+		    		super.onTouchEvent(arg0);
+		    		return true;  // to avoid map panning when the touch obvioulsy happens on the ViewPager
+		    	}
+		    };
 
-                            @Override
-                            public void onClick(View v) {
-                                // Toast.makeText(mMarkerView.getContext(),
-                                // "FLAT ID -> " + item.flat.uid,
-                                // Toast.LENGTH_SHORT).show();
-                                item.callback.callbackCall(item.flat);
-                            }
-                        });
+			FlatsPagerAdapter pagerAdapter = new FlatsPagerAdapter( item.flats, placesMap );
+		    flatsPager.setAdapter( pagerAdapter );
 
-				mMarkerView.setOnClickListener(new OnClickListener() {
+		    
+			final int standardHeight = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 70,
+						placesMap.getResources().getDisplayMetrics());
+			final int height = flatsPager.getMeasuredHeight() == 0 ? standardHeight
+							 : flatsPager.getMeasuredHeight();
+			final RelativeLayout.LayoutParams relLayoutParams = new RelativeLayout.LayoutParams( 
+						LayoutParams.FILL_PARENT, height );
+			relLayoutParams.addRule( RelativeLayout.ALIGN_PARENT_BOTTOM );
+			
+			flatsPager.setLayoutParams( relLayoutParams );
+			placesMap.getContentView().addView( flatsPager );
 
-					@Override
-					public void onClick(final View v) {
-						// mContext.startActivity(intent);
-					}
-				});
-
-				mMapView.addView(mMarkerView);
-				final int standardHeight = (int) TypedValue.applyDimension(
-						TypedValue.COMPLEX_UNIT_DIP, 70, mContext
-								.getResources().getDisplayMetrics());
-				final int height = mMarkerView.getMeasuredHeight() == 0 ? standardHeight
-						: mMarkerView.getMeasuredHeight();
-				final MapView.LayoutParams mapParams = new MapView.LayoutParams(
-						ViewGroup.LayoutParams.FILL_PARENT,
-						ViewGroup.LayoutParams.WRAP_CONTENT, 0, mMapView
-								.getMeasuredHeight()
-								- height, MapView.LayoutParams.TOP);
-
-				mMarkerView.setLayoutParams(mapParams);
-				mMarkerView.startAnimation(AnimationUtils.loadAnimation(
-						mContext, R.anim.left_to_right));
-				mMapView.getController().animateTo(item.getPoint());
-			}
+		    mMapView.setBuiltInZoomControls( false );
+		    mMapView.getZoomButtonsController().setVisible( false );
+			flatsPager.startAnimation(AnimationUtils.loadAnimation( placesMap, R.anim.left_to_right));
+			mMapView.getController().animateTo(item.point);
 		}
 		return true;
 	}
@@ -159,17 +141,123 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<PlaceOverlayItem> {
 	@Override
 	public boolean onTap(GeoPoint p, MapView mapView) {
 		if (!super.onTap(p, mapView)) {
-
-			mMapView.removeAllViews();
+			placesMap.getContentView().removeView( flatsPager );
+		    mMapView.setBuiltInZoomControls( true );
+		    mMapView.getZoomButtonsController().setVisible( true );
 		}
 		return true;
 	}
-
+	
 	public void startExposeWebView(Intent i) {
-		mContext.startActivity(i);
+		placesMap.startActivity(i);
 	}
 
-	public void clear() {
-		mOverlayItems.clear();
+	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		// any better place to detect zoom change? 
+		int latProjection = (mapView.getProjection().fromPixels( 200, 200 ).getLatitudeE6()
+						   - mapView.getProjection().fromPixels( 0, 0 ).getLatitudeE6() );
+		if ( Math.abs( latProjection - prevLatProjection ) > 10 ) {
+			prevLatProjection = latProjection;
+			clusterize();
+		}
+		super.draw(canvas, mapView, shadow);
 	}
+	
+	/**
+	 * clusterize flats based on their supposed marker position
+	 */
+	public void clusterize() {
+		if ( mFlats == null )
+			return;
+		final Flats flats = mFlats;
+		final ArrayList<ClusterItem> items = tmpItems;
+		final Projection projection = mMapView.getProjection();
+		final Point screenPos = new Point();
+		items.clear();
+
+		// create tmp items with flat, geopoint & screenBounds 
+		for ( int i = 0; i < flats.size(); i++ ) {
+			final Flat flat = flats.get(i);
+			if ( flat.lat == 0 && flat.lng == 0 )
+				continue;
+			Rect itemBounds = new Rect( markerBounds );
+			GeoPoint point = new GeoPoint( (int) (flat.lat * 1E6), (int) (flat.lng * 1E6) );
+			projection.toPixels( point, screenPos );
+			itemBounds.offset( screenPos.x, screenPos.y );
+			items.add( new ClusterItem(flat, point, itemBounds ) );
+		}
+
+		// join ClusterItems if their markers would intersect 
+		ArrayList<ClusterItem> newItems = new ArrayList<ClusterItem>();
+		final Rect intersection = new Rect();
+		final int size = items.size();
+		for ( int i = 0; i < size; i++ ) {
+			final ClusterItem item = (ClusterItem) items.get(i);
+			if ( item.consumed )
+				continue;
+			for ( int j = i+1; j < size; j++ ) {
+				final ClusterItem otherItem = (ClusterItem) items.get( j );
+				if ( ! otherItem.consumed 
+						&& intersection.setIntersect( item.screenBounds, otherItem.screenBounds )
+						&& intersection.width()*intersection.height() >= MIN_INTERSECTION_AREA ) 
+					item.add( otherItem );
+			}
+			newItems.add( item );
+		}
+		tmpItems.clear();
+		tmpItems.addAll( newItems );
+
+		// see http://groups.google.com/group/android-developers/browse_thread/thread/38b11314e34714c3
+		setLastFocusedIndex(-1);
+		populate();
+	}
+
+
+	/*
+	 * Class used while clustering.
+	 */
+	private final class ClusterItem {
+		public boolean consumed;
+		long latSum, lonSum;
+		Rect screenBounds;
+		ArrayList<Flat> flats = new ArrayList<Flat>( 8 );
+		GeoPoint point;
+
+		public ClusterItem( Flat flat, GeoPoint point, Rect screenBounds ) {
+			this.screenBounds = screenBounds;
+			latSum = point.getLatitudeE6();
+			lonSum = point.getLongitudeE6();
+			flats.add( flat );
+		}
+		
+		public void add( ClusterItem item ) {
+			flats.addAll( item.flats );
+			latSum  += item.latSum;
+			lonSum  += item.lonSum;
+			item.consumed = true;
+		}
+
+		OverlayItem getOverlayItem() {
+			int size = flats.size();
+			
+			point = new GeoPoint( (int) (latSum / size), (int) (lonSum / size) );
+
+			ImmoPlaceOverlayItem item = new ImmoPlaceOverlayItem( point, flats );
+			if ( size == 1 ) {
+				Flat f = flats.get(0);
+				if ( f.owned ) 
+					item.setMarker( mapMarkerIcon_owned );
+				else if ( f.age == Flat.AGE_NEW ) 
+					item.setMarker( mapMarkerIcon_new );
+				else if ( f.age == Flat.AGE_OLD ) 
+					item.setMarker( mapMarkerIcon_old );
+				else
+					item.setMarker( mapMarkerIcon );
+			} else
+				item.setMarker( boundCenterBottom( new ClusterMarker( flats, mapMarkerIcon_cluster ) ) );
+			return item;
+		}
+		
+	}
+	
 }
