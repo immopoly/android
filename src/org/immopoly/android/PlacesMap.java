@@ -117,8 +117,8 @@ public class PlacesMap extends MapActivity implements Receiver,
 
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, this);
-		tracker.trackPageView(TrackingManager.VIEW_MAP);
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getApplicationContext());
+		
 
 		mState = (ReceiverState) getLastNonConfigurationInstance();
 		if (mState != null) {
@@ -185,9 +185,9 @@ public class PlacesMap extends MapActivity implements Receiver,
 
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 		LocationHelper.callback = this;
+		tracker.trackPageView(TrackingManager.VIEW_MAP);
 	}
 
 	@Override
@@ -246,7 +246,6 @@ public class PlacesMap extends MapActivity implements Receiver,
 
 	@Override
 	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -513,8 +512,8 @@ public class PlacesMap extends MapActivity implements Receiver,
 					history = new ImmopolyHistory();
 					history.fromJSON(obj);
 					tracker.trackEvent(TrackingManager.CATEGORY_ALERT,
-							TrackingManager.ACTION_TAKE_OVER,
-							TrackingManager.LABEL_RESPONSE_OK, 0);
+							TrackingManager.ACTION_EXPOSE,
+							TrackingManager.LABEL_TRY, 0);
 				} else if (obj != null) {
 					history = new ImmopolyHistory();
 					switch (obj.getJSONObject(
@@ -532,8 +531,8 @@ public class PlacesMap extends MapActivity implements Receiver,
 						break;
 					}
 					tracker.trackEvent(TrackingManager.CATEGORY_ALERT,
-							TrackingManager.ACTION_TAKE_OVER,
-							TrackingManager.LABEL_RESPONSE_FAIL, 0);
+							TrackingManager.ACTION_EXPOSE,
+							TrackingManager.LABEL_NEGATIVE, 0);
 				}
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
@@ -568,8 +567,8 @@ public class PlacesMap extends MapActivity implements Receiver,
 												false) /* LINk */);
 								tracker.trackEvent(
 										TrackingManager.CATEGORY_ALERT,
-										TrackingManager.ACTION_TAKE_OVER_SHARE,
-										TrackingManager.LABEL_RESPONSE_OK, 0);
+										TrackingManager.ACTION_SHARE,
+										TrackingManager.LABEL_POSITIVE, 0);
 							}
 
 						});
@@ -579,8 +578,8 @@ public class PlacesMap extends MapActivity implements Receiver,
 							public void onClick(DialogInterface dialog, int id) {
 								tracker.trackEvent(
 										TrackingManager.CATEGORY_ALERT,
-										TrackingManager.ACTION_TAKE_OVER_SHARE,
-										TrackingManager.LABEL_RESPONSE_FAIL, 0);
+										TrackingManager.ACTION_SHARE,
+										TrackingManager.LABEL_NEGATIVE, 0);
 							}
 						});
 				AlertDialog alert = builder.create();

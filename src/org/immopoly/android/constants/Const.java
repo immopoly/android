@@ -34,4 +34,6 @@ public class Const {
 	public static final int NEW_FLAT_BACKGROUND_COLOR    = 0xFF3A882D;
 	public static final int NORMAL_FLAT_BACKGROUND_COLOR = 0xFFFFBC38;
 	
+	public static final int ANALYTICS_INTERVAL = 20;
+	
 }

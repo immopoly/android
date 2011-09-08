@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
@@ -65,8 +66,8 @@ public class UserSignupActivity extends Activity {
 		
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-	    tracker.startNewSession(TrackingManager.UA_ACCOUNT, this);
-	    tracker.trackPageView(TrackingManager.VIEW_LOGIN);
+	    tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getApplicationContext());
+	    
 	    
 		// init login
 		setContentView(R.layout.user_signup_activity);
@@ -107,6 +108,12 @@ public class UserSignupActivity extends Activity {
 		}
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		tracker.trackPageView(TrackingManager.VIEW_LOGIN);
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		init();
