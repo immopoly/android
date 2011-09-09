@@ -1,6 +1,11 @@
+#android stuff
+*.keystore
 bin/
 gen/
-*.swp
 target/
 
-testdel.txt
+# eclipse stuff
+.classpath
+.project
+.settings/
+
