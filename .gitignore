@@ -2,3 +2,5 @@ bin/
 gen/
 *.swp
 target/
+
+testdel.txt
