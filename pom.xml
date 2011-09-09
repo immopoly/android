@@ -45,13 +45,11 @@
 		    <scope>system</scope>
 		    <systemPath>${project.basedir}/libs/libGoogleAnalytics.jar</systemPath>
 		</dependency>
-        <dependency>
-		    <groupId>com.google.oauth</groupId>
-		    <artifactId>signpost</artifactId>
-		    <version>1.2.1.1</version>
-		    <scope>system</scope>
-		    <systemPath>${project.basedir}/libs/signpost-core-1.2.1.1.jar</systemPath>
-		</dependency>
+    	<dependency>
+	      <groupId>oauth.signpost</groupId>
+	      <artifactId>signpost-core</artifactId>
+	      <version>1.2.1.1</version>
+	    </dependency>
     </dependencies>
 
     <build>
