@@ -39,7 +39,7 @@
 				android:layout_weight="1"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:text="Willkommen zu Immopoly, vergrößere dein Portfolio und somit deine Provision- und Mieteinamen!" />
+				android:text="@string/welcome_message" />
 
 			<ImageButton
 				android:id="@+id/aboutImmopoly"
@@ -78,11 +78,11 @@
 				android:id="@+id/register"
 				android:onClick="registerUser"
 				android:layout_height="wrap_content"
-				android:text="Registrieren"
+				android:text="@string/register"
 				android:layout_width="0dip"
 				android:layout_weight="1"></Button>
 			<Button
-				android:text="Anmelden"
+				android:text="@string/login"
 				android:onClick="loginUser"
 				android:id="@+id/login"
 				android:layout_width="0dip"

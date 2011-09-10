@@ -41,14 +41,14 @@
 				android:id="@+id/BackButton"
 				android:layout_weight="1"
 				android:layout_toRightOf="@+id/progress"
-				android:text="Übernahme versuchen"
+				android:text="@string/try_takeover"
 				android:onClick="addCurrentExpose"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content" />
 			<Button
 				android:id="@+id/shareExpose"
 				android:layout_weight="1"
-				android:text="Share"
+				android:text="@string/share"
 				android:onClick="shareExpose"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content" />

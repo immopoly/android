@@ -43,7 +43,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content">
 				<TextView
-					android:text="Bank:"
+					android:text="@string/bank"
 					android:layout_width="wrap_content"
 					android:layout_height="match_parent"
 					android:textSize="20dp"
@@ -51,7 +51,7 @@
 					android:gravity="center_vertical" />
 				<TextView
 					android:id="@+id/user_cash"
-					android:text="-"
+					android:text="@string/dash"
 					
 					android:layout_width="0dip"
 					android:layout_height="match_parent"
@@ -64,7 +64,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content">
 				<TextView
-					android:text="Miete:"
+					android:text="@string/rent"
 					android:layout_width="wrap_content"
 					android:layout_height="match_parent"
 					android:textSize="20dp"
@@ -72,7 +72,7 @@
 					android:gravity="center_vertical" />
 				<TextView
 					android:id="@+id/last_rent"
-					android:text="-"
+					android:text="@string/dash"
 					android:gravity="center_vertical|right"
 					android:layout_width="0dip"
 					android:layout_height="match_parent"
@@ -84,7 +84,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content">
 				<TextView
-					android:text="Provision:"
+					android:text="@string/provision"
 					android:layout_width="wrap_content"
 					android:layout_height="match_parent"
 					android:textSize="20dp"
@@ -92,7 +92,7 @@
 					android:gravity="center_vertical" />
 				<TextView
 					android:id="@+id/last_provision"
-					android:text="-"
+					android:text="@string/dash"
 					android:gravity="center_vertical|right"
 					android:layout_width="0dip"
 					android:layout_height="match_parent"
@@ -131,7 +131,7 @@
 
 	<TextView
 		android:id="@+id/list_header"
-		android:text="Portfolio:"
+		android:text="@string/portfolio"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:textColor="#ffbc38"

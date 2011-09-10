@@ -26,10 +26,16 @@
 	<string name="username_min_lenght">Username muss mindestens %1$s Zeichen lang sein"
 	</string>
 	<string name="username_already_used">Benutzername ist bereits vergeben, wähl doch einen
-		anderen!</string>
+		anderen!
+	</string>
 	<string name="no_internet_connection">Keine Internet Verbindung, diese ist notwending um
-		das Spiel zu spielen.</string>
-	<string name="button_ok">OK</string>	
+		das Spiel zu spielen.
+	</string>
+	<string name="welcome_message">Willkommen zu Immopoly, vergrößere dein Portfolio
+		und somit deine Provision- und Mieteinamen!</string>
+	<string name="register">Registrieren</string>
+	<string name="login">Anmelden</string>
+	<string name="button_ok">OK</string>
 	<string name="button_cancel">Abbrechen</string>
 	<string name="no_history_entries">History (Keine Einträge)</string>
 	<string name="history_title">History</string>
@@ -39,21 +45,37 @@
 	</string>
 	<string name="flat_does_not_exist_anymore">"Expose gibt es nicht mehr."</string>
 	<string name="flat_has_no_raw_rent">Expose hat keine Kaltmiete und kann nicht
-		übernommen werden</string>
+		übernommen werden
+	</string>
 	<string name="take_over_try">Übernahme Versuch!</string>
 	<string name="share_item">Share</string>
 	<string name="expose_couldnt_add">Expose konnte nicht hinzugefügt werden.</string>
 	<string name="allow_localization_title">Lokalisierung erlauben!</string>
 	<string name="allow_localization_message">Für das Spiel die Lokalisierung notwendig</string>
 
-	
+
 	<!-- Toasty stuff -->
 	<string name="toast_min_lenght_username">Username muss mindestens $1%s Zeichen lang sein
 	</string>
 	<string name="toast_min_lenght_password">Passwort muss mindestens $1%s Zeichen lang sein
 	</string>
 	<string name="toast_wrong_username_or_pasword">Benutzername oder Password falsch!</string>
-	<string name="toast_no_connection">Keine Internet Verbindung, diese ist notwending um das Spiel zu spielen.</string>
-	<string name="toast_session_timeout">Zu lange nicht angemeldet, bitte erneut anmelden!</string>
+	<string name="toast_no_connection">Keine Internet Verbindung, diese ist notwending um
+		das Spiel zu spielen.</string>
+	<string name="toast_session_timeout">Zu lange nicht angemeldet, bitte erneut anmelden!
+	</string>
 	<string name="toast_passwords_must_match">Passwörter müssen übereinstimmen</string>
+
+	<string name="portfolio">Portfolio:</string>
+	<string name="provision">Provision:</string>
+	<string name="bank">Bank:</string>
+	<string name="rent">Miete:</string>
+	<string name="dash">-</string>
+
+	<string name="share">Share</string>
+	<string name="try_takeover">Übernahme versuchen</string>
+	<string name="flat">Wohnung</string>
+	<string name="locating_message">Standort wird ermittelt ...</string>
+	<string name="date">Datum</string>
+	<string name="time">Zeit</string>
 </resources>
