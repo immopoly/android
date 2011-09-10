@@ -1,2 +1,11 @@
+#android stuff
+*.keystore
 bin/
 gen/
+target/
+
+# eclipse stuff
+.classpath
+.project
+.settings/
+
