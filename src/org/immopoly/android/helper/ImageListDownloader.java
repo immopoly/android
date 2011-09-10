@@ -65,8 +65,7 @@ public class ImageListDownloader {
 	private final HashMap<String, Bitmap> sHardBitmapCache = new LinkedHashMap<String, Bitmap>(
 			HARD_CACHE_CAPACITY / 2, 0.75f, true) {
 		@Override
-		protected boolean removeEldestEntry(
-				Map.Entry<String, Bitmap> eldest) {
+		protected boolean removeEldestEntry(Map.Entry<String, Bitmap> eldest) {
 			if (size() > HARD_CACHE_CAPACITY) {
 				// Entries push-out of hard reference cache are transferred to
 				// soft reference cache
@@ -147,12 +146,16 @@ public class ImageListDownloader {
 		// DownloadedDrawable and cache keys.
 		if (url == null) {
 			imageView.setImageDrawable(null);
+			// stop animation
+			imageView.setAnimation(null);
 			return;
 		}
 
 		if (cancelPotentialDownload(url, imageView)) {
 			BitmapDownloaderTask task = new BitmapDownloaderTask(imageView);
 			DownloadedDrawable downloadedDrawable = new DownloadedDrawable(task);
+			// stop animation
+			imageView.setAnimation(null);
 			imageView.setImageDrawable(downloadedDrawable);
 			task.execute(url, cookie);
 		}
