@@ -35,7 +35,7 @@ public class Const {
 	public static final int NORMAL_FLAT_BACKGROUND_COLOR = 0xFFFFBC38;
 
 	public static final String MESSAGE_IMMOPOLY_EXCEPTION = "org.immopoly.common.ImmopolyException";
-	
+
 	public static final String IMMOPOLY_EMAIL = "immopolyteam@gmail.com";
 	public static final int ANALYTICS_INTERVAL = 20;
 

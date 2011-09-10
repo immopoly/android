@@ -41,6 +41,7 @@ import org.immopoly.android.adapter.QypePlacesAdapter;
 import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.MapLocationCallback;
 import org.immopoly.android.helper.Settings;
@@ -110,8 +111,8 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL , getApplicationContext());
-		
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getApplicationContext());
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dashboard);
@@ -196,7 +197,6 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 
 		});
 	}
-
 
 	@Override
 	protected void onResume() {
@@ -336,8 +336,10 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 		} else {
 			OAuthData.getInstance(this.getBaseContext()).signedIn = false;
 			try {
-				authUrl = OAuthData.getInstance(this.getBaseContext()).provider.retrieveRequestToken(
-						OAuthData.getInstance(this.getBaseContext()).consumer, OAuth.OUT_OF_BAND);
+				authUrl = OAuthData.getInstance(this.getBaseContext()).provider
+						.retrieveRequestToken(
+								OAuthData.getInstance(this.getBaseContext()).consumer,
+								OAuth.OUT_OF_BAND);
 				Log.d("OAUTH", authUrl);
 			} catch (OAuthMessageSignerException e) {
 				// TODO Auto-generated catch block

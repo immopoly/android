@@ -10,15 +10,16 @@
 	more details. ~ ~ You should have received a copy of the GNU Affero General 
 	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/. -->
 
-<manifest package="org.immopoly.android" android:versionName="1.2"
-	android:versionCode="2" android:installLocation="auto"
-	xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="org.immopoly.android"
+	android:installLocation="auto" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:versionName="1.3" android:versionCode="3">
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"></uses-permission>
+
 	<permission android:name="org.immopoly.android.permission.C2D_MESSAGE"
 		android:protectionLevel="signature" />
 	<uses-permission android:name="org.immopoly.android.permission.C2D_MESSAGE" />
@@ -48,7 +49,7 @@
 
 		<service android:name=".c2dm.C2DMReceiver" />
 
-		<activity android:name=".app.UserSignupActivity"
+		<activity android:name="org.immopoly.android.app.UserSignupActivity"
 			android:launchMode="singleTop">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
