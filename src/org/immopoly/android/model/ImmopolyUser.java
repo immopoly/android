@@ -203,22 +203,18 @@ public class ImmopolyUser extends User {
 		}
 	}
 
-	@Override
 	public String getEmail() {
 		return mEmail;
 	}
 
-	@Override
 	public String getTwitter() {
 		return mTwitter;
 	}
 
-	@Override
 	public void setEmail(String email) {
 		mEmail=email;
 	}
 
-	@Override
 	public void setTwitter(String twitter) {
 		mTwitter=twitter;
 	}
