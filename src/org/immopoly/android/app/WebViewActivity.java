@@ -20,8 +20,6 @@
 package org.immopoly.android.app;
 
 import org.immopoly.android.R;
-import org.immopoly.android.R.id;
-import org.immopoly.android.R.layout;
 import org.immopoly.android.model.OAuthData;
 
 import android.app.Activity;

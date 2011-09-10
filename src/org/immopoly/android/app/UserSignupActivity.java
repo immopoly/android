@@ -24,9 +24,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import org.immopoly.android.R;
-import org.immopoly.android.R.id;
-import org.immopoly.android.R.layout;
-import org.immopoly.android.R.string;
+import org.immopoly.android.c2dm.C2DMessaging;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.Settings;
@@ -81,7 +79,8 @@ public class UserSignupActivity extends Activity {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.allow_localization_title);
 			builder.setMessage(R.string.allow_localization_message);
-			builder.setCancelable(true).setNegativeButton(R.string.button_cancel,
+			builder.setCancelable(true).setNegativeButton(
+					R.string.button_cancel,
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
@@ -109,6 +108,7 @@ public class UserSignupActivity extends Activity {
 		} else {
 			init();
 		}
+		C2DMessaging.register(this, Const.IMMOPOLY_EMAIL);
 	}
 
 	@Override
@@ -320,10 +320,8 @@ public class UserSignupActivity extends Activity {
 				findViewById(R.id.loginview).setVisibility(View.VISIBLE);
 
 			} else {
-				Toast.makeText(
-						UserSignupActivity.this,
-						R.string.toast_no_connection,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(UserSignupActivity.this,
+						R.string.toast_no_connection, Toast.LENGTH_LONG).show();
 				findViewById(R.id.loginview).setVisibility(View.VISIBLE);
 
 			}

@@ -32,15 +32,15 @@
         </dependency>
 
         <dependency>
-		    <groupId>android.support</groupId>
-		    <artifactId>v4</artifactId>
+		    <groupId>android.support.v4</groupId>
+		    <artifactId>android-support-v4</artifactId>
 		    <version>1</version>
 		    <scope>system</scope>
 		    <systemPath>${project.basedir}/libs/android-support-v4.jar</systemPath>
 		</dependency>
         <dependency>
-		    <groupId>com.google.android.apps</groupId>
-		    <artifactId>analytics</artifactId>
+		    <groupId>com.google.android.apps.analytics</groupId>
+		    <artifactId>libGoogleAnalytics</artifactId>
 		    <version>1</version>
 		    <scope>system</scope>
 		    <systemPath>${project.basedir}/libs/libGoogleAnalytics.jar</systemPath>
@@ -113,11 +113,11 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+			<!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jarsigner-plugin</artifactId>
                 <version>1.2</version>
-				<!--
                 <executions>
                     <execution>
                         <id>signing</id>
@@ -131,15 +131,15 @@
                             <includes>
                                 <include>target/*.apk</include>
                             </includes>
-                            <keystore>immopoly.keystore</keystore>
-                            <storepass>storepass_here</storepass>
+                            <keystore>debug.keystore</keystore>
+                            <storepass>immopoly</storepass>
                             <keypass>keypass_here</keypass>
                             <alias>immopoly_android</alias>
                         </configuration>
                     </execution>
                 </executions>
-				-->
             </plugin>
+			-->
         </plugins>
     </build>
 </project>
