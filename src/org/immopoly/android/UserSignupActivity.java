@@ -65,7 +65,8 @@ public class UserSignupActivity extends Activity {
 
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, this);
+
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getApplicationContext());
 		tracker.trackPageView(TrackingManager.VIEW_LOGIN);
 
 		// init login
@@ -107,6 +108,12 @@ public class UserSignupActivity extends Activity {
 		}
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		tracker.trackPageView(TrackingManager.VIEW_LOGIN);
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		init();
@@ -202,10 +209,8 @@ public class UserSignupActivity extends Activity {
 						UserSignupActivity.this);
 
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (obj == null || obj.has(Const.MESSAGE_IMMOPOLY_EXCEPTION)) {

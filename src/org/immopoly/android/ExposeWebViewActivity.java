@@ -54,7 +54,7 @@ public class ExposeWebViewActivity extends Activity {
 
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, this);
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL,getApplicationContext());
 		
 
 		setContentView(R.layout.expose_detail_web_view);
@@ -92,14 +92,12 @@ public class ExposeWebViewActivity extends Activity {
 					super.onPageFinished(view, url);
 					if (url.matches(".+?\\/bilder\\.htm$")) {
 						// match image details
-						tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
-								TrackingManager.ACTION_VIEW_FOTOS,
-								TrackingManager.LABEL_IMAGES, 0);
+						tracker.trackPageView(TrackingManager.ACTION_EXPOSE + "/" + TrackingManager.LABEL_IMAGES);
 					}
 					if (url.matches(".+?\\/bilder\\.htm#bigpicture$")) {
 						// navigate in details images
 						tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
-								TrackingManager.ACTION_VIEW_FOTOS,
+								TrackingManager.ACTION_VIEW,
 								TrackingManager.LABEL_IMAGES_DETAILS, 0);
 					}
 					if (mLoadTwice) {
@@ -146,8 +144,8 @@ public class ExposeWebViewActivity extends Activity {
 		if (!owned) {
 			setResult(RESULT_OK, i);
 			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
-					TrackingManager.ACTION_TAKE_OVER,
-					TrackingManager.LABEL_REQUEST, 0);
+					TrackingManager.ACTION_EXPOSE,
+					TrackingManager.LABEL_TRY, 0);
 		} else {
 			setResult(RESULT_CANCELED, i);
 		}

@@ -23,6 +23,8 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.util.Log;
+
 import org.immopoly.android.helper.WebHelper;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.OAuthData;
@@ -88,7 +90,7 @@ public class IS24ApiService extends IntentService {
 				lng = intent.getDoubleExtra(LNG, 0.0);
 				r = intent.getFloatExtra(RADIUS, 3.0f);
 
-				final int size = 4;
+				final int size = 5;
 				for (int i = 1; i < size; i++) {
 					url = new URL(
 							OAuthData.SERVER
@@ -97,6 +99,7 @@ public class IS24ApiService extends IntentService {
 									+ i + "&geocoordinates=" + lat + ";" + lng
 									+ ";" + r);
 					obj = WebHelper.getHttpData(url, true, this);
+					Log.d("IS24ApiService", "expose api request loop :" + i);
 					if (obj == null) {
 						break;
 					}

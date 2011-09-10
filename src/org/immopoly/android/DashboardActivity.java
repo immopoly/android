@@ -40,6 +40,7 @@ import org.immopoly.android.adapter.QypePlacesAdapter;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
 import org.immopoly.android.api.ApiResultReciever.Receiver;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.MapLocationCallback;
 import org.immopoly.android.helper.Settings;
@@ -109,8 +110,8 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, this);
-		tracker.trackPageView(TrackingManager.VIEW_DASHBOARD);
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL , getApplicationContext());
+		
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dashboard);
@@ -196,6 +197,7 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 		});
 	}
 
+
 	@Override
 	protected void onResume() {
 		ImmopolyUser.getInstance().readToken(DashboardActivity.this);
@@ -280,9 +282,9 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 		LocationHelper.callback = this;
+		tracker.trackPageView(TrackingManager.VIEW_DASHBOARD);
 	}
 
 	@Override
@@ -328,14 +330,14 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 		SharedPreferences shared = getSharedPreferences("oauth", 0);
 		String accessToken = shared.getString("oauth_token", "");
 		if (accessToken.length() > 0) {
-			OAuthData.signedIn = true;
-			OAuthData.accessToken = accessToken;
+			OAuthData.getInstance(this.getBaseContext()).signedIn = true;
+			OAuthData.getInstance(this.getBaseContext()).accessToken = accessToken;
 
 		} else {
-			OAuthData.signedIn = false;
+			OAuthData.getInstance(this.getBaseContext()).signedIn = false;
 			try {
-				authUrl = OAuthData.provider.retrieveRequestToken(
-						OAuthData.consumer, OAuth.OUT_OF_BAND);
+				authUrl = OAuthData.getInstance(this.getBaseContext()).provider.retrieveRequestToken(
+						OAuthData.getInstance(this.getBaseContext()).consumer, OAuth.OUT_OF_BAND);
 				Log.d("OAUTH", authUrl);
 			} catch (OAuthMessageSignerException e) {
 				// TODO Auto-generated catch block
@@ -383,7 +385,7 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 		if (mGetUserInfoTask != null
 				&& mGetUserInfoTask.getStatus().equals(Status.RUNNING)) {
 
-		} else {
+		} else if (ImmopolyUser.getInstance().isOld()) {
 			mGetUserInfoTask = new GetUserInfoUpdateTask(this)
 					.execute(ImmopolyUser.getInstance().getToken());
 		}
