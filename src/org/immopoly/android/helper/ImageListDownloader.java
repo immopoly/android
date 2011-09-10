@@ -124,6 +124,8 @@ public class ImageListDownloader {
 		if (bitmap == null) {
 			forceDownload(url, imageView, cookie);
 		} else {
+			// stop animation
+			imageView.setAnimation(null);
 			cancelPotentialDownload(url, imageView);
 			imageView.setImageBitmap(bitmap);
 		}

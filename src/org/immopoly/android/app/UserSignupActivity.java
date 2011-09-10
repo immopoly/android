@@ -17,12 +17,16 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-package org.immopoly.android;
+package org.immopoly.android.app;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.immopoly.android.R;
+import org.immopoly.android.R.id;
+import org.immopoly.android.R.layout;
+import org.immopoly.android.R.string;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.Settings;
@@ -339,7 +343,7 @@ public class UserSignupActivity extends Activity {
 
 	public void startGame() {
 		// start game
-		Intent i = new Intent(this, PlacesMap.class);
+		Intent i = new Intent(this, PlacesMapActivity.class);
 		startActivity(i);
 		finish();
 	}

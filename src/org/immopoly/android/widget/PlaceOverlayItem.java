@@ -16,23 +16,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
- 
-package org.immopoly.android;
 
-import java.util.ArrayList;
+package org.immopoly.android.widget;
 
+import org.immopoly.android.helper.MapMarkerCallback;
 import org.immopoly.android.model.Flat;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
-public class ImmoPlaceOverlayItem extends OverlayItem {
-	
-	ArrayList<Flat> flats;
-	
-	public ImmoPlaceOverlayItem( GeoPoint point, ArrayList<Flat> flats ) {
-		super( point, "", "" );
-		this.flats = flats;
+
+public class PlaceOverlayItem extends OverlayItem {
+
+	public Flat flat;
+	public MapMarkerCallback callback;
+
+	public PlaceOverlayItem(GeoPoint point, Flat f, MapMarkerCallback callback) {
+		super(point, f.name, f.locationNote);
+		this.callback = callback;
+		flat = f;
+		// TODO Auto-generated constructor stub
 	}
+
+	public PlaceOverlayItem(GeoPoint point, String string, String string2) {
+		super(point, string, string2);
+	}
+
 	
 }
