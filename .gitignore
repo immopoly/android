@@ -9,3 +9,7 @@ target/
 .project
 .settings/
 
+#maven eclipse stuff
+
+.externalToolBuilders/
+maven-eclipse.xml
