@@ -496,7 +496,7 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 
 			}
 		});
-		builder.setCancelable(false).setPositiveButton(R.string.ok_button,
+		builder.setCancelable(false).setPositiveButton(R.string.button_ok,
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int id) {
@@ -537,7 +537,7 @@ public class DashboardActivity extends BaseListActivity implements Receiver,
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				DashboardActivity.this);
 		builder.setView(alertDialogView);
-		builder.setPositiveButton(R.string.ok_button,
+		builder.setPositiveButton(R.string.button_ok,
 				new DialogInterface.OnClickListener() {
 
 					@Override

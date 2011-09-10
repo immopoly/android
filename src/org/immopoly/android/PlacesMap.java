@@ -33,9 +33,9 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 
+import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
-import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.MapLocationCallback;
@@ -59,19 +59,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.drawable.StateListDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -573,7 +572,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 							}
 
 						});
-				builder.setPositiveButton(R.string.ok_button,
+				builder.setPositiveButton(R.string.button_ok,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
@@ -654,7 +653,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 		myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
 		AlertDialog.Builder builder = new AlertDialog.Builder(PlacesMap.this);
 		builder.setView(alertDialogView);
-		builder.setPositiveButton(R.string.ok_button,
+		builder.setPositiveButton(R.string.button_ok,
 				new DialogInterface.OnClickListener() {
 
 					@Override

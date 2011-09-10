@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
@@ -31,8 +32,6 @@ import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.tasks.GetUserInfoTask;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -50,6 +49,7 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class UserSignupActivity extends Activity {
 
@@ -57,17 +57,17 @@ public class UserSignupActivity extends Activity {
 	private static final int MIN_USERNAME_LENGTH = 1;
 
 	private GoogleAnalyticsTracker tracker;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
+
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-	    tracker.startNewSession(TrackingManager.UA_ACCOUNT, this);
-	    tracker.trackPageView(TrackingManager.VIEW_LOGIN);
-	    
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT, this);
+		tracker.trackPageView(TrackingManager.VIEW_LOGIN);
+
 		// init login
 		setContentView(R.layout.user_signup_activity);
 		// check if user as token and is already logedin
@@ -75,9 +75,9 @@ public class UserSignupActivity extends Activity {
 		LocationHelper.getLastLocation(this);
 		if (LocationHelper.getBestProvider() == null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Lokalisierung erlauben!");
-			builder.setMessage("Für das Spiel die Lokalisierung notwendig,");
-			builder.setCancelable(true).setNegativeButton("Abbrechen",
+			builder.setTitle(R.string.allow_localization_title);
+			builder.setMessage(R.string.allow_localization_message);
+			builder.setCancelable(true).setNegativeButton(R.string.button_cancel,
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
@@ -132,8 +132,8 @@ public class UserSignupActivity extends Activity {
 		} else {
 			EditText userPassword = (EditText) findViewById(R.id.user_password);
 			// check if passwords are the same
-			if (userPassword.getText().toString().equals(
-					userPasswordConfirm.getText().toString())) {
+			if (userPassword.getText().toString()
+					.equals(userPasswordConfirm.getText().toString())) {
 				if (userPassword.getText().length() >= MIN_PASSWORTH_LENGTH) {
 					EditText username = (EditText) findViewById(R.id.user_name);
 					if (username.getText().toString().length() >= MIN_USERNAME_LENGTH) {
@@ -143,20 +143,19 @@ public class UserSignupActivity extends Activity {
 					} else {
 						Toast.makeText(
 								this,
-								"Username muss mindestens "
-										+ MIN_USERNAME_LENGTH
-										+ "  Zeichen lang sein",
-								Toast.LENGTH_LONG).show();
+								getString(R.string.toast_min_lenght_username,
+										MIN_USERNAME_LENGTH), Toast.LENGTH_LONG)
+								.show();
 					}
 				} else {
 					Toast.makeText(
 							this,
-							"Passwort muss mindestens " + MIN_PASSWORTH_LENGTH
-									+ " Zeichen lang sein", Toast.LENGTH_LONG)
+							getString(R.string.toast_min_lenght_password,
+									MIN_PASSWORTH_LENGTH), Toast.LENGTH_LONG)
 							.show();
 				}
 			} else {
-				Toast.makeText(this, "Passwörter müssen übereinstimmen",
+				Toast.makeText(this, R.string.toast_passwords_must_match,
 						Toast.LENGTH_LONG).show();
 			}
 		}
@@ -178,12 +177,10 @@ public class UserSignupActivity extends Activity {
 						.show();
 			}
 		} else {
-			Toast
-					.makeText(
-                            this,
-                            getString(R.string.username_min_lenght,
-                                    MIN_USERNAME_LENGTH), Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(
+					this,
+					getString(R.string.username_min_lenght, MIN_USERNAME_LENGTH),
+					Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -197,9 +194,11 @@ public class UserSignupActivity extends Activity {
 			JSONObject obj = null;
 			ImmopolyUser user;
 			try {
-				obj = WebHelper.getHttpsData(new URL(
-						WebHelper.SERVER_HTTPS_URL_PREFIX + "/user/register?username="
-								+ URLEncoder.encode( username ) + "&password=" + URLEncoder.encode(password) ), false,
+				obj = WebHelper.getHttpsData(
+						new URL(WebHelper.SERVER_HTTPS_URL_PREFIX
+								+ "/user/register?username="
+								+ URLEncoder.encode(username) + "&password="
+								+ URLEncoder.encode(password)), false,
 						UserSignupActivity.this);
 
 			} catch (MalformedURLException e) {
@@ -209,7 +208,7 @@ public class UserSignupActivity extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (obj == null || obj.has("org.immopoly.common.ImmopolyException")) {
+			if (obj == null || obj.has(Const.MESSAGE_IMMOPOLY_EXCEPTION)) {
 				user = null;
 
 			} else {
@@ -234,11 +233,9 @@ public class UserSignupActivity extends Activity {
 						Toast.LENGTH_LONG).show();
 			} else {
 
-				Toast
-						.makeText(
-                                UserSignupActivity.this,
-                                getString(R.string.no_internet_connection),
-                                Toast.LENGTH_LONG).show();
+				Toast.makeText(UserSignupActivity.this,
+						getString(R.string.no_internet_connection),
+						Toast.LENGTH_LONG).show();
 				findViewById(R.id.loginview).setVisibility(View.VISIBLE);
 
 			}
@@ -254,9 +251,11 @@ public class UserSignupActivity extends Activity {
 			JSONObject obj = null;
 			ImmopolyUser user;
 			try {
-				obj = WebHelper.getHttpsData(new URL(
-						WebHelper.SERVER_HTTPS_URL_PREFIX + "/user/login?username="
-								+ URLEncoder.encode(username) + "&password=" + URLEncoder.encode(password) ), false,
+				obj = WebHelper.getHttpsData(
+						new URL(WebHelper.SERVER_HTTPS_URL_PREFIX
+								+ "/user/login?username="
+								+ URLEncoder.encode(username) + "&password="
+								+ URLEncoder.encode(password)), false,
 						UserSignupActivity.this);
 
 			} catch (MalformedURLException e) {
@@ -266,7 +265,7 @@ public class UserSignupActivity extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (obj == null || obj.has("org.immopoly.common.ImmopolyException")) {
+			if (obj == null || obj.has(Const.MESSAGE_IMMOPOLY_EXCEPTION)) {
 				user = null;
 			} else {
 				user = ImmopolyUser.getInstance();
@@ -286,17 +285,13 @@ public class UserSignupActivity extends Activity {
 				editor.commit();
 				startGame();
 			} else if (Settings.isOnline(UserSignupActivity.this)) {
-				Toast
-						.makeText(UserSignupActivity.this,
-                                "Benutzername oder Passworf falsch!",
-                                Toast.LENGTH_LONG).show();
+				Toast.makeText(UserSignupActivity.this,
+						R.string.toast_wrong_username_or_pasword,
+						Toast.LENGTH_LONG).show();
 			} else {
 
-				Toast
-						.makeText(
-                                UserSignupActivity.this,
-                                "Keine Internet Verbindung, diese ist notwending um das Spiel zu spielen.",
-                                Toast.LENGTH_LONG).show();
+				Toast.makeText(UserSignupActivity.this,
+						R.string.toast_no_connection, Toast.LENGTH_LONG).show();
 				findViewById(R.id.loginview).setVisibility(View.VISIBLE);
 
 			}
@@ -316,16 +311,15 @@ public class UserSignupActivity extends Activity {
 				startGame();
 			} else if (Settings.isOnline(UserSignupActivity.this)) {
 				Toast.makeText(UserSignupActivity.this,
-						"Zu lange nicht angemeldet, bitte erneut anmelden!",
-						Toast.LENGTH_LONG).show();
+						R.string.toast_session_timeout, Toast.LENGTH_LONG)
+						.show();
 				findViewById(R.id.loginview).setVisibility(View.VISIBLE);
 
 			} else {
-				Toast
-						.makeText(
-                                UserSignupActivity.this,
-                                "Keine Internet Verbindung, diese ist notwending um das Spiel zu spielen.",
-                                Toast.LENGTH_LONG).show();
+				Toast.makeText(
+						UserSignupActivity.this,
+						R.string.toast_no_connection,
+						Toast.LENGTH_LONG).show();
 				findViewById(R.id.loginview).setVisibility(View.VISIBLE);
 
 			}
@@ -357,20 +351,21 @@ public class UserSignupActivity extends Activity {
 		myWebView.getSettings().setSupportZoom(true);
 		myWebView.getSettings().setUseWideViewPort(true);
 
-		myWebView.loadUrl( WebHelper.SERVER_URL_PREFIX );
+		myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				UserSignupActivity.this);
 		builder.setView(alertDialogView);
-		builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.button_ok,
+				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-			}
-		}).show();
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				}).show();
 
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
