@@ -17,8 +17,12 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-package org.immopoly.android;
+package org.immopoly.android.app;
 
+import org.immopoly.android.R;
+import org.immopoly.android.R.id;
+import org.immopoly.android.R.layout;
+import org.immopoly.android.R.string;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
@@ -137,7 +141,7 @@ public class ExposeWebViewActivity extends Activity {
 	}
 
 	public void addCurrentExpose(View v) {
-		Intent i = new Intent(this, PlacesMap.class);
+		Intent i = new Intent(this, PlacesMapActivity.class);
 		i.putExtra(Const.EXPOSE_ADD_PORTIFOLIO, true);
 		i.putExtra(Const.EXPOSE_ID, exposeID);
 		i.putExtra(Const.EXPOSE_NAME, exposeName);

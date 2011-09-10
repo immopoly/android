@@ -17,8 +17,11 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-package org.immopoly.android;
+package org.immopoly.android.app;
 
+import org.immopoly.android.R;
+import org.immopoly.android.R.id;
+import org.immopoly.android.R.layout;
 import org.immopoly.android.model.OAuthData;
 
 import android.app.Activity;
@@ -61,7 +64,7 @@ public class WebViewActivity extends Activity {
 						editor.commit();
 						OAuthData.accessToken = access_token;
 						Intent i = new Intent(WebViewActivity.this,
-								PlacesMap.class);
+								PlacesMapActivity.class);
 						startActivity(i);
 						finish();
 					}

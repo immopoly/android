@@ -17,10 +17,13 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-package org.immopoly.android;
+package org.immopoly.android.widget;
 
 import java.util.ArrayList;
 
+import org.immopoly.android.R;
+import org.immopoly.android.adapter.FlatsPagerAdapter;
+import org.immopoly.android.app.PlacesMapActivity;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 
@@ -55,7 +58,7 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 	private MapView mMapView;
 	private Rect markerBounds;
 	private Flats mFlats;
-	private PlacesMap placesMap;
+	private PlacesMapActivity placesMap;
 	private int prevLatProjection = -1;
 	private ViewPager flatsPager; 			// TODO move to PlacesMap
 	
@@ -65,7 +68,7 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 	static Drawable mapMarkerIcon_owned;
 	static Drawable mapMarkerIcon_cluster;
 	
-	public ImmoscoutPlacesOverlay( PlacesMap placesMap, MapView map, LayoutInflater inflator) {
+	public ImmoscoutPlacesOverlay( PlacesMapActivity placesMap, MapView map, LayoutInflater inflator) {
 		super( boundCenterBottom( placesMap.getResources().getDrawable( R.drawable.map_marker_icon)) );
 		mMapView = map;
 		this.placesMap = placesMap;

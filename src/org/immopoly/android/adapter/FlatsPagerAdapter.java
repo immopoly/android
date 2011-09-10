@@ -17,11 +17,16 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-package org.immopoly.android;
+package org.immopoly.android.adapter;
 
 import java.util.ArrayList;
 
 import org.immopoly.android.R;
+import org.immopoly.android.R.anim;
+import org.immopoly.android.R.drawable;
+import org.immopoly.android.R.id;
+import org.immopoly.android.R.layout;
+import org.immopoly.android.app.PlacesMapActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.ImageListDownloader;
 import org.immopoly.android.model.Flat;
@@ -49,9 +54,9 @@ public class FlatsPagerAdapter extends PagerAdapter {
 	
 	private ArrayList<Flat>    flats;	// list of flats presented in the ViewPager
 	private View[] 			   views;	// storing views for each flat for use in destroyItem() & isViewFromObject()
-	private PlacesMap		   context; 
+	private PlacesMapActivity		   context; 
 
-	public FlatsPagerAdapter( ArrayList<Flat> flats, PlacesMap context ) {
+	public FlatsPagerAdapter( ArrayList<Flat> flats, PlacesMapActivity context ) {
 		this.context = context;
 		this.flats   = flats;
 		this.views   = new View[flats.size()];

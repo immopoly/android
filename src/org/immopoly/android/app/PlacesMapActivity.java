@@ -17,7 +17,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-package org.immopoly.android;
+package org.immopoly.android.app;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -33,6 +33,12 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 
+import org.immopoly.android.R;
+import org.immopoly.android.R.anim;
+import org.immopoly.android.R.drawable;
+import org.immopoly.android.R.id;
+import org.immopoly.android.R.layout;
+import org.immopoly.android.R.string;
 import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
@@ -50,6 +56,9 @@ import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.model.OAuthData;
 import org.immopoly.android.provider.FlatsProvider;
 import org.immopoly.android.tasks.GetUserInfoTask;
+import org.immopoly.android.widget.ImmoscoutPlacesOverlay;
+import org.immopoly.android.widget.MyPositionOverlay;
+import org.immopoly.android.widget.PlaceOverlayItem;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -87,7 +96,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
-public class PlacesMap extends MapActivity implements Receiver,
+public class PlacesMapActivity extends MapActivity implements Receiver,
 		MapMarkerCallback, MapLocationCallback {
 	public static final String TAG = "Immopoly";
 	private static long CURRENTTIME=System.currentTimeMillis();
@@ -429,7 +438,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 			if ((params[0] != null && params[1] != null)
 					&& (params[0] != 0.0 && params[1] != 0.0)) {
 				try {
-					Geocoder geocoder = new Geocoder(PlacesMap.this,
+					Geocoder geocoder = new Geocoder(PlacesMapActivity.this,
 							Locale.getDefault());
 					List<Address> addresses = geocoder.getFromLocation(
 							params[0], params[1], 1);
@@ -502,11 +511,11 @@ public class PlacesMap extends MapActivity implements Receiver,
 			JSONObject obj = null;
 			ImmopolyHistory history = null;
 			try {
-				ImmopolyUser.getInstance().readToken(PlacesMap.this);
+				ImmopolyUser.getInstance().readToken(PlacesMapActivity.this);
 				obj = WebHelper.getHttpData(new URL(WebHelper.SERVER_URL_PREFIX
 						+ "/portfolio/add?token="
 						+ ImmopolyUser.getInstance().getToken() + "&expose="
-						+ params[0]), false, PlacesMap.this);
+						+ params[0]), false, PlacesMapActivity.this);
 				if (obj != null
 						&& !obj.has("org.immopoly.common.ImmopolyException")) {
 					history = new ImmopolyHistory();
@@ -550,7 +559,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 			if (result != null && result.mText != null
 					&& result.mText.length() > 0) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
-						PlacesMap.this);
+						PlacesMapActivity.this);
 				builder.setTitle(getString(R.string.take_over_try));
 				builder.setMessage(result.mText);
 				builder.setCancelable(true).setNegativeButton(
@@ -560,7 +569,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 							public void onClick(DialogInterface dialog, int id) {
 								Settings.getFlatLink(
 										mCurrentFlat.uid.toString(), false);
-								Settings.shareMessage(PlacesMap.this,
+								Settings.shareMessage(PlacesMapActivity.this,
 										getString(R.string.take_over_try),
 										res.mText, Settings.getFlatLink(
 												mCurrentFlat.uid.toString(),
@@ -586,13 +595,13 @@ public class PlacesMap extends MapActivity implements Receiver,
 				alert.show();
 				// Toast.makeText(PlacesMap.this, res.mText, Toast.LENGTH_LONG)
 				// .show();
-				new GetUserInfoUpdateTask(PlacesMap.this).execute(ImmopolyUser
+				new GetUserInfoUpdateTask(PlacesMapActivity.this).execute(ImmopolyUser
 						.getInstance().getToken());
-			} else if (Settings.isOnline(PlacesMap.this)) {
-				Toast.makeText(PlacesMap.this, R.string.expose_couldnt_add,
+			} else if (Settings.isOnline(PlacesMapActivity.this)) {
+				Toast.makeText(PlacesMapActivity.this, R.string.expose_couldnt_add,
 						Toast.LENGTH_LONG).show();
 			} else {
-				Toast.makeText(PlacesMap.this, R.string.no_internet_connection,
+				Toast.makeText(PlacesMapActivity.this, R.string.no_internet_connection,
 						Toast.LENGTH_LONG).show();
 			}
 			super.onPostExecute(result);
@@ -610,12 +619,12 @@ public class PlacesMap extends MapActivity implements Receiver,
 		protected void onPostExecute(ImmopolyUser result) {
 			if (result != null && ImmopolyUser.getInstance().flats != null) {
 				updateMap(false);
-			} else if (Settings.isOnline(PlacesMap.this)) {
-				Intent intent = new Intent(PlacesMap.this,
+			} else if (Settings.isOnline(PlacesMapActivity.this)) {
+				Intent intent = new Intent(PlacesMapActivity.this,
 						UserSignupActivity.class);
 				startActivity(intent);
 			} else {
-				Toast.makeText(PlacesMap.this, R.string.no_internet_connection,
+				Toast.makeText(PlacesMapActivity.this, R.string.no_internet_connection,
 						Toast.LENGTH_LONG).show();
 			}
 		}
@@ -640,7 +649,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 
 	public void showInfo(View v) {
 
-		LayoutInflater inflater = LayoutInflater.from(PlacesMap.this);
+		LayoutInflater inflater = LayoutInflater.from(PlacesMapActivity.this);
 
 		View alertDialogView = inflater.inflate(R.layout.info_webview, null);
 
@@ -651,7 +660,7 @@ public class PlacesMap extends MapActivity implements Receiver,
 		myWebView.getSettings().setUseWideViewPort(true);
 
 		myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
-		AlertDialog.Builder builder = new AlertDialog.Builder(PlacesMap.this);
+		AlertDialog.Builder builder = new AlertDialog.Builder(PlacesMapActivity.this);
 		builder.setView(alertDialogView);
 		builder.setPositiveButton(R.string.button_ok,
 				new DialogInterface.OnClickListener() {

@@ -22,7 +22,7 @@
  */
 package org.immopoly.android.tasks;
 
-import org.immopoly.android.BaseListActivity;
+import org.immopoly.android.app.BaseListActivity;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 

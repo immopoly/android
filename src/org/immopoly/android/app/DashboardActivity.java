@@ -17,7 +17,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-package org.immopoly.android;
+package org.immopoly.android.app;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -33,6 +33,11 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 
+import org.immopoly.android.R;
+import org.immopoly.android.R.anim;
+import org.immopoly.android.R.id;
+import org.immopoly.android.R.layout;
+import org.immopoly.android.R.string;
 import org.immopoly.android.adapter.FlatAdapter;
 import org.immopoly.android.adapter.FlatsCursorAdapter;
 import org.immopoly.android.adapter.HistoryAdapter;

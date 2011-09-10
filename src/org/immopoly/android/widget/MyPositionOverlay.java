@@ -17,10 +17,15 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-package org.immopoly.android;
+package org.immopoly.android.widget;
 
 import java.util.ArrayList;
 
+import org.immopoly.android.R;
+import org.immopoly.android.R.anim;
+import org.immopoly.android.R.drawable;
+import org.immopoly.android.R.id;
+import org.immopoly.android.R.layout;
 import org.immopoly.android.helper.ImageListDownloader;
 
 import android.content.Context;
@@ -38,7 +43,6 @@ import android.widget.TextView;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
-
 
 
 public class MyPositionOverlay extends ItemizedOverlay<PlaceOverlayItem> {

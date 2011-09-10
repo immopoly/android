@@ -17,27 +17,10 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-package org.immopoly.android;
+package org.immopoly.android.app;
 
-import android.content.Context;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.app.ListActivity;
 
-public class OAuthActivity extends WebView {
-
-	public OAuthActivity(Context context) {
-		super(context);
-
-		setWebViewClient(new WebViewClient() {
-			@Override
-			public void onPageFinished(WebView view, String url) {
-				// TODO Auto-generated method stub
-				if (url.matches("")) {
-
-				}
-				super.onPageFinished(view, url);
-			}
-		});
-	}
+public abstract class BaseListActivity extends ListActivity {
 
 }
