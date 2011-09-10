@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mvn install:install-file -Dfile=libGoogleAnalytics.jar -DgroupId=com.google.apps.analytics -DartifactId=libGoogleAnalytics -Dversion=1.0 -Dpackaging=jar

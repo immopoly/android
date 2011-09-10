@@ -20,14 +20,9 @@
 package org.immopoly.android.app;
 
 import org.immopoly.android.R;
-import org.immopoly.android.R.id;
-import org.immopoly.android.R.layout;
-import org.immopoly.android.R.string;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
-
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -38,6 +33,8 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class ExposeWebViewActivity extends Activity {
 

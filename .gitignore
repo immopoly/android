@@ -4,6 +4,10 @@ bin/
 gen/
 target/
 
+#key stuff
+
+res/values/config_data.xml
+
 # eclipse stuff
 .classpath
 .project

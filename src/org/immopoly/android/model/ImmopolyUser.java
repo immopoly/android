@@ -39,6 +39,8 @@ public class ImmopolyUser extends User {
 
 	private String mUserToken;
 	private String mUserName;
+	private String mEmail;
+	private String mTwitter;
 	private double mBalance;
 	public List<ImmopolyHistory> mUserHistory;
 	public List<Flat> flats;
@@ -199,5 +201,21 @@ public class ImmopolyUser extends User {
 		} else {
 			return true;
 		}
+	}
+
+	public String getEmail() {
+		return mEmail;
+	}
+
+	public String getTwitter() {
+		return mTwitter;
+	}
+
+	public void setEmail(String email) {
+		mEmail=email;
+	}
+
+	public void setTwitter(String twitter) {
+		mTwitter=twitter;
 	}
 }
