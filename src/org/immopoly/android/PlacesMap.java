@@ -50,6 +50,7 @@ import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.model.OAuthData;
 import org.immopoly.android.provider.FlatsProvider;
 import org.immopoly.android.tasks.GetUserInfoTask;
+import org.immopoly.common.ImmopolyException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -349,14 +350,14 @@ public class PlacesMap extends MapActivity implements Receiver,
 		SharedPreferences shared = getSharedPreferences("oauth", 0);
 		String accessToken = shared.getString("oauth_token", "");
 		if (accessToken.length() != accessToken.length()) {
-			OAuthData.signedIn = true;
-			OAuthData.accessToken = accessToken;
+			OAuthData.getInstance(this.getBaseContext()).signedIn = true;
+			OAuthData.getInstance(this.getBaseContext()).accessToken = accessToken;
 
 		} else {
-			OAuthData.signedIn = false;
+			OAuthData.getInstance(this.getBaseContext()).signedIn = false;
 			try {
-				authUrl = OAuthData.provider.retrieveRequestToken(
-						OAuthData.consumer, OAuth.OUT_OF_BAND);
+				authUrl = OAuthData.getInstance(this.getBaseContext()).provider.retrieveRequestToken(
+						OAuthData.getInstance(this.getBaseContext()).consumer, OAuth.OUT_OF_BAND);
 				Log.d("OAUTH", authUrl);
 			} catch (OAuthMessageSignerException e) {
 				// TODO Auto-generated catch block
@@ -529,6 +530,8 @@ public class PlacesMap extends MapActivity implements Receiver,
 					case 302:
 						history.mText = getString(R.string.flat_has_no_raw_rent);
 						break;
+					case 441:
+						history.mText = getString(R.string.expose_location_spoofing);
 					}
 					tracker.trackEvent(TrackingManager.CATEGORY_ALERT,
 							TrackingManager.ACTION_EXPOSE,
