@@ -19,10 +19,34 @@
 	</organization>
 	<developers>
 		<developer>
+			<id>keyboardsurfer</id>
+			<name>Benjamin Weiss</name>
+			<email>keyboardsurfer@c-base.org</email>
+			<url>http://gplus.to/keyboardsurfer</url>
+			<organization>Team immopoly</organization>
+			<organizationUrl>http://immopoly.blogspot.com</organizationUrl>
+			<roles>
+			<role>owner</role>
+			</roles>
+			<timezone>+2</timezone>
+		</developer>
+		<developer>
 			<id>stefanhoth</id>
 			<name>Stefan Hoth</name>
 			<email>sh@jnamic.com</email>
 			<url>http://stefanhoth.de</url>
+			<organization>Team immopoly</organization>
+			<organizationUrl>http://immopoly.blogspot.com</organizationUrl>
+			<roles>
+			<role>owner</role>
+			</roles>
+			<timezone>+2</timezone>
+		</developer>
+    <developer>
+			<id>t</id>
+			<name>Yan Minagawa</name>
+			<email>t@c-base.org</email>
+			<url>http://t.crew.c-base.org</url>
 			<organization>Team immopoly</organization>
 			<organizationUrl>http://immopoly.blogspot.com</organizationUrl>
 			<roles>
