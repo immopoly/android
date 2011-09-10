@@ -78,4 +78,5 @@
 	<string name="locating_message">Standort wird ermittelt ...</string>
 	<string name="date">Datum</string>
 	<string name="time">Zeit</string>
+	<string name="expose_location_spoofing">Nicht schneller reisen als die Polizei erlaubt :).</string>
 </resources>

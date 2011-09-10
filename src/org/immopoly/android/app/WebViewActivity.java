@@ -60,7 +60,7 @@ public class WebViewActivity extends Activity {
 								.getQueryParameter("oauth_token");
 						editor.putString("oauth_token", access_token);
 						editor.commit();
-						OAuthData.accessToken = access_token;
+						OAuthData.getInstance(WebViewActivity.this).accessToken = access_token;
 						Intent i = new Intent(WebViewActivity.this,
 								PlacesMapActivity.class);
 						startActivity(i);

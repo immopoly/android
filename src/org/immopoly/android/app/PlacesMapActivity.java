@@ -34,11 +34,6 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 
 import org.immopoly.android.R;
-import org.immopoly.android.R.anim;
-import org.immopoly.android.R.drawable;
-import org.immopoly.android.R.id;
-import org.immopoly.android.R.layout;
-import org.immopoly.android.R.string;
 import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
@@ -125,8 +120,8 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, this);
-		tracker.trackPageView(TrackingManager.VIEW_MAP);
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getApplicationContext());
+		
 
 		mState = (ReceiverState) getLastNonConfigurationInstance();
 		if (mState != null) {
@@ -193,9 +188,9 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 		LocationHelper.callback = this;
+		tracker.trackPageView(TrackingManager.VIEW_MAP);
 	}
 
 	@Override
@@ -254,7 +249,6 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 
 	@Override
 	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -358,14 +352,14 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 		SharedPreferences shared = getSharedPreferences("oauth", 0);
 		String accessToken = shared.getString("oauth_token", "");
 		if (accessToken.length() != accessToken.length()) {
-			OAuthData.signedIn = true;
-			OAuthData.accessToken = accessToken;
+			OAuthData.getInstance(this.getBaseContext()).signedIn = true;
+			OAuthData.getInstance(this.getBaseContext()).accessToken = accessToken;
 
 		} else {
-			OAuthData.signedIn = false;
+			OAuthData.getInstance(this.getBaseContext()).signedIn = false;
 			try {
-				authUrl = OAuthData.provider.retrieveRequestToken(
-						OAuthData.consumer, OAuth.OUT_OF_BAND);
+				authUrl = OAuthData.getInstance(this.getBaseContext()).provider.retrieveRequestToken(
+						OAuthData.getInstance(this.getBaseContext()).consumer, OAuth.OUT_OF_BAND);
 				Log.d("OAUTH", authUrl);
 			} catch (OAuthMessageSignerException e) {
 				// TODO Auto-generated catch block
@@ -521,8 +515,8 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 					history = new ImmopolyHistory();
 					history.fromJSON(obj);
 					tracker.trackEvent(TrackingManager.CATEGORY_ALERT,
-							TrackingManager.ACTION_TAKE_OVER,
-							TrackingManager.LABEL_RESPONSE_OK, 0);
+							TrackingManager.ACTION_EXPOSE,
+							TrackingManager.LABEL_TRY, 0);
 				} else if (obj != null) {
 					history = new ImmopolyHistory();
 					switch (obj.getJSONObject(
@@ -538,10 +532,12 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 					case 302:
 						history.mText = getString(R.string.flat_has_no_raw_rent);
 						break;
+					case 441:
+						history.mText = getString(R.string.expose_location_spoofing);
 					}
 					tracker.trackEvent(TrackingManager.CATEGORY_ALERT,
-							TrackingManager.ACTION_TAKE_OVER,
-							TrackingManager.LABEL_RESPONSE_FAIL, 0);
+							TrackingManager.ACTION_EXPOSE,
+							TrackingManager.LABEL_NEGATIVE, 0);
 				}
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
@@ -576,8 +572,8 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 												false) /* LINk */);
 								tracker.trackEvent(
 										TrackingManager.CATEGORY_ALERT,
-										TrackingManager.ACTION_TAKE_OVER_SHARE,
-										TrackingManager.LABEL_RESPONSE_OK, 0);
+										TrackingManager.ACTION_SHARE,
+										TrackingManager.LABEL_POSITIVE, 0);
 							}
 
 						});
@@ -587,8 +583,8 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 							public void onClick(DialogInterface dialog, int id) {
 								tracker.trackEvent(
 										TrackingManager.CATEGORY_ALERT,
-										TrackingManager.ACTION_TAKE_OVER_SHARE,
-										TrackingManager.LABEL_RESPONSE_FAIL, 0);
+										TrackingManager.ACTION_SHARE,
+										TrackingManager.LABEL_NEGATIVE, 0);
 							}
 						});
 				AlertDialog alert = builder.create();

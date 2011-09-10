@@ -60,7 +60,7 @@ public class WebHelper {
 				request = (HttpURLConnection) url.openConnection();
 
 				if (signed)
-					OAuthData.consumer.sign(request);
+					OAuthData.getInstance(context).consumer.sign(request);
 
 				request.setConnectTimeout(SOCKET_TIMEOUT);
 				request.connect();
@@ -102,7 +102,7 @@ public class WebHelper {
 
 				request.addRequestProperty("Accept-Encoding", "gzip");
 				if (signed)
-					OAuthData.consumer.sign(request);
+					OAuthData.getInstance(context).consumer.sign(request);
 				request.setConnectTimeout(SOCKET_TIMEOUT);
 
 				request.connect();
