@@ -34,6 +34,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<!-- set a custom format that is guaranteed to grow as a Long number, so it can be used as version code
+        in the AndroidManifest.xml -->
+        <maven.build.timestamp.format>yyMMdddHHmm</maven.build.timestamp.format>
+        <!-- this trick of loading build timestamp into other property is necessary due to
+        http://jira.codehaus.org/browse/MRESOURCES-99 and also more readable -->
+        <versionCode>${maven.build.timestamp}</versionCode>
     </properties>
 
     <dependencies>
@@ -74,35 +81,53 @@
 	      <groupId>oauth.signpost</groupId>
 	      <artifactId>signpost-core</artifactId>
 	      <version>1.2.1.1</version>
-	    </dependency>
+	</dependency>
     </dependencies>
 
     <build>
         <sourceDirectory>src</sourceDirectory> 
-        <resources>
-            <resource>
-                <targetPath>${project.basedir}/target/filtered-manifest</targetPath>
-                <filtering>true</filtering>
-                <directory>${basedir}</directory>
-                <includes>
-                    <include>AndroidManifest.xml</include>
-                </includes>
-            </resource>
-        </resources>
-
-        <plugins>
+		<plugins>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<downloadJavadocs>true</downloadJavadocs>
+					<projectNameTemplate>immopoly-[artifactId]</projectNameTemplate>
+					<classpathContainers>
+						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+					</classpathContainers>
+					<buildcommands>
+						<buildcommand>com.android.ide.eclipse.adt.ResourceManagerBuilder</buildcommand>
+						<buildcommand>com.android.ide.eclipse.adt.PreCompilerBuilder</buildcommand>
+						<buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+						<buildcommand>com.android.ide.eclipse.adt.ApkBuilder</buildcommand>
+					</buildcommands>
+					<additionalProjectnatures>
+						<projectnature>org.eclipse.jdt.core.javanature</projectnature>
+						<projectnature>com.android.ide.eclipse.adt.AndroidNature</projectnature>
+						<projectnature>org.eclipse.m2e.core.maven2Nature</projectnature>
+					</additionalProjectnatures>
+				</configuration>
+			</plugin>			
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>maven-android-plugin</artifactId>
                 <version>2.8.4</version>
                 <configuration>
-                    <file>immpoly-[artifactId]-[version].apk</file>
 					<sdk>
                         <path>${env.ANDROID_HOME}</path>
                         <platform>8</platform>
                     </sdk>
+					<emulator>
+						<avd>23</avd>
+						<wait>10000</wait>
+						<!--<options>-no-skin</options>-->
+					</emulator>
+					<zipalign>
+						<verbose>true</verbose>
+					</zipalign>                    
+					<undeployBeforeDeploy>true</undeployBeforeDeploy>
                     <deleteConflictingFiles>true</deleteConflictingFiles>
-                    <androidManifestFile>${project.build.directory}/filtered-manifest/AndroidManifest.xml</androidManifestFile>
                 </configuration>
 				<extensions>true</extensions>
             </plugin>
