@@ -132,6 +132,15 @@
 					<excludes>
 							<!-- Included in ANDROID_CONTAINER -->
 							<exclude>com.google.android:android</exclude>
+							<exclude>com.google.android.maps:maps</exclude>
+							<exclude>org.khronos:opengl-api</exclude>
+							<exclude>commons-codec:commons-codec</exclude>
+							<exclude>commons-logging:commons-logging</exclude>
+							<exclude>org.apache.httpcomponents:httpclient</exclude>
+							<exclude>org.apache.httpcomponents:httpcore</exclude>
+							<exclude>org.json:json</exclude>
+							<exclude>xerces:xmlParserAPIs</exclude>
+							<exclude>xpp3:xpp3</exclude>
 					</excludes>		
 				</configuration>
 			</plugin>			
