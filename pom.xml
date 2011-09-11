@@ -116,6 +116,7 @@
 					<classpathContainers>
 						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
 						<classpathContainer>com.android.ide.eclipse.adt.ANDROID_FRAMEWORK</classpathContainer>
+						<classpathContainer>org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER</classpathContainer>
 					</classpathContainers>
 					<buildcommands>
 						<buildcommand>com.android.ide.eclipse.adt.ResourceManagerBuilder</buildcommand>
@@ -141,6 +142,10 @@
 							<exclude>org.json:json</exclude>
 							<exclude>xerces:xmlParserAPIs</exclude>
 							<exclude>xpp3:xpp3</exclude>
+							<exclude>com.google.android:analytics</exclude>
+							<exclude>android.support:compatibility-v4</exclude>
+							<exclude>oauth.signpost:signpost-core</exclude>
+							<exclude>org.immopoly:common</exclude>
 					</excludes>		
 				</configuration>
 			</plugin>			
