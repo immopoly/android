@@ -90,7 +90,7 @@
 			<groupId>android.support</groupId>
 			<artifactId>compatibility-v4</artifactId>
 			<version>r3</version>
-		</dependency>
+       </dependency>
 		<dependency>
 	      <groupId>oauth.signpost</groupId>
 	      <artifactId>signpost-core</artifactId>
@@ -130,23 +130,6 @@
 						<projectnature>com.android.ide.eclipse.adt.AndroidNature</projectnature>
 						<projectnature>org.eclipse.m2e.core.maven2Nature</projectnature>
 					</additionalProjectnatures>
-					<excludes>
-							<!-- Included in ANDROID_CONTAINER -->
-							<exclude>com.google.android:android</exclude>
-							<exclude>com.google.android.maps:maps</exclude>
-							<exclude>org.khronos:opengl-api</exclude>
-							<exclude>commons-codec:commons-codec</exclude>
-							<exclude>commons-logging:commons-logging</exclude>
-							<exclude>org.apache.httpcomponents:httpclient</exclude>
-							<exclude>org.apache.httpcomponents:httpcore</exclude>
-							<exclude>org.json:json</exclude>
-							<exclude>xerces:xmlParserAPIs</exclude>
-							<exclude>xpp3:xpp3</exclude>
-							<exclude>com.google.android:analytics</exclude>
-							<exclude>android.support:compatibility-v4</exclude>
-							<exclude>oauth.signpost:signpost-core</exclude>
-							<exclude>org.immopoly:common</exclude>
-					</excludes>		
 				</configuration>
 			</plugin>			
             <plugin>
