@@ -243,7 +243,7 @@
 			<id>immopoly-releases</id>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 				<checksumPolicy>fail</checksumPolicy>
 			</releases>
 			<snapshots>
