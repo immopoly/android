@@ -97,7 +97,7 @@
 	      <version>1.2.1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android</groupId>
+			<groupId>com.google.android.apps</groupId>
 			<artifactId>analytics</artifactId>
 			<version>1.3.1</version>
 		</dependency>
