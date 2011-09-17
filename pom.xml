@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.immopoly</groupId>
-    <artifactId>android</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>apk</packaging>
-    <name>android</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.immopoly</groupId>
+	<artifactId>android</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>apk</packaging>
+	<name>android</name>
 	<description>Immopoly: Android client</description>
 	<url>http://immopoly.appspot.com</url>
 	<issueManagement>
@@ -26,7 +27,7 @@
 			<organization>Team immopoly</organization>
 			<organizationUrl>http://immopoly.blogspot.com</organizationUrl>
 			<roles>
-			<role>owner</role>
+				<role>owner</role>
 			</roles>
 			<timezone>+2</timezone>
 		</developer>
@@ -38,11 +39,11 @@
 			<organization>Team immopoly</organization>
 			<organizationUrl>http://immopoly.blogspot.com</organizationUrl>
 			<roles>
-			<role>owner</role>
+				<role>owner</role>
 			</roles>
 			<timezone>+2</timezone>
 		</developer>
-    <developer>
+		<developer>
 			<id>t</id>
 			<name>Yan Minagawa</name>
 			<email>t@c-base.org</email>
@@ -50,69 +51,70 @@
 			<organization>Team immopoly</organization>
 			<organizationUrl>http://immopoly.blogspot.com</organizationUrl>
 			<roles>
-			<role>owner</role>
+				<role>owner</role>
 			</roles>
 			<timezone>+2</timezone>
 		</developer>
 	</developers>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
-		<!-- set a custom format that is guaranteed to grow as a Long number, so it can be used as version code
-        in the AndroidManifest.xml -->
-        <maven.build.timestamp.format>yyMMdddHHmm</maven.build.timestamp.format>
-        <!-- this trick of loading build timestamp into other property is necessary due to
-        http://jira.codehaus.org/browse/MRESOURCES-99 and also more readable -->
-        <versionCode>${maven.build.timestamp}</versionCode>
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>android</artifactId>
-            <version>2.2.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.android.maps</groupId>
-            <artifactId>maps</artifactId>
-            <version>8_r2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.immopoly</groupId>
-            <artifactId>common</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-       <dependency>
-			<groupId>android.support</groupId>
-			<artifactId>compatibility-v4</artifactId>
-			<version>r3</version>
+		<!-- set a custom format that is guaranteed to grow as a Long number, so 
+			it can be used as version code in the AndroidManifest.xml -->
+		<maven.build.timestamp.format>yyMMdddHHmm</maven.build.timestamp.format>
+		<!-- this trick of loading build timestamp into other property is necessary 
+			due to http://jira.codehaus.org/browse/MRESOURCES-99 and also more readable -->
+		<versionCode>${maven.build.timestamp}</versionCode>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>android</groupId>
+			<artifactId>android</artifactId>
+			<version>3.2_r1</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-	      <groupId>oauth.signpost</groupId>
-	      <artifactId>signpost-core</artifactId>
-	      <version>1.2.1.1</version>
+			<groupId>com.google.android.maps</groupId>
+			<artifactId>maps</artifactId>
+			<version>13_r1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.actionbarsherlock</groupId>
+			<artifactId>library</artifactId>
+			<version>3.2.3</version>
+			<type>apklib</type>
+		</dependency>
+		<dependency>
+			<groupId>org.immopoly</groupId>
+			<artifactId>common</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>oauth.signpost</groupId>
+			<artifactId>signpost-core</artifactId>
+			<version>1.2.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.android.apps</groupId>
 			<artifactId>analytics</artifactId>
 			<version>1.3.1</version>
 		</dependency>
-    </dependencies>
+	</dependencies>
 
-    <build>
-		<finalName>immopoly-[artifactId]</finalName>
-        <sourceDirectory>src</sourceDirectory> 
+	<build>
+		<finalName>immopoly-${artifactId}-${version}</finalName>
+		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.8</version>
 				<configuration>
 					<downloadJavadocs>true</downloadJavadocs>
-					<projectNameTemplate>immopoly-[artifactId]</projectNameTemplate>
+
 					<classpathContainers>
 						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
 						<classpathContainer>com.android.ide.eclipse.adt.ANDROID_FRAMEWORK</classpathContainer>
@@ -131,113 +133,96 @@
 						<projectnature>org.eclipse.m2e.core.maven2Nature</projectnature>
 					</additionalProjectnatures>
 					<excludes>
-							<!-- Included in ANDROID_CONTAINER -->
-							<exclude>com.google.android:android</exclude>
-							<exclude>com.google.android.maps:maps</exclude>
-							<exclude>org.khronos:opengl-api</exclude>
-							<exclude>commons-codec:commons-codec</exclude>
-							<exclude>commons-logging:commons-logging</exclude>
-							<exclude>org.apache.httpcomponents:httpclient</exclude>
-							<exclude>org.apache.httpcomponents:httpcore</exclude>
-							<exclude>org.json:json</exclude>
-							<exclude>xerces:xmlParserAPIs</exclude>
-							<exclude>xpp3:xpp3</exclude>
-							<exclude>com.google.android:analytics</exclude>
-							<exclude>android.support:compatibility-v4</exclude>
-							<exclude>oauth.signpost:signpost-core</exclude>
-							<exclude>org.immopoly:common</exclude>
-					</excludes>		
+						<!-- Included in ANDROID_CONTAINER -->
+						<exclude>com.google.android:android</exclude>
+						<exclude>com.google.android.maps:maps</exclude>
+						<exclude>org.khronos:opengl-api</exclude>
+						<exclude>commons-codec:commons-codec</exclude>
+						<exclude>commons-logging:commons-logging</exclude>
+						<exclude>org.apache.httpcomponents:httpclient</exclude>
+						<exclude>org.apache.httpcomponents:httpcore</exclude>
+						<exclude>org.json:json</exclude>
+						<exclude>xerces:xmlParserAPIs</exclude>
+						<exclude>xpp3:xpp3</exclude>
+						<exclude>com.google.android:analytics</exclude>
+						<exclude>android.support:compatibility-v4</exclude>
+						<exclude>oauth.signpost:signpost-core</exclude>
+						<exclude>org.immopoly:common</exclude>
+					</excludes>
 				</configuration>
-			</plugin>			
-            <plugin>
-                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-                <artifactId>maven-android-plugin</artifactId>
-                <version>2.9.0-beta-5</version>
-                <configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>maven-android-plugin</artifactId>
+				<version>2.9.0-beta-5</version>
+				<inherited>true</inherited>
+				<configuration>
 					<androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
-                    <assetsDirectory>${project.basedir}/assets</assetsDirectory>
-                    <resourceDirectory>${project.basedir}/res</resourceDirectory>
-                    <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
+					<assetsDirectory>${project.basedir}/assets</assetsDirectory>
+					<resourceDirectory>${project.basedir}/res</resourceDirectory>
+					<nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
 					<sdk>
-                        <path>${env.ANDROID_HOME}</path>
-                        <platform>8</platform>
-                    </sdk>
+						<path>${env.ANDROID_HOME}</path>
+						<platform>13</platform>
+					</sdk>
 					<emulator>
 						<avd>23</avd>
 						<wait>10000</wait>
-						<!--<options>-no-skin</options>-->
+						<!--<options>-no-skin</options> -->
 					</emulator>
 					<zipalign>
-						<verbose>true</verbose>
-					</zipalign>                    
+						<inputApk>${project.build.directory}/${project.build.finalName}.apk</inputApk>
+						<outputApk>${project.build.directory}/${apk.prefix}-${project.artifactId}.apk</outputApk>
+					</zipalign>
 					<undeployBeforeDeploy>true</undeployBeforeDeploy>
-                    <deleteConflictingFiles>true</deleteConflictingFiles>
-                </configuration>
+					<deleteConflictingFiles>true</deleteConflictingFiles>
+					<extractDuplicates>true</extractDuplicates>
+				</configuration>
 				<extensions>true</extensions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.5</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>resources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
 				<version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>parse-version</id>
-                        <goals>
-                            <goal>parse-version</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>parse-version</id>
+						<goals>
+							<goal>parse-version</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
-                <configuration>
-                    <compilerVersion>1.6</compilerVersion>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-			<!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jarsigner-plugin</artifactId>
-                <version>1.2</version>
-                <executions>
-                    <execution>
-                        <id>signing</id>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <archiveDirectory></archiveDirectory>
-                            <includes>
-                                <include>target/*.apk</include>
-                            </includes>
-                            <keystore>debug.keystore</keystore>
-                            <storepass>immopoly</storepass>
-                            <keypass>keypass_here</keypass>
-                            <alias>immopoly_android</alias>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-			-->
-        </plugins>
-    </build>
+				<configuration>
+					<compilerVersion>1.6</compilerVersion>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jarsigner-plugin</artifactId> 
+				<version>1.2</version> <executions> <execution> <id>signing</id> <goals> 
+				<goal>sign</goal> </goals> <phase>package</phase> <inherited>true</inherited> 
+				<configuration> <archiveDirectory></archiveDirectory> <includes> <include>target/*.apk</include> 
+				</includes> <keystore>debug.keystore</keystore> <storepass>immopoly</storepass> 
+				<keypass>keypass_here</keypass> <alias>immopoly_android</alias> </configuration> 
+				</execution> </executions> </plugin> -->
+		</plugins>
+	</build>
 	<repositories>
 		<repository>
 			<id>immopoly-snapshots</id>
@@ -266,6 +251,10 @@
 				<checksumPolicy>warn</checksumPolicy>
 			</snapshots>
 			<url>https://raw.github.com/immopoly/mavenrepo/master/releases</url>
+		</repository>
+		<repository>
+			<id>jakewharton</id>
+			<url>http://r.jakewharton.com/maven/release/</url>
 		</repository>
 	</repositories>
 </project>
