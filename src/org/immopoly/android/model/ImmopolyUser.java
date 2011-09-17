@@ -61,13 +61,14 @@ public class ImmopolyUser extends User {
 		return mBalance;
 	}
 
-	public void readToken(Context context) {
+	public String readToken(Context context) {
 		if (mUserToken == null || mUserToken.length() == 0) {
 			SharedPreferences shared = context.getSharedPreferences(sPREF_USER,
 					0);
 			String userToken = shared.getString(sPREF_TOKEN, "");
 			mUserToken = userToken;
 		}
+		return mUserToken;
 	}
 
 	@Override

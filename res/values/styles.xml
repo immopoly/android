@@ -45,5 +45,8 @@
         <item name="android:paddingTop">8dip</item>
         <item name="android:paddingBottom">8dip</item>
     </style>
-
+	
+	<style name="headerText">
+		<item name="android:textSize">16dip</item>
+	</style>
 </resources>

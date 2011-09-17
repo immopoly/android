@@ -46,6 +46,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
@@ -70,7 +71,8 @@ public class UserSignupActivity extends Activity {
 
 		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getApplicationContext());
 		tracker.trackPageView(TrackingManager.VIEW_LOGIN);
-
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		// init login
 		setContentView(R.layout.user_signup_activity);
 		// check if user as token and is already logedin
@@ -341,8 +343,8 @@ public class UserSignupActivity extends Activity {
 
 	public void startGame() {
 		// start game
-		Intent i = new Intent(this, PlacesMapActivity.class);
-		startActivity(i);
+		//Intent i = new Intent(this, PlacesMapActivity.class);
+		//startActivity(i);
 		finish();
 	}
 
@@ -377,5 +379,9 @@ public class UserSignupActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		tracker.stopSession();
+	}
+	
+	public void closeLogin(View v){
+		finish();
 	}
 }

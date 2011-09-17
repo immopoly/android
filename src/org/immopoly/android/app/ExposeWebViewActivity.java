@@ -23,6 +23,7 @@ import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
+import org.immopoly.android.model.ImmopolyUser;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -55,19 +56,21 @@ public class ExposeWebViewActivity extends Activity {
 
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL,getApplicationContext());
-		
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getApplicationContext());
 
 		setContentView(R.layout.expose_detail_web_view);
 		Intent intent = getIntent();
 
 		if (intent != null) {
-			
+
 			exposeID = intent.getExtras().getString(Const.EXPOSE_ID);
-			
-			tracker.setCustomVar(1, Const.SOURCE, intent.getExtras().getString(Const.SOURCE), 1);
-			
-			if (intent.getExtras().getBoolean(Const.EXPOSE_IN_PORTOFOLIO, false)) {
+
+			tracker.setCustomVar(1, Const.SOURCE,
+					intent.getExtras().getString(Const.SOURCE), 1);
+
+			if (intent.getExtras()
+					.getBoolean(Const.EXPOSE_IN_PORTOFOLIO, false)) {
 				((Button) findViewById(R.id.BackButton))
 						.setText(getString(R.string.webview_back_button));
 				owned = true;
@@ -93,7 +96,8 @@ public class ExposeWebViewActivity extends Activity {
 					super.onPageFinished(view, url);
 					if (url.matches(".+?\\/bilder\\.htm$")) {
 						// match image details
-						tracker.trackPageView(TrackingManager.ACTION_EXPOSE + "/" + TrackingManager.LABEL_IMAGES);
+						tracker.trackPageView(TrackingManager.ACTION_EXPOSE
+								+ "/" + TrackingManager.LABEL_IMAGES);
 					}
 					if (url.matches(".+?\\/bilder\\.htm#bigpicture$")) {
 						// navigate in details images
@@ -117,7 +121,8 @@ public class ExposeWebViewActivity extends Activity {
 				}
 
 			});
-			SharedPreferences shared = getSharedPreferences(Const.SHARED_PREF_EXPOSE_WEBVIEW, 0);
+			SharedPreferences shared = getSharedPreferences(
+					Const.SHARED_PREF_EXPOSE_WEBVIEW, 0);
 			String visited = shared.getString(Const.KEY_VISITED, "");
 			if (visited.length() == 0) {
 				mLoadTwice = true;
@@ -131,33 +136,37 @@ public class ExposeWebViewActivity extends Activity {
 
 			finish();
 		}
-		
+
 		tracker.trackPageView(TrackingManager.VIEW_EXPOSE);
 	}
 
 	public void addCurrentExpose(View v) {
-		Intent i = new Intent(this, PlacesMapActivity.class);
-		i.putExtra(Const.EXPOSE_ADD_PORTIFOLIO, true);
-		i.putExtra(Const.EXPOSE_ID, exposeID);
-		i.putExtra(Const.EXPOSE_NAME, exposeName);
-		i.putExtra(Const.EXPOSE_DESC, exposeDescription);
-		i.putExtra(Const.EXPOSE_URL, exposeURL);
-		if (!owned) {
-			setResult(RESULT_OK, i);
-			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
-					TrackingManager.ACTION_EXPOSE,
-					TrackingManager.LABEL_TRY, 0);
+		if (ImmopolyUser.getInstance().readToken(ExposeWebViewActivity.this).length() > 0) {
+			Intent i = new Intent(this, PlacesMapActivity.class);
+			i.putExtra(Const.EXPOSE_ADD_PORTIFOLIO, true);
+			i.putExtra(Const.EXPOSE_ID, exposeID);
+			i.putExtra(Const.EXPOSE_NAME, exposeName);
+			i.putExtra(Const.EXPOSE_DESC, exposeDescription);
+			i.putExtra(Const.EXPOSE_URL, exposeURL);
+			if (!owned) {
+				setResult(RESULT_OK, i);
+				tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+						TrackingManager.ACTION_EXPOSE,
+						TrackingManager.LABEL_TRY, 0);
+			} else {
+				setResult(RESULT_CANCELED, i);
+			}
+			finish();
 		} else {
-			setResult(RESULT_CANCELED, i);
+			Intent intent = new Intent(ExposeWebViewActivity.this,
+					UserSignupActivity.class);
+			startActivity(intent);
 		}
-		finish();
-
 	}
 
 	public void shareExpose(View v) {
-		Settings.shareMessage(this,
-				getString(R.string.link_share_flat), exposeName,
-				Settings.getFlatLink(exposeID, false));
+		Settings.shareMessage(this, getString(R.string.link_share_flat),
+				exposeName, Settings.getFlatLink(exposeID, false));
 	}
 
 	@Override
