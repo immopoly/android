@@ -10,6 +10,7 @@ public class Const {
 	public static final String EXPOSE_DESC = "exposeDescription";
 	public static final String EXPOSE_URL = "exposeURL";
 	public static final String EXPOSE_IN_PORTOFOLIO = "exposeInPortfolio";
+	public static final String EXPOSE_OWNED = "exposeOwned";
 
 	// Intent add portofolio
 	public static final String EXPOSE_ADD_PORTIFOLIO = "addToPortifolio";
@@ -38,5 +39,6 @@ public class Const {
 
 	public static final String IMMOPOLY_EMAIL = "immopolyteam@gmail.com";
 	public static final int ANALYTICS_INTERVAL = 20;
+	
 
 }
