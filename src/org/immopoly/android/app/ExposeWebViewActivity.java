@@ -50,10 +50,22 @@ public class ExposeWebViewActivity extends Activity {
 
 	private GoogleAnalyticsTracker tracker;
 
+	
+	private final static String sInjectJString;
+	static {
+		StringBuilder jsInjectString;
+		jsInjectString = new StringBuilder(
+				"var headID = document.getElementsByTagName('head')[0];");
+		jsInjectString.append("var cssNode = document.createElement('style');")
+				.append("cssNode.innerHTML = '.layer{display:none;}';")
+				.append("headID.appendChild(cssNode);");
+		sInjectJString = "javascript:" + jsInjectString.toString() + ";"
+		;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
 		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
@@ -81,7 +93,7 @@ public class ExposeWebViewActivity extends Activity {
 			String url = Settings.getFlatLink(exposeID, true);
 
 			webView = (WebView) findViewById(R.id.exposeWevView);
-
+			webView.getSettings().setJavaScriptEnabled(true);
 			webView.setWebViewClient(new WebViewClient() {
 				@Override
 				public void onPageStarted(WebView view, String url,
@@ -94,6 +106,8 @@ public class ExposeWebViewActivity extends Activity {
 				@Override
 				public void onPageFinished(WebView view, String url) {
 					super.onPageFinished(view, url);
+					// inject css from url
+					view.loadUrl(sInjectJString);
 					if (url.matches(".+?\\/bilder\\.htm$")) {
 						// match image details
 						tracker.trackPageView(TrackingManager.ACTION_EXPOSE
@@ -141,7 +155,8 @@ public class ExposeWebViewActivity extends Activity {
 	}
 
 	public void addCurrentExpose(View v) {
-		if (ImmopolyUser.getInstance().readToken(ExposeWebViewActivity.this).length() > 0) {
+		if (ImmopolyUser.getInstance().readToken(ExposeWebViewActivity.this)
+				.length() > 0) {
 			Intent i = new Intent(this, PlacesMapActivity.class);
 			i.putExtra(Const.EXPOSE_ADD_PORTIFOLIO, true);
 			i.putExtra(Const.EXPOSE_ID, exposeID);
