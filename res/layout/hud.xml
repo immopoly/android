@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="wrap_content"
+	style="@style/hud" android:gravity="center_vertical" android:id="@+id/hud_root"
+	android:orientation="horizontal">
+	<ImageButton style="@style/hudElement" android:id="@+id/hud_map"
+		android:src="@drawable/btn_map" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:onClick="onHudAction" />
+	<ImageButton style="@style/hudElement" android:id="@+id/hud_portfolio"
+		android:src="@drawable/btn_portfolio" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:onClick="onHudAction" />
+	<ImageButton style="@style/hudElement" android:id="@+id/hud_profile"
+		android:src="@drawable/btn_profile" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:onClick="onHudAction" />
+	<Button style="@style/hudElement" android:id="@+id/hud_text"
+		android:text="4000 €" android:layout_height="wrap_content"
+		android:layout_width="match_parent" android:gravity="right"
+		android:onClick="onHudAction" />
+</LinearLayout>

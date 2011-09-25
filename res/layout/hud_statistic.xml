@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:background="@drawable/hud_box" android:orientation="vertical"
+	android:layout_gravity="right" android:layout_width="wrap_content"
+	android:layout_height="wrap_content">
+	<LinearLayout android:orientation="horizontal"
+		android:layout_gravity="right" android:layout_height="wrap_content"
+		android:layout_width="wrap_content">
+		<LinearLayout android:layout_height="wrap_content"
+			android:layout_width="wrap_content">
+			<ImageView android:src="@drawable/ic_last_cost"
+				android:layout_width="wrap_content" android:layout_height="wrap_content" />
+		</LinearLayout>
+		<LinearLayout android:orientation="vertical"
+			android:layout_height="wrap_content" android:layout_width="wrap_content">
+			<TextView android:id="@+id/current_cost" android:layout_width="wrap_content" style="@style/hudElement"
+				android:layout_height="wrap_content"></TextView>
+			<TextView android:id="@+id/calculated_cost"
+			    style="@style/hudElementSub"
+			    android:gravity="top|left"
+				android:layout_width="wrap_content" android:lines="2"
+				android:layout_height="wrap_content" />
+		</LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_gravity="right" android:layout_height="wrap_content"
+		android:layout_width="wrap_content">
+		<LinearLayout android:layout_height="wrap_content"
+			android:layout_width="wrap_content">
+			<ImageView android:src="@drawable/ic_money"
+				android:layout_width="wrap_content" android:layout_height="wrap_content" />
+		</LinearLayout>
+		<LinearLayout android:orientation="vertical"
+			android:layout_height="wrap_content" android:layout_width="wrap_content">
+			<TextView android:id="@+id/current_balance" android:layout_width="wrap_content" style="@style/hudElement"
+				android:layout_height="wrap_content" android:text=""></TextView>
+			
+		</LinearLayout>
+	</LinearLayout>
+
+</LinearLayout>

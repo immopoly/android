@@ -38,6 +38,8 @@ import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.fragments.callbacks.HudCallbacks;
+import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.MapLocationCallback;
 import org.immopoly.android.helper.MapMarkerCallback;
@@ -73,12 +75,16 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,10 +98,10 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
 public class PlacesMapActivity extends MapActivity implements Receiver,
-		MapMarkerCallback, MapLocationCallback {
+		MapMarkerCallback, MapLocationCallback, HudCallbacks {
 	public static final String TAG = "Immopoly";
-	private static long CURRENTTIME=System.currentTimeMillis();
-	
+	private static long CURRENTTIME = System.currentTimeMillis();
+
 	private MapController mMapController;
 	private List<Overlay> mMapOverlays;
 	private PlaceOverlayItem myLocationOverlayItem;
@@ -110,9 +116,40 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 	private int mNumberGeoCodeTry;
 	private Button mRefreshButton;
 	private Flat mCurrentFlat;
+	private HudPopupHelper mHudPopup;
 
 	private GoogleAnalyticsTracker tracker;
 	private RelativeLayout contentView;
+
+	private Button hudText;
+	private ImageButton mapButton;
+
+	@Override
+	public void onHudAction(View view) {
+		switch (view.getId()) {
+		case R.id.hud_map:
+			// hud map
+			// already there
+			LocationHelper.getLastLocation(this);
+			break;
+		case R.id.hud_portfolio:
+			startActivity(new Intent(this, DashboardActivity.class));
+			break;
+		case R.id.hud_profile:
+			startActivity(new Intent(this, DashboardActivity.class));
+			break;
+		case R.id.hud_text:
+			//Toast.makeText(this, ImmopolyUser.getInstance().flats.toString(),
+			//		Toast.LENGTH_LONG);
+			if(mHudPopup != null){
+				mHudPopup.show(findViewById(R.id.hud_text), -200, -60);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	
 
 	@Override
 	protected void onCreate(Bundle icicle) {
@@ -120,8 +157,8 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getApplicationContext());
-		
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getApplicationContext());
 
 		mState = (ReceiverState) getLastNonConfigurationInstance();
 		if (mState != null) {
@@ -133,16 +170,17 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 		}
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		this.contentView = (RelativeLayout) getLayoutInflater().inflate( R.layout.places_map, null );
-		setContentView( this.contentView );
+		this.contentView = (RelativeLayout) getLayoutInflater().inflate(
+				R.layout.places_map, null);
+		setContentView(this.contentView);
 
 		mMapView = (MapView) findViewById(R.id.mapview);
 
 		mMapController = mMapView.getController();
 
-		mRefreshButton = (Button) findViewById(R.id.location_refresh);
-		mRefreshButton.startAnimation(AnimationUtils.loadAnimation(this,
-				R.anim.locating_animation));
+		// mRefreshButton = (Button) findViewById(R.id.location_refresh);
+		// mRefreshButton.startAnimation(AnimationUtils.loadAnimation(this,
+		// R.anim.locating_animation));
 
 		GeoPoint point = new GeoPoint((int) (LocationHelper.sLat * 1E6),
 				(int) (LocationHelper.sLng * 1E6));
@@ -156,19 +194,21 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 		LocationHelper.callback = this;
 		LocationHelper.getLastLocation(this);
 		// this is the bounding box container
-		
+
 		myLocationOverlayItem = new PlaceOverlayItem(point, "my city",
 				"This is wher you are");
-		overlays = new ImmoscoutPlacesOverlay( this, mMapView,
+		overlays = new ImmoscoutPlacesOverlay(this, mMapView,
 				getLayoutInflater());
-		myLocationOverlays = new MyPositionOverlay( this.getResources().getDrawable(R.drawable.house_icon), this,
-				mMapView, getLayoutInflater());
-		myLocationOverlayItem.setMarker(this.getResources().getDrawable( R.drawable.house_icon) );
+		myLocationOverlays = new MyPositionOverlay(this.getResources()
+				.getDrawable(R.drawable.house_icon), this, mMapView,
+				getLayoutInflater());
+		myLocationOverlayItem.setMarker(this.getResources().getDrawable(
+				R.drawable.house_icon));
 
 		myLocationOverlays.addOverlay(myLocationOverlayItem);
 		mMapOverlays.add(myLocationOverlays);
 		// setMapViewWithZoom(R.id.mapview, R.id.map_zoom_controls);
-		mMapView.setBuiltInZoomControls( true );
+		mMapView.setBuiltInZoomControls(true);
 		mMapView.invalidate();
 
 		// maybe do this in your init or something
@@ -182,8 +222,23 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 			}
 
 		});
-
+		new GetUserInfoUpdateTask(PlacesMapActivity.this)
+		.execute(ImmopolyUser.getInstance().readToken(this));
+		hudText = (Button) findViewById(R.id.hud_text);
+		mapButton = (ImageButton) findViewById(R.id.hud_map);
+		mHudPopup = new HudPopupHelper(this, HudPopupHelper.TYPE_FINANCE_POPUP);
+		
 		// signIn();
+	}
+	
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		if(mHudPopup != null){
+			mHudPopup.dismiss();
+		}
 	}
 
 	@Override
@@ -191,6 +246,7 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 		super.onStart();
 		LocationHelper.callback = this;
 		tracker.trackPageView(TrackingManager.VIEW_MAP);
+		updateHud(null, 0);
 	}
 
 	@Override
@@ -201,11 +257,11 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 	public MapView getMapView() {
 		return mMapView;
 	}
-	
+
 	public RelativeLayout getContentView() {
 		return contentView;
 	}
-	
+
 	public void setMapViewWithZoom(int mapLayoutId, int zoomControlsLayoutId) {
 		mMapView = (MapView) findViewById(mapLayoutId);
 
@@ -226,6 +282,11 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 		});
 	}
 
+	/*
+	 * @Override public Object onRetainNonConfigurationInstance() { // Clear
+	 * reference to receiver // we will re-attach in onCreate
+	 * mState.mReceiver.clearReceiver(); return mState; }
+	 */
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 		// Clear reference to receiver
@@ -247,6 +308,9 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 
 	}
 
+	/*
+	 * @Override protected boolean isRouteDisplayed() { return false; }
+	 */
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
@@ -287,7 +351,7 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 			myLocationOverlayItem = new PlaceOverlayItem(point, "my city",
 					"THis is wher you are");
 			myLocationOverlayItem.setMarker(this.getResources().getDrawable(
-					R.drawable.house_icon) );
+					R.drawable.house_icon));
 
 			myLocationOverlays.addOverlay(myLocationOverlayItem);
 
@@ -316,8 +380,8 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 					count++;
 				}
 			}
-			overlays.setFlats( mFlats );
-			
+			overlays.setFlats(mFlats);
+
 			if (LocationHelper.sLng < minX)
 				minX = LocationHelper.sLng;
 			if (LocationHelper.sLng > maxX)
@@ -358,8 +422,10 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 		} else {
 			OAuthData.getInstance(this.getBaseContext()).signedIn = false;
 			try {
-				authUrl = OAuthData.getInstance(this.getBaseContext()).provider.retrieveRequestToken(
-						OAuthData.getInstance(this.getBaseContext()).consumer, OAuth.OUT_OF_BAND);
+				authUrl = OAuthData.getInstance(this.getBaseContext()).provider
+						.retrieveRequestToken(
+								OAuthData.getInstance(this.getBaseContext()).consumer,
+								OAuth.OUT_OF_BAND);
 				Log.d("OAUTH", authUrl);
 			} catch (OAuthMessageSignerException e) {
 				// TODO Auto-generated catch block
@@ -413,8 +479,8 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 		switch (v.getId()) {
 		case R.id.location_refresh:
 			LocationHelper.getLastLocation(this);
-			mRefreshButton.startAnimation(AnimationUtils.loadAnimation(this,
-					R.anim.locating_animation));
+			// mRefreshButton.startAnimation(AnimationUtils.loadAnimation(this,
+			// R.anim.locating_animation));
 			break;
 		case R.id.header_logo:
 			startActivity(new Intent(this, DashboardActivity.class));
@@ -463,7 +529,7 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 	private void setAddress(String address) {
 		if (address != null && address.length() > 0) {
 			mNumberGeoCodeTry = 0;
-			((TextView) findViewById(R.id.header_location)).setText(address);
+			// ((TextView) findViewById(R.id.header_location)).setText(address);
 		} else if (LocationHelper.sAccuracy >= 0) {
 			mNumberGeoCodeTry++;
 			if (mNumberGeoCodeTry < 3) {
@@ -473,14 +539,17 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 				NumberFormat nFormat = NumberFormat.getInstance(Locale.GERMANY);
 				nFormat.setMinimumIntegerDigits(2);
 				nFormat.setMaximumFractionDigits(2);
-				((TextView) findViewById(R.id.header_location)).setText("lat:"
-						+ nFormat.format(LocationHelper.sLat) + " - lng:"
-						+ nFormat.format(LocationHelper.sLng) + " ~"
-						+ nFormat.format(LocationHelper.sAccuracy));
+				/*
+				 * ((TextView)
+				 * findViewById(R.id.header_location)).setText("lat:" +
+				 * nFormat.format(LocationHelper.sLat) + " - lng:" +
+				 * nFormat.format(LocationHelper.sLng) + " ~" +
+				 * nFormat.format(LocationHelper.sAccuracy));
+				 */
 			}
 		} else {
-			((TextView) findViewById(R.id.header_location))
-					.setText(R.string.no_location_value);
+			// ((TextView) findViewById(R.id.header_location))
+			// .setText(R.string.no_location_value);
 		}
 	}
 
@@ -591,14 +660,15 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 				alert.show();
 				// Toast.makeText(PlacesMap.this, res.mText, Toast.LENGTH_LONG)
 				// .show();
-				new GetUserInfoUpdateTask(PlacesMapActivity.this).execute(ImmopolyUser
-						.getInstance().getToken());
+				new GetUserInfoUpdateTask(PlacesMapActivity.this)
+						.execute(ImmopolyUser.getInstance().getToken());
 			} else if (Settings.isOnline(PlacesMapActivity.this)) {
-				Toast.makeText(PlacesMapActivity.this, R.string.expose_couldnt_add,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(PlacesMapActivity.this,
+						R.string.expose_couldnt_add, Toast.LENGTH_LONG).show();
 			} else {
-				Toast.makeText(PlacesMapActivity.this, R.string.no_internet_connection,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(PlacesMapActivity.this,
+						R.string.no_internet_connection, Toast.LENGTH_LONG)
+						.show();
 			}
 			super.onPostExecute(result);
 		}
@@ -620,15 +690,17 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 						UserSignupActivity.class);
 				startActivity(intent);
 			} else {
-				Toast.makeText(PlacesMapActivity.this, R.string.no_internet_connection,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(PlacesMapActivity.this,
+						R.string.no_internet_connection, Toast.LENGTH_LONG)
+						.show();
 			}
+			updateHud(null, 0);
 		}
 	}
 
 	@Override
 	public void updateMapData(boolean newLoc) {
-		mRefreshButton.clearAnimation();
+		// mRefreshButton.clearAnimation();
 		if (newLoc || LocationHelper.mAddress == null) {
 			new GeoCodeLocationTask().execute(LocationHelper.sLat,
 					LocationHelper.sLng);
@@ -641,6 +713,7 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 		i.putExtra(IS24ApiService.LNG, LocationHelper.sLng);
 		i.putExtra(IS24ApiService.API_RECEIVER, mState.mReceiver);
 		startService(i);
+		updateHud(null, 0);
 	}
 
 	public void showInfo(View v) {
@@ -656,7 +729,8 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 		myWebView.getSettings().setUseWideViewPort(true);
 
 		myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
-		AlertDialog.Builder builder = new AlertDialog.Builder(PlacesMapActivity.this);
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				PlacesMapActivity.this);
 		builder.setView(alertDialogView);
 		builder.setPositiveButton(R.string.button_ok,
 				new DialogInterface.OnClickListener() {
@@ -672,6 +746,21 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 	protected void onDestroy() {
 		super.onDestroy();
 		tracker.stopSession();
+	}
+
+	@Override
+	public void updateHud(Intent data, int element) {
+		if (mapButton != null) {
+			mapButton.setSelected(true);
+		}
+		if (hudText != null) {
+			NumberFormat nFormat = NumberFormat
+					.getCurrencyInstance(Locale.GERMANY);
+			nFormat.setMinimumIntegerDigits(1);
+			nFormat.setMaximumFractionDigits(2);
+			hudText.setText(nFormat.format(ImmopolyUser.getInstance()
+					.getBalance()));
+		}
 	}
 
 }
