@@ -1,5 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/root"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" />
+    android:layout_height="fill_parent" >
+     <fragment android:name="org.immopoly.android.fragments.HudFragment"
+            android:id="@+id/hud_fragment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+     <fragment android:name="org.immopoly.android.fragments.MapFragment"
+            android:id="@+id/map_fragment"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent" />
+
+</LinearLayout>
