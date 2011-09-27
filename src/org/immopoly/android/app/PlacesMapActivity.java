@@ -51,7 +51,9 @@ import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyHistory;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.model.OAuthData;
+import org.immopoly.android.provider.AUserObserver;
 import org.immopoly.android.provider.FlatsProvider;
+import org.immopoly.android.provider.UserProvider;
 import org.immopoly.android.tasks.GetUserInfoTask;
 import org.immopoly.android.widget.ImmoscoutPlacesOverlay;
 import org.immopoly.android.widget.MyPositionOverlay;
@@ -60,6 +62,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -69,6 +72,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.content.CursorLoader;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -109,6 +114,9 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 	private ImmoscoutPlacesOverlay overlays;
 	private Flats mFlats;
 
+	private Handler mHandler = new Handler();
+	private UserObserver mUserObserver;
+
 	public static final int RELOAD_DELAY_MILLIS = 800;
 	ReceiverState mState;
 
@@ -123,6 +131,15 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 
 	private Button hudText;
 	private ImageButton mapButton;
+
+	class UserObserver extends AUserObserver {
+
+		public UserObserver(Handler handler) {
+			super(handler);
+			updateHud(null, 1);
+		}
+
+	}
 
 	@Override
 	public void onHudAction(View view) {
@@ -139,9 +156,9 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 			startActivity(new Intent(this, DashboardActivity.class));
 			break;
 		case R.id.hud_text:
-			//Toast.makeText(this, ImmopolyUser.getInstance().flats.toString(),
-			//		Toast.LENGTH_LONG);
-			if(mHudPopup != null){
+			// Toast.makeText(this, ImmopolyUser.getInstance().flats.toString(),
+			// Toast.LENGTH_LONG);
+			if (mHudPopup != null) {
 				mHudPopup.show(findViewById(R.id.hud_text), -200, -60);
 			}
 			break;
@@ -149,7 +166,6 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 			break;
 		}
 	}
-	
 
 	@Override
 	protected void onCreate(Bundle icicle) {
@@ -222,21 +238,38 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 			}
 
 		});
-		new GetUserInfoUpdateTask(PlacesMapActivity.this)
-		.execute(ImmopolyUser.getInstance().readToken(this));
+
+		// new 	InfoUpdateTask(PlacesMapActivity.this)
+		// .execute(ImmopolyUser.getInstance().readToken(this));
 		hudText = (Button) findViewById(R.id.hud_text);
 		mapButton = (ImageButton) findViewById(R.id.hud_map);
 		mHudPopup = new HudPopupHelper(this, HudPopupHelper.TYPE_FINANCE_POPUP);
-		
+		CursorLoader cursorLoader = new CursorLoader(this, UserProvider.CONTENT_URI_USER, null, null, null, null);
+		Cursor c =cursorLoader.loadInBackground();
+		registerObserver();
 		// signIn();
 	}
-	
-	
+
+	private void registerObserver() {
+		ContentResolver cr = this.getContentResolver();
+		mUserObserver = new UserObserver(mHandler);
+		cr.registerContentObserver(UserProvider.CONTENT_URI_USER, true,
+				mUserObserver);
+	}
+
+	private void unregisterObserver() {
+		ContentResolver cr = this.getContentResolver();
+		if (mUserObserver != null){
+			cr.unregisterContentObserver(mUserObserver);
+			mUserObserver = null;
+		}
+	}
+
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		if(mHudPopup != null){
+		if (mHudPopup != null) {
 			mHudPopup.dismiss();
 		}
 	}
@@ -252,6 +285,7 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 	@Override
 	protected void onStop() {
 		super.onStop();
+		unregisterObserver();
 	}
 
 	public MapView getMapView() {
@@ -660,8 +694,8 @@ public class PlacesMapActivity extends MapActivity implements Receiver,
 				alert.show();
 				// Toast.makeText(PlacesMap.this, res.mText, Toast.LENGTH_LONG)
 				// .show();
-				new GetUserInfoUpdateTask(PlacesMapActivity.this)
-						.execute(ImmopolyUser.getInstance().getToken());
+				//new GetUserInfoUpdateTask(PlacesMapActivity.this)
+				//		.execute(ImmopolyUser.getInstance().getToken());
 			} else if (Settings.isOnline(PlacesMapActivity.this)) {
 				Toast.makeText(PlacesMapActivity.this,
 						R.string.expose_couldnt_add, Toast.LENGTH_LONG).show();
