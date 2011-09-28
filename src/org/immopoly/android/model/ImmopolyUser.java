@@ -188,20 +188,19 @@ public class ImmopolyUser extends User {
 	 * @return boolean true if isOld and needs to get updated
 	 */
 	public boolean isOld() {
-		if (mTimeUpdated > 0) {
-			long diff = Calendar.getInstance().getTimeInMillis()
-					- mTimeUpdated;
-			// int seconds = (int) (diff / 1000) % 60 ;
-			int minutes = (int) ((diff / (1000 * 60)) % 60);
-			// int hours = (int) ((diff / (1000*60*60)) % 24);
-			if (minutes >= 5) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return true;
-		}
+		return true;
+		/**
+		 * We need better caching logic, in case a transaction changes the
+		 * balance we need to set a dirty flag for refreshing the user
+		 */
+		/*
+		 * if (mTimeUpdated > 0) { long diff =
+		 * Calendar.getInstance().getTimeInMillis() - mTimeUpdated; // int
+		 * seconds = (int) (diff / 1000) % 60 ; int minutes = (int) ((diff /
+		 * (1000 * 60)) % 60); // int hours = (int) ((diff / (1000*60*60)) %
+		 * 24); if (minutes >= 5) { return true; } else { return false; } } else
+		 * { return true; }
+		 */
 	}
 
 	public String getEmail() {
@@ -213,10 +212,10 @@ public class ImmopolyUser extends User {
 	}
 
 	public void setEmail(String email) {
-		mEmail=email;
+		mEmail = email;
 	}
 
 	public void setTwitter(String twitter) {
-		mTwitter=twitter;
+		mTwitter = twitter;
 	}
 }

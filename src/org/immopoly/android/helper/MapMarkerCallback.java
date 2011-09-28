@@ -19,9 +19,18 @@
 
 package org.immopoly.android.helper;
 
-import org.immopoly.android.model.Flat;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 //The callback interface
 public interface MapMarkerCallback {
-	void callbackCall(Flat f);
+	
+	ViewGroup getContentView();
+	LayoutInflater getLayoutInflater();
+	Context getContext();
+	Resources getResources(); 
+	void startActivity(Intent i);
 }

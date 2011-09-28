@@ -1,15 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/root"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
-     <fragment android:name="org.immopoly.android.fragments.HudFragment"
-            android:id="@+id/hud_fragment"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-     <fragment android:name="org.immopoly.android.fragments.MapFragment"
-            android:id="@+id/map_fragment"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent" />
-
+	android:id="@+id/root" android:orientation="vertical"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<fragment android:name="org.immopoly.android.fragments.HudFragment"
+		android:id="@+id/hud_fragment" android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<!-- Preview: layout=@layout/hud -->
+	</fragment>
+	<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent">
+		<fragment android:name="org.immopoly.android.fragments.MapFragment"
+			android:layout_weight="1"
+			android:id="@+id/map_fragment" android:layout_width="0dip"
+			android:layout_height="match_parent">
+		</fragment>
+		<fragment android:name="org.immopoly.android.fragments.ExposeFragment"
+			android:layout_weight="1"
+			android:id="@+id/expose_fragment" android:layout_width="0dip"
+			android:layout_height="match_parent">
+		</fragment>
+	</LinearLayout>
 </LinearLayout>

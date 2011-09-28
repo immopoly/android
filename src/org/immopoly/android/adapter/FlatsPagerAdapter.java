@@ -22,15 +22,12 @@ package org.immopoly.android.adapter;
 import java.util.ArrayList;
 
 import org.immopoly.android.R;
-import org.immopoly.android.R.anim;
-import org.immopoly.android.R.drawable;
-import org.immopoly.android.R.id;
-import org.immopoly.android.R.layout;
-import org.immopoly.android.app.PlacesMapActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.ImageListDownloader;
 import org.immopoly.android.model.Flat;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -40,6 +37,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.maps.MapActivity;
 
 /**
  * Implementation of android.support.v4.view.PagerAdapter. 
@@ -54,10 +53,10 @@ public class FlatsPagerAdapter extends PagerAdapter {
 	
 	private ArrayList<Flat>    flats;	// list of flats presented in the ViewPager
 	private View[] 			   views;	// storing views for each flat for use in destroyItem() & isViewFromObject()
-	private PlacesMapActivity		   context; 
+	private Context		   mContext;
 
-	public FlatsPagerAdapter( ArrayList<Flat> flats, PlacesMapActivity context ) {
-		this.context = context;
+	public FlatsPagerAdapter( ArrayList<Flat> flats, Context context ) {
+		this.mContext = context;
 		this.flats   = flats;
 		this.views   = new View[flats.size()];
 	}
@@ -78,7 +77,7 @@ public class FlatsPagerAdapter extends PagerAdapter {
 	
 	// create a view inflated from map_marker_popup.xml for the given Flat
 	private View getFlatView( final Flat flat, final int idx ) {
-		LayoutInflater inflater = context.getLayoutInflater();
+		LayoutInflater inflater =LayoutInflater.from(mContext);
 		View markerView = inflater.inflate( R.layout.map_marker_popup, null, false);
 		if ( flat.owned )
 			markerView.setBackgroundColor( Const.OWNED_FLAT_BACKGROUND_COLOR );
@@ -96,12 +95,12 @@ public class FlatsPagerAdapter extends PagerAdapter {
 			((TextView) markerView.findViewById(R.id.pagerPages)).setVisibility( View.GONE );
 		if ( flat.titlePictureSmall.trim().length() > 0 ) {
 			((ImageView) markerView.findViewById(R.id.imagePreview))
-					.startAnimation(AnimationUtils.loadAnimation( context, R.anim.loading_animation ) );
+					.startAnimation(AnimationUtils.loadAnimation( mContext, R.anim.loading_animation ) );
 			imageDownloader.download( 
 					flat.titlePictureSmall, (ImageView) markerView.findViewById(R.id.imagePreview));
 		} else {
 			((ImageView) markerView.findViewById(R.id.imagePreview))
-				.setImageDrawable( context.getResources()
+				.setImageDrawable( mContext.getResources()
 						.getDrawable(R.drawable.house_drawn));
 		}
 		if ( flat.priceValue.length() > 0) {
@@ -113,7 +112,16 @@ public class FlatsPagerAdapter extends PagerAdapter {
 		((Button) markerView.findViewById(R.id.btnOpenExpose) ).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    context.callbackCall( flat );
+                	Intent i = new Intent();
+            		i.putExtra(Const.EXPOSE_ID, String.valueOf(flat.uid));
+            		i.putExtra(Const.EXPOSE_NAME, String.valueOf(flat.name));
+            		i.putExtra(Const.EXPOSE_DESC, String.valueOf(flat.description));
+            		i.putExtra(Const.EXPOSE_PICTURE_SMALL,
+            				String.valueOf(flat.titlePictureSmall));
+            		i.putExtra(Const.EXPOSE_IN_PORTOFOLIO, flat.owned);
+            		i.putExtra(Const.SOURCE, MapActivity.class.getSimpleName());
+            		i.setAction("expose_view");
+            		v.getContext().sendBroadcast(i);
                 }
         });
 

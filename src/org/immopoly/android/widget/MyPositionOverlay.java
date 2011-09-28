@@ -26,6 +26,7 @@ import org.immopoly.android.R.anim;
 import org.immopoly.android.R.drawable;
 import org.immopoly.android.R.id;
 import org.immopoly.android.R.layout;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.ImageListDownloader;
 
 import android.content.Context;
@@ -42,6 +43,7 @@ import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 
 
@@ -123,10 +125,16 @@ public class MyPositionOverlay extends ItemizedOverlay<PlaceOverlayItem> {
 
                         @Override
                         public void onClick(View v) {
-                            // Toast.makeText(mMarkerView.getContext(),
-                            // "FLAT ID -> " + item.flat.uid,
-                            // Toast.LENGTH_SHORT).show();
-                            item.callback.callbackCall(item.flat);
+                        	Intent i = new Intent();
+                    		i.putExtra(Const.EXPOSE_ID, String.valueOf(item.flat.uid));
+                    		i.putExtra(Const.EXPOSE_NAME, String.valueOf(item.flat.name));
+                    		i.putExtra(Const.EXPOSE_DESC, String.valueOf(item.flat.description));
+                    		i.putExtra(Const.EXPOSE_PICTURE_SMALL,
+                    				String.valueOf(item.flat.titlePictureSmall));
+                    		i.putExtra(Const.EXPOSE_IN_PORTOFOLIO, item.flat.owned);
+                    		i.putExtra(Const.SOURCE, MapActivity.class.getSimpleName());
+                    		i.setAction("expose_view");
+                    		v.getContext().sendBroadcast(i);
                         }
                     });
 		}

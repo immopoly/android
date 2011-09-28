@@ -62,7 +62,7 @@ public class WebViewActivity extends Activity {
 						editor.commit();
 						OAuthData.getInstance(WebViewActivity.this).accessToken = access_token;
 						Intent i = new Intent(WebViewActivity.this,
-								PlacesMapActivity.class);
+								MainActivity.class);
 						startActivity(i);
 						finish();
 					}

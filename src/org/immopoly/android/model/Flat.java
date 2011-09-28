@@ -26,7 +26,6 @@ import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.immopoly.android.app.PlacesMapActivity;
 import org.immopoly.android.constants.Const;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -194,7 +193,7 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 			try {
 				creationDate=DF.parse(creationDateS).getTime();
 			} catch (ParseException e) {
-				Log.e(PlacesMapActivity.TAG, "could not parse creationDate", e);
+				Log.e("ERRO", "could not parse creationDate", e);
 			}
 		}else{
 //			Log.e(PlacesMap.TAG,"no creationDate "+jsonObject.toString());

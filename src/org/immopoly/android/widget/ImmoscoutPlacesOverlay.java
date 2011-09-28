@@ -23,11 +23,9 @@ import java.util.ArrayList;
 
 import org.immopoly.android.R;
 import org.immopoly.android.adapter.FlatsPagerAdapter;
-import org.immopoly.android.app.PlacesMapActivity;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -58,7 +56,6 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 	private MapView mMapView;
 	private Rect markerBounds;
 	private Flats mFlats;
-	private PlacesMapActivity placesMap;
 	private int prevLatProjection = -1;
 	private ViewPager flatsPager; 			// TODO move to PlacesMap
 	
@@ -68,12 +65,11 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 	static Drawable mapMarkerIcon_owned;
 	static Drawable mapMarkerIcon_cluster;
 	
-	public ImmoscoutPlacesOverlay( PlacesMapActivity placesMap, MapView map, LayoutInflater inflator) {
-		super( boundCenterBottom( placesMap.getResources().getDrawable( R.drawable.map_marker_icon)) );
+	public ImmoscoutPlacesOverlay(MapView map, LayoutInflater inflator) {
+		super( boundCenterBottom( map.getResources().getDrawable( R.drawable.map_marker_icon)) );
 		mMapView = map;
-		this.placesMap = placesMap;
 		
-		Resources resources = placesMap.getResources();
+		Resources resources = map.getResources();
 		mapMarkerIcon         = boundCenterBottom( resources.getDrawable( R.drawable.map_marker_icon));
 		mapMarkerIcon_new     = boundCenterBottom( resources.getDrawable( R.drawable.map_marker_icon_new ));
 		mapMarkerIcon_old     = boundCenterBottom( resources.getDrawable( R.drawable.map_marker_icon_old ));
@@ -109,21 +105,21 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 			final ClusterItem item = tmpItems.get(index);
 
 			if ( flatsPager != null )
-				placesMap.getContentView().removeView( flatsPager );
+				mMapView.removeView( flatsPager );
 
-			flatsPager = new ViewPager( placesMap ) {
+			flatsPager = new ViewPager( mMapView.getContext() ) {
 		    	public boolean onTouchEvent(MotionEvent arg0) {
 		    		super.onTouchEvent(arg0);
 		    		return true;  // to avoid map panning when the touch obvioulsy happens on the ViewPager
 		    	}
 		    };
 
-			FlatsPagerAdapter pagerAdapter = new FlatsPagerAdapter( item.flats, placesMap );
+			FlatsPagerAdapter pagerAdapter = new FlatsPagerAdapter( item.flats, mMapView.getContext() );
 		    flatsPager.setAdapter( pagerAdapter );
 
 		    
 			final int standardHeight = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 70,
-						placesMap.getResources().getDisplayMetrics());
+						mMapView.getResources().getDisplayMetrics());
 			final int height = flatsPager.getMeasuredHeight() == 0 ? standardHeight
 							 : flatsPager.getMeasuredHeight();
 			final RelativeLayout.LayoutParams relLayoutParams = new RelativeLayout.LayoutParams( 
@@ -131,11 +127,11 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 			relLayoutParams.addRule( RelativeLayout.ALIGN_PARENT_BOTTOM );
 			
 			flatsPager.setLayoutParams( relLayoutParams );
-			placesMap.getContentView().addView( flatsPager );
+			mMapView.addView( flatsPager );
 
 		    mMapView.setBuiltInZoomControls( false );
 		    mMapView.getZoomButtonsController().setVisible( false );
-			flatsPager.startAnimation(AnimationUtils.loadAnimation( placesMap, R.anim.left_to_right));
+			flatsPager.startAnimation(AnimationUtils.loadAnimation( mMapView.getContext(), R.anim.left_to_right));
 			mMapView.getController().animateTo(item.point);
 		}
 		return true;
@@ -144,15 +140,11 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 	@Override
 	public boolean onTap(GeoPoint p, MapView mapView) {
 		if (!super.onTap(p, mapView)) {
-			placesMap.getContentView().removeView( flatsPager );
+			mMapView.removeView( flatsPager );
 		    mMapView.setBuiltInZoomControls( true );
 		    mMapView.getZoomButtonsController().setVisible( true );
 		}
 		return true;
-	}
-	
-	public void startExposeWebView(Intent i) {
-		placesMap.startActivity(i);
 	}
 
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {

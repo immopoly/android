@@ -157,7 +157,7 @@ public class ExposeWebViewActivity extends Activity {
 	public void addCurrentExpose(View v) {
 		if (ImmopolyUser.getInstance().readToken(ExposeWebViewActivity.this)
 				.length() > 0) {
-			Intent i = new Intent(this, PlacesMapActivity.class);
+			Intent i = new Intent(this, MainActivity.class);
 			i.putExtra(Const.EXPOSE_ADD_PORTIFOLIO, true);
 			i.putExtra(Const.EXPOSE_ID, exposeID);
 			i.putExtra(Const.EXPOSE_NAME, exposeName);

@@ -9,8 +9,12 @@ import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.provider.AUserObserver;
 import org.immopoly.android.provider.UserProvider;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -22,6 +26,20 @@ import android.widget.Button;
 
 public class HudFragment extends Fragment implements HudCallbacks {
 
+	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Bundle extras = intent.getExtras();
+			if (extras != null) {
+				
+			}
+		}
+		
+	};
+	
+	private IntentFilter mHudFilter;
+	
 	class UserObserver extends AUserObserver {
 
 		public UserObserver(Handler handler) {
@@ -41,6 +59,14 @@ public class HudFragment extends Fragment implements HudCallbacks {
 		CursorLoader cursorLoader = new CursorLoader(getActivity(),
 				UserProvider.CONTENT_URI_USER, null, null, null, null);
 		cursorLoader.loadInBackground();
+	}
+	
+	@Override
+	public void onAttach(Activity arg0) {
+		super.onAttach(arg0);
+		//mHudFilter = new IntentFilter();
+		//mHudFilter.
+		//arg0.registerReceiver(mBroadcastReceiver, )
 	}
 
 	@Override
