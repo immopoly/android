@@ -3,6 +3,7 @@ package org.immopoly.android.fragments;
 import org.immopoly.android.R;
 import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.helper.ActivityHelper;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.ImmopolyUser;
@@ -41,7 +42,22 @@ public class ExposeFragment extends Fragment {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-
+			if (ActivityHelper.isTablet(context)) {
+				getActivity()
+						.getSupportFragmentManager()
+						.beginTransaction()
+						.show(getActivity().getSupportFragmentManager()
+								.findFragmentById(R.id.expose_fragment))
+						.commit();
+			} else {
+				getActivity()
+						.getSupportFragmentManager()
+						.beginTransaction()
+						.show(getActivity().getSupportFragmentManager()
+								.findFragmentById(R.id.expose_fragment))
+						.hide(getActivity().getSupportFragmentManager()
+								.findFragmentById(R.id.map_fragment)).commit();
+			}
 			loadPage(intent);
 		}
 

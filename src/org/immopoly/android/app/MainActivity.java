@@ -5,7 +5,9 @@ import java.net.URL;
 
 import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.fragments.ExposeFragment;
 import org.immopoly.android.fragments.callbacks.HudCallbacks;
+import org.immopoly.android.helper.ActivityHelper;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.Settings;
@@ -21,11 +23,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.CursorLoader;
 import android.view.View;
 import android.view.Window;
@@ -47,13 +49,24 @@ public class MainActivity extends FragmentActivity implements HudCallbacks {
 			Fragment f = getSupportFragmentManager().findFragmentById(
 					R.id.expose_fragment);
 			if (f != null) {
-				getSupportFragmentManager().beginTransaction().hide(f).commit();
+				if (ActivityHelper.isTablet(MainActivity.this)) {
+					getSupportFragmentManager().beginTransaction().hide(f)
+							.commit();
+				} else {
+					getSupportFragmentManager()
+							.beginTransaction()
+							.hide(getSupportFragmentManager().findFragmentById(
+									R.id.expose_fragment))
+							.show(getSupportFragmentManager().findFragmentById(
+									R.id.map_fragment)).commit();
+				}
 			}
 		}
 
 	};
 	private HudPopupHelper mHudPopup;
 	private GoogleAnalyticsTracker tracker;
+	private Fragment mExposeFragment;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -61,7 +74,11 @@ public class MainActivity extends FragmentActivity implements HudCallbacks {
 		super.onCreate(arg0);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
-		
+		getSupportFragmentManager()
+				.beginTransaction()
+				.hide(getSupportFragmentManager().findFragmentById(
+						R.id.expose_fragment)).commit();
+
 	}
 
 	@Override
