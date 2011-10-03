@@ -23,19 +23,22 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
-public class MainActivity extends FragmentActivity implements HudCallbacks {
+public class MainActivity extends FragmentActivity implements HudCallbacks, LoaderCallbacks<Cursor> {
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -104,9 +107,8 @@ public class MainActivity extends FragmentActivity implements HudCallbacks {
 		// new InfoUpdateTask(PlacesMapActivity.this)
 		// .execute(ImmopolyUser.getInstance().readToken(this));
 		mHudPopup = new HudPopupHelper(this, HudPopupHelper.TYPE_FINANCE_POPUP);
-		CursorLoader cursorLoader = new CursorLoader(this,
-				UserProvider.CONTENT_URI_USER, null, null, null, null);
-		cursorLoader.loadInBackground();
+		
+		getSupportLoaderManager().initLoader(0,null,this);
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
 		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
@@ -215,5 +217,21 @@ public class MainActivity extends FragmentActivity implements HudCallbacks {
 			super.onPostExecute(result);
 		}
 
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+		return new CursorLoader(this,
+				UserProvider.CONTENT_URI_USER, null, null, null, null);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> arg0, Cursor arg1) {
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -23,13 +23,9 @@ import java.util.ArrayList;
 
 import org.immopoly.android.R;
 import org.immopoly.android.adapter.FlatsPagerAdapter;
-import org.immopoly.android.app.MainActivity;
-import org.immopoly.android.constants.Const;
-import org.immopoly.android.helper.ActivityHelper;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -45,7 +41,6 @@ import android.widget.RelativeLayout;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
@@ -118,19 +113,6 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 		    		return true;  // to avoid map panning when the touch obvioulsy happens on the ViewPager
 		    	}
 		    };
-		    if (ActivityHelper.isTablet(mMapView.getContext())) {
-		    	Flat flat = item.flats.get(index);
-		    	Intent i = new Intent();
-        		i.putExtra(Const.EXPOSE_ID, String.valueOf(flat.uid));
-        		i.putExtra(Const.EXPOSE_NAME, String.valueOf(flat.name));
-        		i.putExtra(Const.EXPOSE_DESC, String.valueOf(flat.description));
-        		i.putExtra(Const.EXPOSE_PICTURE_SMALL,
-        				String.valueOf(flat.titlePictureSmall));
-        		i.putExtra(Const.EXPOSE_IN_PORTOFOLIO, flat.owned);
-        		i.putExtra(Const.SOURCE, MapActivity.class.getSimpleName());
-        		i.setAction("expose_view");
-        		mMapView.getContext().sendBroadcast(i);
-		    }
 			FlatsPagerAdapter pagerAdapter = new FlatsPagerAdapter( item.flats, mMapView.getContext() );
 		    flatsPager.setAdapter( pagerAdapter );
 

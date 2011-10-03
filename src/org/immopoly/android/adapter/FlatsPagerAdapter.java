@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.helper.ActivityHelper;
 import org.immopoly.android.helper.ImageListDownloader;
 import org.immopoly.android.model.Flat;
 
@@ -109,6 +110,20 @@ public class FlatsPagerAdapter extends PagerAdapter {
 						+ flat.currency + " / "
 						+ flat.priceIntervaleType);
 		}
+		if (ActivityHelper.isTablet(mContext)) {
+			Intent i = new Intent();
+    		i.putExtra(Const.EXPOSE_ID, String.valueOf(flat.uid));
+    		i.putExtra(Const.EXPOSE_NAME, String.valueOf(flat.name));
+    		i.putExtra(Const.EXPOSE_DESC, String.valueOf(flat.description));
+    		i.putExtra(Const.EXPOSE_PICTURE_SMALL,
+    				String.valueOf(flat.titlePictureSmall));
+    		i.putExtra(Const.EXPOSE_IN_PORTOFOLIO, flat.owned);
+    		i.putExtra(Const.SOURCE, MapActivity.class.getSimpleName());
+    		i.setAction("expose_view");
+    		mContext.sendBroadcast(i);
+	    }
+		
+		
 		((Button) markerView.findViewById(R.id.btnOpenExpose) ).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
