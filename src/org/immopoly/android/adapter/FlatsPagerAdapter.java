@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.fragments.MapFragment;
 import org.immopoly.android.helper.ActivityHelper;
 import org.immopoly.android.helper.ImageListDownloader;
 import org.immopoly.android.model.Flat;
@@ -42,24 +43,25 @@ import android.widget.TextView;
 import com.google.android.maps.MapActivity;
 
 /**
- * Implementation of android.support.v4.view.PagerAdapter. 
+ * Implementation of android.support.v4.view.PagerAdapter.
  * 
- * Provides views inflated from map_marker_popup.xml on
- * an android.support.v4.view.ViewPager's demand.
+ * Provides views inflated from map_marker_popup.xml on an
+ * android.support.v4.view.ViewPager's demand.
  * 
  */
 public class FlatsPagerAdapter extends PagerAdapter {
 
 	private static ImageListDownloader imageDownloader = new ImageListDownloader();
-	
-	private ArrayList<Flat>    flats;	// list of flats presented in the ViewPager
-	private View[] 			   views;	// storing views for each flat for use in destroyItem() & isViewFromObject()
-	private Context		   mContext;
 
-	public FlatsPagerAdapter( ArrayList<Flat> flats, Context context ) {
+	private ArrayList<Flat> flats; // list of flats presented in the ViewPager
+	private View[] views; // storing views for each flat for use in
+							// destroyItem() & isViewFromObject()
+	private MapFragment mContext;
+
+	public FlatsPagerAdapter(ArrayList<Flat> flats, MapFragment context) {
 		this.mContext = context;
-		this.flats   = flats;
-		this.views   = new View[flats.size()];
+		this.flats = flats;
+		this.views = new View[flats.size()];
 	}
 
 	@Override
@@ -68,94 +70,104 @@ public class FlatsPagerAdapter extends PagerAdapter {
 	}
 
 	@Override
-	public Object instantiateItem( View parent, int idx ) {
+	public Object instantiateItem(View parent, int idx) {
 		final Flat flat = flats.get(idx);
-		View flatView = views[idx] != null ? views[idx] : getFlatView( flat, idx );
-		((ViewPager) parent).addView( flatView, 0 );
+		View flatView = views[idx] != null ? views[idx]
+				: getFlatView(flat, idx);
+		((ViewPager) parent).addView(flatView, 0);
 		views[idx] = flatView;
 		return flat;
 	}
-	
-	// create a view inflated from map_marker_popup.xml for the given Flat
-	private View getFlatView( final Flat flat, final int idx ) {
-		LayoutInflater inflater =LayoutInflater.from(mContext);
-		View markerView = inflater.inflate( R.layout.map_marker_popup, null, false);
-		if ( flat.owned )
-			markerView.setBackgroundColor( Const.OWNED_FLAT_BACKGROUND_COLOR );
-		else if ( flat.age == Flat.AGE_OLD )
-			markerView.setBackgroundColor( Const.OLD_FLAT_BACKGROUND_COLOR );
-		else if ( flat.age == Flat.AGE_NEW )
-			markerView.setBackgroundColor( Const.NEW_FLAT_BACKGROUND_COLOR );
-		else
-			markerView.setBackgroundColor( Const.NORMAL_FLAT_BACKGROUND_COLOR );
 
-		((TextView) markerView.findViewById(R.id.titleMarkerText)).setText( flat.name );
-		if ( flats.size() > 1 )
-			((TextView) markerView.findViewById(R.id.pagerPages)).setText( (idx+1) + "/" + flats.size() );
+	// create a view inflated from map_marker_popup.xml for the given Flat
+	private View getFlatView(final Flat flat, final int idx) {
+		LayoutInflater inflater = LayoutInflater.from(mContext.getContext());
+		View markerView = inflater.inflate(R.layout.map_marker_popup, null,
+				false);
+		if (flat.owned)
+			markerView.setBackgroundColor(Const.OWNED_FLAT_BACKGROUND_COLOR);
+		else if (flat.age == Flat.AGE_OLD)
+			markerView.setBackgroundColor(Const.OLD_FLAT_BACKGROUND_COLOR);
+		else if (flat.age == Flat.AGE_NEW)
+			markerView.setBackgroundColor(Const.NEW_FLAT_BACKGROUND_COLOR);
 		else
-			((TextView) markerView.findViewById(R.id.pagerPages)).setVisibility( View.GONE );
-		if ( flat.titlePictureSmall.trim().length() > 0 ) {
+			markerView.setBackgroundColor(Const.NORMAL_FLAT_BACKGROUND_COLOR);
+
+		((TextView) markerView.findViewById(R.id.titleMarkerText))
+				.setText(flat.name);
+		if (flats.size() > 1)
+			((TextView) markerView.findViewById(R.id.pagerPages))
+					.setText((idx + 1) + "/" + flats.size());
+		else
+			((TextView) markerView.findViewById(R.id.pagerPages))
+					.setVisibility(View.GONE);
+		if (flat.titlePictureSmall.trim().length() > 0) {
 			((ImageView) markerView.findViewById(R.id.imagePreview))
-					.startAnimation(AnimationUtils.loadAnimation( mContext, R.anim.loading_animation ) );
-			imageDownloader.download( 
-					flat.titlePictureSmall, (ImageView) markerView.findViewById(R.id.imagePreview));
+					.startAnimation(AnimationUtils.loadAnimation(
+							mContext.getActivity(), R.anim.loading_animation));
+			imageDownloader.download(flat.titlePictureSmall,
+					(ImageView) markerView.findViewById(R.id.imagePreview));
 		} else {
 			((ImageView) markerView.findViewById(R.id.imagePreview))
-				.setImageDrawable( mContext.getResources()
-						.getDrawable(R.drawable.house_drawn));
+					.setImageDrawable(mContext.getResources().getDrawable(
+							R.drawable.house_drawn));
 		}
-		if ( flat.priceValue.length() > 0) {
+		if (flat.priceValue.length() > 0) {
 			((TextView) markerView.findViewById(R.id.priceInfo))
-				.setText( flat.priceValue + " "
-						+ flat.currency + " / "
-						+ flat.priceIntervaleType);
+					.setText(flat.priceValue + " " + flat.currency + " / "
+							+ flat.priceIntervaleType);
 		}
-		if (ActivityHelper.isTablet(mContext)) {
+		if (ActivityHelper.isTablet(mContext.getContext())) {
 			Intent i = new Intent();
-    		i.putExtra(Const.EXPOSE_ID, String.valueOf(flat.uid));
-    		i.putExtra(Const.EXPOSE_NAME, String.valueOf(flat.name));
-    		i.putExtra(Const.EXPOSE_DESC, String.valueOf(flat.description));
-    		i.putExtra(Const.EXPOSE_PICTURE_SMALL,
-    				String.valueOf(flat.titlePictureSmall));
-    		i.putExtra(Const.EXPOSE_IN_PORTOFOLIO, flat.owned);
-    		i.putExtra(Const.SOURCE, MapActivity.class.getSimpleName());
-    		i.setAction("expose_view");
-    		mContext.sendBroadcast(i);
-	    }
-		
-		
-		((Button) markerView.findViewById(R.id.btnOpenExpose) ).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                	Intent i = new Intent();
-            		i.putExtra(Const.EXPOSE_ID, String.valueOf(flat.uid));
-            		i.putExtra(Const.EXPOSE_NAME, String.valueOf(flat.name));
-            		i.putExtra(Const.EXPOSE_DESC, String.valueOf(flat.description));
-            		i.putExtra(Const.EXPOSE_PICTURE_SMALL,
-            				String.valueOf(flat.titlePictureSmall));
-            		i.putExtra(Const.EXPOSE_IN_PORTOFOLIO, flat.owned);
-            		i.putExtra(Const.SOURCE, MapActivity.class.getSimpleName());
-            		i.setAction("expose_view");
-            		v.getContext().sendBroadcast(i);
-                }
-        });
+			i.putExtra(Const.EXPOSE_ID, String.valueOf(flat.uid));
+			i.putExtra(Const.EXPOSE_NAME, String.valueOf(flat.name));
+			i.putExtra(Const.EXPOSE_DESC, String.valueOf(flat.description));
+			i.putExtra(Const.EXPOSE_PICTURE_SMALL,
+					String.valueOf(flat.titlePictureSmall));
+			i.putExtra(Const.EXPOSE_IN_PORTOFOLIO, flat.owned);
+			i.putExtra(Const.SOURCE, MapActivity.class.getSimpleName());
+			i.setAction("expose_view");
+			// mContext.sendBroadcast(i);
+			mContext.getOnMapItemClickedListener().onMapItemClicked(flat.uid,
+					flat.owned);
+		}
+
+		((Button) markerView.findViewById(R.id.btnOpenExpose))
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent i = new Intent();
+						i.putExtra(Const.EXPOSE_ID, String.valueOf(flat.uid));
+						i.putExtra(Const.EXPOSE_NAME, String.valueOf(flat.name));
+						i.putExtra(Const.EXPOSE_DESC,
+								String.valueOf(flat.description));
+						i.putExtra(Const.EXPOSE_PICTURE_SMALL,
+								String.valueOf(flat.titlePictureSmall));
+						i.putExtra(Const.EXPOSE_IN_PORTOFOLIO, flat.owned);
+						i.putExtra(Const.SOURCE,
+								MapActivity.class.getSimpleName());
+						i.setAction("expose_view");
+						//v.getContext().sendBroadcast(i);
+						mContext.getOnMapItemClickedListener().onMapOverlayClicked(flat.uid,
+								flat.owned);
+					}
+				});
 
 		return markerView;
 	}
-	
-	
+
 	@Override
-	public void destroyItem( View collection, int idx, Object view ) {
-		if ( idx < views.length ) {
-			((ViewPager) collection).removeView( views[idx] );
+	public void destroyItem(View collection, int idx, Object view) {
+		if (idx < views.length) {
+			((ViewPager) collection).removeView(views[idx]);
 			views[idx] = null;
 		}
 	}
 
 	@Override
 	public boolean isViewFromObject(View view, Object obj) {
-		int idx = flats.indexOf( obj );
-		if ( idx == -1 )
+		int idx = flats.indexOf(obj);
+		if (idx == -1)
 			return false;
 		return view == views[idx];
 	}
@@ -166,11 +178,14 @@ public class FlatsPagerAdapter extends PagerAdapter {
 	}
 
 	@Override
-	public void finishUpdate(View arg0) {}
+	public void finishUpdate(View arg0) {
+	}
 
 	@Override
-	public void restoreState(Parcelable arg0, ClassLoader arg1) {}
+	public void restoreState(Parcelable arg0, ClassLoader arg1) {
+	}
 
 	@Override
-	public void startUpdate(View arg0) {}
+	public void startUpdate(View arg0) {
+	}
 }

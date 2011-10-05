@@ -127,5 +127,5 @@ public class HudFragment extends Fragment implements HudCallbacks {
 			break;
 		}
 	}
-
+	
 }

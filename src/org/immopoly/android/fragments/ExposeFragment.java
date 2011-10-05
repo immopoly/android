@@ -38,6 +38,7 @@ public class ExposeFragment extends Fragment {
 	private WebView webView;
 	private boolean owned = false;
 	private View mView;
+	/*
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -61,7 +62,7 @@ public class ExposeFragment extends Fragment {
 			loadPage(intent);
 		}
 
-	};
+	};*/
 
 	private GoogleAnalyticsTracker tracker;
 
@@ -82,18 +83,17 @@ public class ExposeFragment extends Fragment {
 		super.onAttach(arg0);
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("expose_view");
-		arg0.registerReceiver(mReceiver, filter);
+		//arg0.registerReceiver(mReceiver, filter);
 
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 	}
 
 	public View onCreateView(LayoutInflater arg0, ViewGroup arg1, Bundle arg2) {
-		mView = arg0.inflate(R.layout.expose_detail_web_view, arg1);
+		mView = arg0.inflate(R.layout.expose_detail_web_view, arg1,false);
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
 		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
@@ -150,29 +150,29 @@ public class ExposeFragment extends Fragment {
 			}
 
 		});
-		loadPage(getActivity().getIntent());
+		loadPage(getArguments());
 		return mView;
 	}
 
-	void loadPage(Intent intent) {
+	void loadPage(Bundle intent) {
 		FragmentManager fm = getFragmentManager();
-		if (intent != null && intent.getExtras() != null
-				&& intent.getExtras().containsKey(Const.EXPOSE_ID)) {
+		if (intent != null 
+				&& intent.containsKey(Const.EXPOSE_ID)) {
 			fm.beginTransaction().show(this).commit();
-			exposeID = intent.getExtras().getString(Const.EXPOSE_ID);
+			exposeID = intent.getString(Const.EXPOSE_ID);
 
 			tracker.setCustomVar(1, Const.SOURCE,
-					intent.getExtras().getString(Const.SOURCE), 1);
+					intent.getString(Const.SOURCE), 1);
 
-			if (intent.getExtras()
+			if (intent
 					.getBoolean(Const.EXPOSE_IN_PORTOFOLIO, false)) {
 				// ((Button) findViewById(R.id.BackButton))
 				// .setText(getString(R.string.webview_back_button));
 				owned = true;
 			}
-			exposeName = intent.getExtras().getString(Const.EXPOSE_NAME);
-			exposeDescription = intent.getExtras().getString(Const.EXPOSE_DESC);
-			exposeURL = intent.getExtras().getString(Const.EXPOSE_URL);
+			exposeName = intent.getString(Const.EXPOSE_NAME);
+			exposeDescription = intent.getString(Const.EXPOSE_DESC);
+			exposeURL = intent.getString(Const.EXPOSE_URL);
 			String url = Settings.getFlatLink(exposeID, true);
 
 			SharedPreferences shared = getActivity().getSharedPreferences(

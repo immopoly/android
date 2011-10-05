@@ -12,6 +12,8 @@
 	<ImageButton style="@style/hudElement" android:id="@+id/hud_profile"
 		android:src="@drawable/btn_profile" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:onClick="onHudAction" />
+	<Button style="@style/hudElement" android:id="@+id/hud_notification"
+		android:background="@drawable/btn_notify" android:text="4" android:layout_width="40dip" android:layout_height="30dip" android:onClick="onHudAction" />
 	<Button style="@style/hudElement" android:id="@+id/hud_text"
 		android:text="4000 €" android:layout_height="wrap_content"
 		android:layout_width="match_parent" android:gravity="right"

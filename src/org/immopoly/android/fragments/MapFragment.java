@@ -20,6 +20,7 @@ import org.immopoly.android.app.DashboardActivity;
 import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.app.WebViewActivity;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.fragments.MapFragment.OnMapItemClickedListener;
 import org.immopoly.android.fragments.callbacks.HudCallbacks;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
@@ -38,6 +39,7 @@ import org.immopoly.android.widget.ImmoscoutPlacesOverlay;
 import org.immopoly.android.widget.MyPositionOverlay;
 import org.immopoly.android.widget.PlaceOverlayItem;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -73,6 +75,12 @@ import com.google.android.maps.Overlay;
 public class MapFragment extends Fragment implements Receiver,
 		MapMarkerCallback, MapLocationCallback, HudCallbacks {
 
+	public interface OnMapItemClickedListener {
+		public void onMapItemClicked(int exposeID, boolean isInPortfolio);
+		public void onMapOverlayClicked(int exposeID, boolean isInPortfolio);
+		
+	}
+
 	public static final String TAG = "Immopoly";
 
 	private MapController mMapController;
@@ -93,6 +101,8 @@ public class MapFragment extends Fragment implements Receiver,
 
 	private Button hudText;
 	private ImageButton mapButton;
+
+	private OnMapItemClickedListener mOnMapItemClickedListener;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -117,6 +127,21 @@ public class MapFragment extends Fragment implements Receiver,
 		}
 
 		return view;
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			mOnMapItemClickedListener = (OnMapItemClickedListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnMapItemClickedListener");
+		}
+	}
+	
+	public OnMapItemClickedListener getOnMapItemClickedListener(){
+		return mOnMapItemClickedListener;
 	}
 
 	@Override
@@ -156,7 +181,7 @@ public class MapFragment extends Fragment implements Receiver,
 	@Override
 	public void onActivityCreated(Bundle arg0) {
 		super.onActivityCreated(arg0);
-		
+
 		GeoPoint point = new GeoPoint((int) (LocationHelper.sLat * 1E6),
 				(int) (LocationHelper.sLng * 1E6));
 		mMapOverlays = mMapView.getOverlays();
@@ -166,7 +191,7 @@ public class MapFragment extends Fragment implements Receiver,
 
 		myLocationOverlayItem = new PlaceOverlayItem(point, "my city",
 				"This is wher you are");
-		overlays = new ImmoscoutPlacesOverlay(mMapView, getActivity()
+		overlays = new ImmoscoutPlacesOverlay(this, getActivity()
 				.getLayoutInflater());
 		myLocationOverlays = new MyPositionOverlay(getResources().getDrawable(
 				R.drawable.house_icon), getActivity(), mMapView,

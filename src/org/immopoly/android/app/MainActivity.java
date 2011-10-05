@@ -5,7 +5,7 @@ import java.net.URL;
 
 import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
-import org.immopoly.android.fragments.ExposeFragment;
+import org.immopoly.android.fragments.HudFragment;
 import org.immopoly.android.fragments.callbacks.HudCallbacks;
 import org.immopoly.android.helper.ActivityHelper;
 import org.immopoly.android.helper.HudPopupHelper;
@@ -28,17 +28,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
-public class MainActivity extends FragmentActivity implements HudCallbacks, LoaderCallbacks<Cursor> {
+public class MainActivity extends FragmentActivity implements HudCallbacks,
+		LoaderCallbacks<Cursor> {
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -107,8 +109,8 @@ public class MainActivity extends FragmentActivity implements HudCallbacks, Load
 		// new InfoUpdateTask(PlacesMapActivity.this)
 		// .execute(ImmopolyUser.getInstance().readToken(this));
 		mHudPopup = new HudPopupHelper(this, HudPopupHelper.TYPE_FINANCE_POPUP);
-		
-		getSupportLoaderManager().initLoader(0,null,this);
+
+		getSupportLoaderManager().initLoader(0, null, this);
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
 		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
@@ -220,9 +222,21 @@ public class MainActivity extends FragmentActivity implements HudCallbacks, Load
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		HudFragment hud = (HudFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.hud_fragment);
+		if (hud != null && hud.getView() != null) {
+			if (hud.getView().findViewById(R.id.hud_map) != null) {
+				hud.getView().findViewById(R.id.hud_map).setSelected(true);
+			}
+		}
+	}
+
+	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		return new CursorLoader(this,
-				UserProvider.CONTENT_URI_USER, null, null, null, null);
+		return new CursorLoader(this, UserProvider.CONTENT_URI_USER, null,
+				null, null, null);
 	}
 
 	@Override
@@ -232,6 +246,12 @@ public class MainActivity extends FragmentActivity implements HudCallbacks, Load
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.hud_menu, menu);
+		return true;
 	}
 }
