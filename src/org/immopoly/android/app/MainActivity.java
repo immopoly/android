@@ -109,7 +109,7 @@ public class MainActivity extends FragmentActivity implements HudCallbacks {
 			LocationHelper.getLastLocation(this);
 			break;
 		case R.id.hud_portfolio:
-			startActivity(new Intent(this, DashboardActivity.class));
+			startActivity(new Intent(this, PortfolioActivity.class));
 			break;
 		case R.id.hud_profile:
 			startActivity(new Intent(this, DashboardActivity.class));

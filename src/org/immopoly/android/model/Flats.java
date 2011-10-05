@@ -32,6 +32,12 @@ public class Flats extends ArrayList<Flat> {
 	 */
 	private static final long serialVersionUID = 4642208262846389104L;
 
+	public Flats() {}
+
+	public Flats( int capacity ) {
+		super( capacity );
+	}
+	
 	public void parse(JSONObject obj) {
 		try {
 			Flat item;

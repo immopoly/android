@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent" 
+  android:layout_height="140dp" 
+  android:padding="4dp"
+  android:background="#FFF" android:clipChildren="false">
+    <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <ImageView android:layout_height="wrap_content" android:layout_width="wrap_content" android:src="@drawable/house" android:id="@+id/teaser_icon"></ImageView>
+		<View android:layout_height="0dp" android:layout_width="0dp" android:layout_weight="1"/>
+	    <LinearLayout android:id="@+id/swipe_indicator" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+    	    <ImageView android:layout_height="9.3dp" android:layout_width="30dp" android:src="@drawable/swipe_right_0" android:id="@+id/swipe_right_img" android:gravity="center"></ImageView>
+    	    <ImageView android:layout_height="9.3dp" android:layout_width="30dp" android:src="@drawable/swipe_left_0" android:id="@+id/swipe_left_img" android:gravity="center"></ImageView>
+    	    <ImageView android:layout_height="30dp" android:layout_width="30dp" android:src="@drawable/swipefinger" android:id="@+id/swipe_finger" android:gravity="center"></ImageView>
+            <TextView android:layout_height="wrap_content" android:id="@+id/swipe_counter" android:textStyle="bold" android:textSize="11dp" android:text="1/3" android:textColor="#888" android:paddingTop="3dp" android:layout_width="fill_parent" android:gravity="center" android:paddingBottom="12dp"></TextView>
+    	</LinearLayout>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/LinearLayout1" android:layout_width="fill_parent" android:paddingLeft="10dp" android:orientation="vertical" android:layout_height="fill_parent">
+	    <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
+            <TextView android:layout_height="wrap_content" android:id="@+id/textView1" android:textStyle="bold" android:textSize="15dp" android:layout_width="wrap_content" android:text="Zimmer:" android:textColor="#000" android:paddingTop="3dp" android:paddingLeft="5dp"></TextView>
+            <TextView android:layout_height="wrap_content" android:id="@+id/rooms_text" android:textStyle="bold" android:textSize="15dp" android:layout_width="wrap_content" android:text="3" android:textColor="#000" android:paddingTop="3dp" android:paddingLeft="3dp"></TextView>
+            <TextView android:layout_height="wrap_content" android:id="@+id/textView3" android:textStyle="bold" android:textSize="15dp" android:layout_width="wrap_content" android:text="qm:" android:textColor="#000" android:paddingTop="3dp" android:paddingLeft="15dp"></TextView>
+            <TextView android:layout_height="wrap_content" android:id="@+id/qm_text" android:textStyle="bold" android:textSize="15dp" android:layout_width="wrap_content" android:text="97" android:textColor="#000" android:paddingLeft="3dp" android:paddingTop="3dp"></TextView>
+        </LinearLayout>
+	    <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="0.0">
+            <TextView android:layout_height="wrap_content" android:id="@+id/textView5" android:textStyle="bold" android:textSize="15dp" android:layout_width="wrap_content" android:text="Etage:" android:textColor="#000" android:paddingLeft="5dp" android:paddingTop="3dp"></TextView>
+            <TextView android:layout_height="wrap_content" android:id="@+id/floor_num_text" android:textStyle="bold" android:textSize="15dp" android:layout_width="wrap_content" android:text="EG" android:textColor="#000" android:paddingLeft="3dp" android:paddingTop="3dp"></TextView>
+        </LinearLayout>
+<!-- 	    <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"> -->
+	    <org.immopoly.android.widget.EllipsizingTextView android:textSize="13dp" android:textColor="#000" android:layout_width="wrap_content" android:layout_weight="1" android:text="Beschreibung: Schöne Altbauwohnung im Herzen Berlins. Geniale Verkehrsanbindung und unüberschaubares Freizeitangebot" android:layout_height="wrap_content" android:id="@+id/flat_desc_text" android:paddingLeft="5dp" android:paddingTop="3dp"></org.immopoly.android.widget.EllipsizingTextView>
+<!--         </LinearLayout> -->
+	    <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content" android:id="@+id/textView8" android:layout_height="wrap_content" android:textStyle="bold" android:textSize="15dp" android:text="Preis:" android:textColor="#000" android:paddingTop="3dp" android:paddingLeft="5dp"></TextView>
+            <TextView android:layout_width="wrap_content" android:id="@+id/price_text" android:layout_height="wrap_content" android:textStyle="bold" android:textSize="15dp" android:text="1399 €" android:textColor="#000" android:paddingTop="3dp" android:paddingLeft="3dp"></TextView>
+            <TextView android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+            <ImageView android:id="@+id/imageView2" android:src="@drawable/goto_expo" android:layout_height="32dp" android:layout_width="32dp" 
+		            android:layout_alignParentRight="true"></ImageView>
+        </LinearLayout>
+    </LinearLayout>
+    
+</LinearLayout>

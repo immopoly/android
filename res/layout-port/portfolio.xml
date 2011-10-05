@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <fragment android:layout_width="fill_parent" android:layout_height="wrap_content" android:name="org.immopoly.android.fragments.HudFragment">
+        <!-- Preview: layout=@layout/hud -->
+    </fragment>
+    <FrameLayout android:id="@+id/pf_switch_frame" android:layout_weight="1" android:layout_height="fill_parent" android:layout_width="fill_parent">
+        <fragment android:name="org.immopoly.android.fragments.PortfolioListFragment"
+        		  android:layout_width="fill_parent" android:layout_height="fill_parent"
+        		  android:id="@+id/pf_list_fragment"/> 
+        <fragment android:name="org.immopoly.android.fragments.PortfolioMapFragment"
+        		  android:layout_width="fill_parent" android:layout_height="fill_parent"
+        		  android:id="@+id/pf_map_fragment"/>
+    </FrameLayout>    
+		
+    <LinearLayout android:id="@+id/linearLayout1" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <Button android:id="@+id/pf_map_btn" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:text="Karte" android:enabled="false"></Button>
+        <Button android:id="@+id/pf_list_btn" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:text="Liste"></Button>
+    </LinearLayout>
+    
+</LinearLayout>

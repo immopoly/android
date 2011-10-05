@@ -15,6 +15,7 @@ import oauth.signpost.exception.OAuthNotAuthorizedException;
 import org.immopoly.android.R;
 import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
+import org.immopoly.android.api.IS24ApiServiceMockup;
 import org.immopoly.android.api.ReceiverState;
 import org.immopoly.android.app.DashboardActivity;
 import org.immopoly.android.app.UserSignupActivity;
@@ -166,7 +167,7 @@ public class MapFragment extends Fragment implements Receiver,
 
 		myLocationOverlayItem = new PlaceOverlayItem(point, "my city",
 				"This is wher you are");
-		overlays = new ImmoscoutPlacesOverlay(mMapView, getActivity()
+		overlays = new ImmoscoutPlacesOverlay( getActivity(), mMapView, getActivity()
 				.getLayoutInflater());
 		myLocationOverlays = new MyPositionOverlay(getResources().getDrawable(
 				R.drawable.house_icon), getActivity(), mMapView,
@@ -503,7 +504,7 @@ public class MapFragment extends Fragment implements Receiver,
 		} else {
 			setAddress(LocationHelper.mAddress);
 		}
-		Intent i = new Intent(getActivity(), IS24ApiService.class);
+		Intent i = new Intent(getActivity(), IS24ApiServiceMockup.class);
 		i.putExtra(IS24ApiService.COMMAND, IS24ApiService.CMD_SEARCH);
 		i.putExtra(IS24ApiService.LAT, LocationHelper.sLat);
 		i.putExtra(IS24ApiService.LNG, LocationHelper.sLng);
