@@ -1,23 +1,19 @@
 package org.immopoly.android.fragments;
 
 import org.immopoly.android.R;
+import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.constants.Const;
-import org.immopoly.android.helper.ActivityHelper;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.ImmopolyUser;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,33 +34,16 @@ public class ExposeFragment extends Fragment {
 	private WebView webView;
 	private boolean owned = false;
 	private View mView;
-	/*
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (ActivityHelper.isTablet(context)) {
-				getActivity()
-						.getSupportFragmentManager()
-						.beginTransaction()
-						.show(getActivity().getSupportFragmentManager()
-								.findFragmentById(R.id.expose_fragment))
-						.commit();
-			} else {
-				getActivity()
-						.getSupportFragmentManager()
-						.beginTransaction()
-						.show(getActivity().getSupportFragmentManager()
-								.findFragmentById(R.id.expose_fragment))
-						.hide(getActivity().getSupportFragmentManager()
-								.findFragmentById(R.id.map_fragment)).commit();
-			}
-			loadPage(intent);
-		}
+	public interface OnExposeClickedListener {
+		public void onExposeClick(String exposeID);
 
-	};*/
+		public void onShareClick(int exposeID, boolean isInPortfolio);
+
+	}
 
 	private GoogleAnalyticsTracker tracker;
+	private OnExposeClickedListener mOnExposeClickedListener;
 
 	private final static String sInjectJString;
 	static {
@@ -79,21 +58,22 @@ public class ExposeFragment extends Fragment {
 
 	@Override
 	public void onAttach(Activity arg0) {
-		// TODO Auto-generated method stub
 		super.onAttach(arg0);
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("expose_view");
-		//arg0.registerReceiver(mReceiver, filter);
-
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		try {
+			mOnExposeClickedListener = (OnExposeClickedListener) getActivity();
+		} catch (ClassCastException e) {
+			throw new ClassCastException(getActivity().toString()
+					+ " must implement OnMapItemClickedListener");
+		}
 	}
 
 	public View onCreateView(LayoutInflater arg0, ViewGroup arg1, Bundle arg2) {
-		mView = arg0.inflate(R.layout.expose_detail_web_view, arg1,false);
+		mView = arg0.inflate(R.layout.expose_detail_web_view, arg1, false);
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
 		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
@@ -139,14 +119,14 @@ public class ExposeFragment extends Fragment {
 					webView.loadUrl(url);
 					mLoadTwice = false;
 				} else {
-					// findViewById(R.id.progress).setVisibility(View.GONE);
+					mView.findViewById(R.id.progress).setVisibility(View.GONE);
 				}
 			}
 
 			@Override
 			public void onLoadResource(WebView view, String url) {
 				super.onLoadResource(view, url);
-				// findViewById(R.id.progress).setVisibility(View.VISIBLE);
+				mView.findViewById(R.id.progress).setVisibility(View.VISIBLE);
 			}
 
 		});
@@ -155,19 +135,15 @@ public class ExposeFragment extends Fragment {
 	}
 
 	void loadPage(Bundle intent) {
-		FragmentManager fm = getFragmentManager();
-		if (intent != null 
-				&& intent.containsKey(Const.EXPOSE_ID)) {
-			fm.beginTransaction().show(this).commit();
+		if (intent != null && intent.containsKey(Const.EXPOSE_ID)) {
 			exposeID = intent.getString(Const.EXPOSE_ID);
 
 			tracker.setCustomVar(1, Const.SOURCE,
 					intent.getString(Const.SOURCE), 1);
 
-			if (intent
-					.getBoolean(Const.EXPOSE_IN_PORTOFOLIO, false)) {
-				// ((Button) findViewById(R.id.BackButton))
-				// .setText(getString(R.string.webview_back_button));
+			if (intent.getBoolean(Const.EXPOSE_IN_PORTOFOLIO, false)) {
+				((Button) mView.findViewById(R.id.BackButton))
+						.setText(getString(R.string.webview_back_button));
 				owned = true;
 			}
 			exposeName = intent.getString(Const.EXPOSE_NAME);
@@ -185,9 +161,6 @@ public class ExposeFragment extends Fragment {
 				editor.commit();
 			}
 			webView.loadUrl(url);
-		} else {
-
-			fm.beginTransaction().hide(this).commit();
 		}
 	}
 
@@ -209,12 +182,13 @@ public class ExposeFragment extends Fragment {
 			} else {
 				// setResult(RESULT_CANCELED, i);
 			}
-
+			mOnExposeClickedListener.onExposeClick(exposeID);
 			// finish();
 		} else {
+			mOnExposeClickedListener.onExposeClick(null);
 			intent = new Intent(getActivity(), UserSignupActivity.class);
 		}
-		getActivity().sendBroadcast(intent);
+
 	}
 
 	public void shareExpose(View v) {
