@@ -77,8 +77,9 @@ public class MapFragment extends Fragment implements Receiver,
 
 	public interface OnMapItemClickedListener {
 		public void onMapItemClicked(int exposeID, boolean isInPortfolio);
+
 		public void onMapOverlayClicked(int exposeID, boolean isInPortfolio);
-		
+
 	}
 
 	public static final String TAG = "Immopoly";
@@ -87,6 +88,7 @@ public class MapFragment extends Fragment implements Receiver,
 	private List<Overlay> mMapOverlays;
 	private PlaceOverlayItem myLocationOverlayItem;
 	private MapView mMapView;
+	private View mFragmentView;
 	private ImmoscoutPlacesOverlay overlays;
 	private Flats mFlats;
 
@@ -107,26 +109,40 @@ public class MapFragment extends Fragment implements Receiver,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.map_simple, container, false);
-		mMapView = (MapView) view.findViewById(R.id.mapview);
-		mMapView.setBuiltInZoomControls(true);
-		mMapController = mMapView.getController();
-		tracker = GoogleAnalyticsTracker.getInstance();
-		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
-				Const.ANALYTICS_INTERVAL, getActivity().getApplicationContext());
 
-		// mState = (ReceiverState) getActivity()
-		// .getLastNonConfigurationInstance();
-		if (mState != null) {
-			// Start listening for Service updates again
-			mState.mReceiver.setReceiver(this);
-		} else {
-			mState = new ReceiverState();
-			mState.mReceiver.setReceiver(this);
+		if (mMapView != null) {
+			((ViewGroup) mMapView.getParent()).removeView(mMapView);
 		}
+		if (mMapView == null) {
+			mMapView = new MapView(getContext(),
+					getString(R.string.google_maps_key_debug));
+			mMapView.setClickable(true);
+			mMapView.setTag("map_view");
+			/*
+			 * mFragmentView = inflater.inflate(R.layout.map_simple, null);
+			 * 
+			 * mMapView = (MapView) mFragmentView.findViewById(R.id.mapview);
+			 */
+			mMapView.setBuiltInZoomControls(true);
+			mMapController = mMapView.getController();
 
-		return view;
+			tracker = GoogleAnalyticsTracker.getInstance();
+			// Start the tracker in manual dispatch mode...
+			tracker.startNewSession(TrackingManager.UA_ACCOUNT,
+					Const.ANALYTICS_INTERVAL, getActivity()
+							.getApplicationContext());
+
+			// mState = (ReceiverState) getActivity()
+			// .getLastNonConfigurationInstance();
+			if (mState != null) {
+				// Start listening for Service updates again
+				mState.mReceiver.setReceiver(this);
+			} else {
+				mState = new ReceiverState();
+				mState.mReceiver.setReceiver(this);
+			}
+		}
+		return mMapView;
 	}
 
 	@Override
@@ -139,8 +155,8 @@ public class MapFragment extends Fragment implements Receiver,
 					+ " must implement OnMapItemClickedListener");
 		}
 	}
-	
-	public OnMapItemClickedListener getOnMapItemClickedListener(){
+
+	public OnMapItemClickedListener getOnMapItemClickedListener() {
 		return mOnMapItemClickedListener;
 	}
 

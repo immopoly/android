@@ -8,6 +8,7 @@ import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.ExposeFragment;
 import org.immopoly.android.fragments.MapFragment;
 import org.immopoly.android.fragments.MapFragment.OnMapItemClickedListener;
+import org.immopoly.android.fragments.callbacks.HudCallbacks;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,13 +16,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 /**
  * @author tosa,sebastia,björn Example implemetation of fragments communication
  */
-public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener{
+public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener, HudCallbacks{
 
 	private static final String PROFILE_FRAGMENT_TAG = "PROFILE_FRAGMENT";
 	private static final String PORTFOLIO_FRAGMENT_TAG = "PORTFOLIO_FRAGMENT";
@@ -38,6 +40,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	// Fragments
 	private MapFragment mMapFragment;
 	private Fragment mLastFragment;
+	private boolean mIsVeryFirstFragment = true;
 
 	/**
 	 * Init the game
@@ -112,8 +115,13 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		if (newFragment != null) {
 			newFragment.setArguments(bundle);
 			FragmentTransaction transaction = fm.beginTransaction();
-			transaction.replace(R.id.fragment_container, newFragment,newTag).addToBackStack(null)
-					.commit();
+			transaction = transaction.replace(R.id.fragment_container, newFragment,newTag);
+			if(!mIsVeryFirstFragment ){
+				transaction = transaction.addToBackStack(null);
+			} else {
+				mIsVeryFirstFragment = false;
+			}
+			transaction.commit();
 		}
 		
 	}
@@ -121,18 +129,27 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	@Override
 	public void onMapItemClicked(int exposeID, boolean isInPortfolio) {
 		Toast.makeText(this, "onMapItemClicked", Toast.LENGTH_LONG).show();
+	}
+	
+	@Override
+	public void onMapOverlayClicked(int exposeID, boolean isInPortfolio) {
+		Toast.makeText(this, "onMapOverlayClicked", Toast.LENGTH_LONG).show();
 		Bundle tmp = new Bundle();
 		tmp.putString(Const.EXPOSE_ID, String.valueOf(exposeID));
 		tmp.putBoolean(Const.EXPOSE_OWNED, isInPortfolio);
 		showFragment(EXPOSE_FRAGMENT,tmp);
-		
-		
+	}
+
+	@Override
+	public void updateHud(Intent data, int element) {
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onMapOverlayClicked(int exposeID, boolean isInPortfolio) {
-		Toast.makeText(this, "onMapOverlayClicked", Toast.LENGTH_LONG).show();
+	public void onHudAction(View view) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
