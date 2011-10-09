@@ -20,7 +20,6 @@ import org.immopoly.android.app.DashboardActivity;
 import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.app.WebViewActivity;
 import org.immopoly.android.constants.Const;
-import org.immopoly.android.fragments.MapFragment.OnMapItemClickedListener;
 import org.immopoly.android.fragments.callbacks.HudCallbacks;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
@@ -72,8 +71,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
-public class MapFragment extends Fragment implements Receiver,
-		MapMarkerCallback, MapLocationCallback, HudCallbacks {
+public class MapFragment extends Fragment implements Receiver, MapMarkerCallback, MapLocationCallback, HudCallbacks {
 
 	public interface OnMapItemClickedListener {
 		public void onMapItemClicked(int exposeID, boolean isInPortfolio);
@@ -88,7 +86,6 @@ public class MapFragment extends Fragment implements Receiver,
 	private List<Overlay> mMapOverlays;
 	private PlaceOverlayItem myLocationOverlayItem;
 	private MapView mMapView;
-	private View mFragmentView;
 	private ImmoscoutPlacesOverlay overlays;
 	private Flats mFlats;
 
@@ -107,40 +104,31 @@ public class MapFragment extends Fragment implements Receiver,
 	private OnMapItemClickedListener mOnMapItemClickedListener;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		mMapView = new MapView(getActivity(), getString(R.string.google_maps_key_debug));
+		mMapView.setClickable(true);
+		mMapView.setTag("map_view");
+		/*
+		 * mFragmentView = inflater.inflate(R.layout.map_simple, null);
+		 * 
+		 * mMapView = (MapView) mFragmentView.findViewById(R.id.mapview);
+		 */
+		mMapView.setBuiltInZoomControls(true);
+		mMapController = mMapView.getController();
 
-		if (mMapView != null) {
-			((ViewGroup) mMapView.getParent()).removeView(mMapView);
-		}
-		if (mMapView == null) {
-			mMapView = new MapView(getContext(),
-					getString(R.string.google_maps_key_debug));
-			mMapView.setClickable(true);
-			mMapView.setTag("map_view");
-			/*
-			 * mFragmentView = inflater.inflate(R.layout.map_simple, null);
-			 * 
-			 * mMapView = (MapView) mFragmentView.findViewById(R.id.mapview);
-			 */
-			mMapView.setBuiltInZoomControls(true);
-			mMapController = mMapView.getController();
+		tracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getActivity()
+				.getApplicationContext());
 
-			tracker = GoogleAnalyticsTracker.getInstance();
-			// Start the tracker in manual dispatch mode...
-			tracker.startNewSession(TrackingManager.UA_ACCOUNT,
-					Const.ANALYTICS_INTERVAL, getActivity()
-							.getApplicationContext());
-
-			// mState = (ReceiverState) getActivity()
-			// .getLastNonConfigurationInstance();
-			if (mState != null) {
-				// Start listening for Service updates again
-				mState.mReceiver.setReceiver(this);
-			} else {
-				mState = new ReceiverState();
-				mState.mReceiver.setReceiver(this);
-			}
+		// mState = (ReceiverState) getActivity()
+		// .getLastNonConfigurationInstance();
+		if (mState != null) {
+			// Start listening for Service updates again
+			mState.mReceiver.setReceiver(this);
+		} else {
+			mState = new ReceiverState();
+			mState.mReceiver.setReceiver(this);
 		}
 		return mMapView;
 	}
@@ -151,9 +139,15 @@ public class MapFragment extends Fragment implements Receiver,
 		try {
 			mOnMapItemClickedListener = (OnMapItemClickedListener) activity;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnMapItemClickedListener");
+			throw new ClassCastException(activity.toString() + " must implement OnMapItemClickedListener");
 		}
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		((ViewGroup) mMapView.getParent()).removeView(mMapView);
+		mMapView = null;
 	}
 
 	public OnMapItemClickedListener getOnMapItemClickedListener() {
@@ -178,8 +172,7 @@ public class MapFragment extends Fragment implements Receiver,
 			// Toast.makeText(this, ImmopolyUser.getInstance().flats.toString(),
 			// Toast.LENGTH_LONG);
 			if (mHudPopup != null) {
-				mHudPopup.show(getActivity().findViewById(R.id.hud_text), -200,
-						-60);
+				mHudPopup.show(getActivity().findViewById(R.id.hud_text), -200, -60);
 			}
 			break;
 		default:
@@ -198,22 +191,17 @@ public class MapFragment extends Fragment implements Receiver,
 	public void onActivityCreated(Bundle arg0) {
 		super.onActivityCreated(arg0);
 
-		GeoPoint point = new GeoPoint((int) (LocationHelper.sLat * 1E6),
-				(int) (LocationHelper.sLng * 1E6));
+		GeoPoint point = new GeoPoint((int) (LocationHelper.sLat * 1E6), (int) (LocationHelper.sLng * 1E6));
 		mMapOverlays = mMapView.getOverlays();
 		LocationHelper.callback = this;
 		LocationHelper.getLastLocation(getActivity());
 		// this is the bounding box container
 
-		myLocationOverlayItem = new PlaceOverlayItem(point, "my city",
-				"This is wher you are");
-		overlays = new ImmoscoutPlacesOverlay(this, getActivity()
-				.getLayoutInflater());
-		myLocationOverlays = new MyPositionOverlay(getResources().getDrawable(
-				R.drawable.house_icon), getActivity(), mMapView,
-				getLayoutInflater());
-		myLocationOverlayItem.setMarker(this.getResources().getDrawable(
-				R.drawable.house_icon));
+		myLocationOverlayItem = new PlaceOverlayItem(point, "my city", "This is wher you are");
+		overlays = new ImmoscoutPlacesOverlay(this, getActivity().getLayoutInflater());
+		myLocationOverlays = new MyPositionOverlay(getResources().getDrawable(R.drawable.house_icon), getActivity(),
+				mMapView, getLayoutInflater());
+		myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.house_icon));
 
 		myLocationOverlays.addOverlay(myLocationOverlayItem);
 		mMapOverlays.add(myLocationOverlays);
@@ -266,14 +254,11 @@ public class MapFragment extends Fragment implements Receiver,
 
 	public void setMapViewWithZoom(int mapLayoutId, int zoomControlsLayoutId) {
 
-		ZoomControls zoomControls = (ZoomControls) mMapView
-				.findViewById(zoomControlsLayoutId);
+		ZoomControls zoomControls = (ZoomControls) mMapView.findViewById(zoomControlsLayoutId);
 		zoomControls.setOnZoomInClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				getMapView().getController().zoomInFixing(
-						getMapView().getWidth() / 2,
-						getMapView().getHeight() / 2);
+				getMapView().getController().zoomInFixing(getMapView().getWidth() / 2, getMapView().getHeight() / 2);
 			}
 		});
 		zoomControls.setOnZoomOutClickListener(new View.OnClickListener() {
@@ -313,13 +298,10 @@ public class MapFragment extends Fragment implements Receiver,
 			myLocationOverlays.clear();
 			mMapOverlays.clear();
 
-			GeoPoint point = new GeoPoint((int) (LocationHelper.sLat * 1E6),
-					(int) (LocationHelper.sLng * 1E6));
+			GeoPoint point = new GeoPoint((int) (LocationHelper.sLat * 1E6), (int) (LocationHelper.sLng * 1E6));
 
-			myLocationOverlayItem = new PlaceOverlayItem(point, "my city",
-					"THis is wher you are");
-			myLocationOverlayItem.setMarker(this.getResources().getDrawable(
-					R.drawable.house_icon));
+			myLocationOverlayItem = new PlaceOverlayItem(point, "my city", "THis is wher you are");
+			myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.house_icon));
 
 			myLocationOverlays.addOverlay(myLocationOverlayItem);
 
@@ -329,10 +311,8 @@ public class MapFragment extends Fragment implements Receiver,
 			Log.d(this.getClass().getName(), "Flats :" + mFlats.size());
 			for (Flat f : mFlats) {
 				if (f.lat != 0.0 || f.lng != 0.0) {
-					cur = getActivity().getContentResolver().query(
-							FlatsProvider.CONTENT_URI, null,
-							FlatsProvider.Flat.FLAT_ID + "=" + f.uid, null,
-							null);
+					cur = getActivity().getContentResolver().query(FlatsProvider.CONTENT_URI, null,
+							FlatsProvider.Flat.FLAT_ID + "=" + f.uid, null, null);
 					f.owned = cur.getCount() == 1;
 					cur.close();
 
@@ -382,8 +362,7 @@ public class MapFragment extends Fragment implements Receiver,
 
 	public void signIn() {
 		String authUrl = "";
-		SharedPreferences shared = getActivity().getSharedPreferences("oauth",
-				0);
+		SharedPreferences shared = getActivity().getSharedPreferences("oauth", 0);
 		String accessToken = shared.getString("oauth_token", "");
 		if (accessToken.length() != accessToken.length()) {
 			OAuthData.getInstance(getActivity().getBaseContext()).signedIn = true;
@@ -392,11 +371,8 @@ public class MapFragment extends Fragment implements Receiver,
 		} else {
 			OAuthData.getInstance(getActivity().getBaseContext()).signedIn = false;
 			try {
-				authUrl = OAuthData.getInstance(getActivity().getBaseContext()).provider
-						.retrieveRequestToken(
-								OAuthData.getInstance(getActivity()
-										.getBaseContext()).consumer,
-								OAuth.OUT_OF_BAND);
+				authUrl = OAuthData.getInstance(getActivity().getBaseContext()).provider.retrieveRequestToken(
+						OAuthData.getInstance(getActivity().getBaseContext()).consumer, OAuth.OUT_OF_BAND);
 				Log.d("OAUTH", authUrl);
 			} catch (OAuthMessageSignerException e) {
 				// TODO Auto-generated catch block
@@ -441,18 +417,14 @@ public class MapFragment extends Fragment implements Receiver,
 		protected String doInBackground(Double... params) {
 			String result = null;
 			LocationHelper.mAddress = null;
-			if ((params[0] != null && params[1] != null)
-					&& (params[0] != 0.0 && params[1] != 0.0)) {
+			if ((params[0] != null && params[1] != null) && (params[0] != 0.0 && params[1] != 0.0)) {
 				try {
-					Geocoder geocoder = new Geocoder(getActivity(),
-							Locale.getDefault());
-					List<Address> addresses = geocoder.getFromLocation(
-							params[0], params[1], 1);
+					Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+					List<Address> addresses = geocoder.getFromLocation(params[0], params[1], 1);
 					if (addresses != null && addresses.size() > 0) {
 						Address address = addresses.get(0);
 						// sending back first mAddress line and locality
-						result = address.getAddressLine(0) + ", "
-								+ address.getLocality();
+						result = address.getAddressLine(0) + ", " + address.getLocality();
 						LocationHelper.mAddress = result;
 						// ((TextView)findViewById(R.id.header_location)).setText(result);
 					}
@@ -479,8 +451,7 @@ public class MapFragment extends Fragment implements Receiver,
 		} else if (LocationHelper.sAccuracy >= 0) {
 			mNumberGeoCodeTry++;
 			if (mNumberGeoCodeTry < 3) {
-				new GeoCodeLocationTask().execute(LocationHelper.sLat,
-						LocationHelper.sLng);
+				new GeoCodeLocationTask().execute(LocationHelper.sLat, LocationHelper.sLng);
 			} else {
 				NumberFormat nFormat = NumberFormat.getInstance(Locale.GERMANY);
 				nFormat.setMinimumIntegerDigits(2);
@@ -502,8 +473,7 @@ public class MapFragment extends Fragment implements Receiver,
 	class MyDetector extends SimpleOnGestureListener {
 		@Override
 		public boolean onDoubleTap(MotionEvent event) {
-			mMapView.getController().zoomInFixing((int) event.getX(),
-					(int) event.getY());
+			mMapView.getController().zoomInFixing((int) event.getX(), (int) event.getY());
 			return super.onDoubleTap(event);
 		}
 
@@ -524,12 +494,10 @@ public class MapFragment extends Fragment implements Receiver,
 			if (result != null && ImmopolyUser.getInstance().flats != null) {
 				updateMap(false);
 			} else if (Settings.isOnline(getActivity())) {
-				Intent intent = new Intent(getActivity(),
-						UserSignupActivity.class);
+				Intent intent = new Intent(getActivity(), UserSignupActivity.class);
 				startActivity(intent);
 			} else {
-				Toast.makeText(getActivity(), R.string.no_internet_connection,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), R.string.no_internet_connection, Toast.LENGTH_LONG).show();
 			}
 			updateHud(null, 0);
 		}
@@ -539,8 +507,7 @@ public class MapFragment extends Fragment implements Receiver,
 	public void updateMapData(boolean newLoc) {
 		// mRefreshButton.clearAnimation();
 		if (newLoc || LocationHelper.mAddress == null) {
-			new GeoCodeLocationTask().execute(LocationHelper.sLat,
-					LocationHelper.sLng);
+			new GeoCodeLocationTask().execute(LocationHelper.sLat, LocationHelper.sLng);
 		} else {
 			setAddress(LocationHelper.mAddress);
 		}
@@ -559,8 +526,7 @@ public class MapFragment extends Fragment implements Receiver,
 
 		View alertDialogView = inflater.inflate(R.layout.info_webview, null);
 
-		WebView myWebView = (WebView) alertDialogView
-				.findViewById(R.id.DialogWebView);
+		WebView myWebView = (WebView) alertDialogView.findViewById(R.id.DialogWebView);
 		myWebView.setWebViewClient(new WebViewClient());
 		myWebView.getSettings().setSupportZoom(true);
 		myWebView.getSettings().setUseWideViewPort(true);
@@ -568,14 +534,13 @@ public class MapFragment extends Fragment implements Receiver,
 		myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setView(alertDialogView);
-		builder.setPositiveButton(R.string.button_ok,
-				new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
-					}
-				}).show();
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		}).show();
 	}
 
 	@Override
@@ -590,29 +555,25 @@ public class MapFragment extends Fragment implements Receiver,
 			mapButton.setSelected(true);
 		}
 		if (hudText != null) {
-			NumberFormat nFormat = NumberFormat
-					.getCurrencyInstance(Locale.GERMANY);
+			NumberFormat nFormat = NumberFormat.getCurrencyInstance(Locale.GERMANY);
 			nFormat.setMinimumIntegerDigits(1);
 			nFormat.setMaximumFractionDigits(2);
-			hudText.setText(nFormat.format(ImmopolyUser.getInstance()
-					.getBalance()));
+			hudText.setText(nFormat.format(ImmopolyUser.getInstance().getBalance()));
 		}
 	}
 
 	@Override
 	public LayoutInflater getLayoutInflater() {
-		// TODO Auto-generated method stub
 		return getActivity().getLayoutInflater();
-	}
-
-	@Override
-	public Context getContext() {
-		// TODO Auto-generated method stub
-		return getActivity();
 	}
 
 	@Override
 	public void startActivity(Intent arg0) {
 		getActivity().sendBroadcast(arg0);
+	}
+
+	@Override
+	public Context getContext() {
+		return getActivity();
 	}
 }

@@ -27,6 +27,7 @@ import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -160,7 +161,11 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		Bundle tmp = new Bundle();
 		tmp.putString(Const.EXPOSE_ID, String.valueOf(exposeID));
 		tmp.putBoolean(Const.EXPOSE_OWNED, isInPortfolio);
-		showFragment(EXPOSE_FRAGMENT,tmp);
+//		showFragment(EXPOSE_FRAGMENT,tmp);
+		
+        DialogFragment newFragment = ExposeFragment.newInstance(exposeID, isInPortfolio);
+//        newFragment.setArguments(tmp);
+        newFragment.show(getSupportFragmentManager(), "dialog");
 	}
 
 	@Override

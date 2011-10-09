@@ -1,19 +1,17 @@
 package org.immopoly.android.fragments;
 
 import org.immopoly.android.R;
-import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.ImmopolyUser;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,16 +22,15 @@ import android.widget.Button;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
-public class ExposeFragment extends Fragment {
-	private String exposeID;
-	private String exposeName;
-	private String exposeDescription;
+public class ExposeFragment extends DialogFragment {
+	private String mExposeId;
+	private String mExposeName;
+	private String mExposeDescription;
 
-	private String exposeURL;
+	private String mExposeUrl;
 	private Boolean mLoadTwice = false;
-	private WebView webView;
-	private boolean owned = false;
-	private View mView;
+	private WebView mWebView;
+	private boolean mOwned = false;
 
 	public interface OnExposeClickedListener {
 		public void onExposeClick(String exposeID);
@@ -48,40 +45,49 @@ public class ExposeFragment extends Fragment {
 	private final static String sInjectJString;
 	static {
 		StringBuilder jsInjectString;
-		jsInjectString = new StringBuilder(
-				"var headID = document.getElementsByTagName('head')[0];");
+		jsInjectString = new StringBuilder("var headID = document.getElementsByTagName('head')[0];");
 		jsInjectString.append("var cssNode = document.createElement('style');")
-				.append("cssNode.innerHTML = '.layer{display:none;}';")
-				.append("headID.appendChild(cssNode);");
+				.append("cssNode.innerHTML = '.layer{display:none;}';").append("headID.appendChild(cssNode);");
 		sInjectJString = "javascript:" + jsInjectString.toString() + ";";
 	}
 
-	@Override
-	public void onAttach(Activity arg0) {
-		super.onAttach(arg0);
+	/**
+	 * Create a new instance of MyFragment that will be initialized with the
+	 * given arguments.
+	 */
+	public static ExposeFragment newInstance(int exposeID, boolean isInPortfolio) {
+		ExposeFragment f = new ExposeFragment();
+		Bundle b = new Bundle();
+		b.putString(Const.EXPOSE_ID, String.valueOf(exposeID));
+		b.putBoolean(Const.EXPOSE_OWNED, isInPortfolio);
+		f.setArguments(b);
+		return f;
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// fullscreen dialog with no title
+		setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme);
+
 		try {
 			mOnExposeClickedListener = (OnExposeClickedListener) getActivity();
 		} catch (ClassCastException e) {
-			throw new ClassCastException(getActivity().toString()
-					+ " must implement OnMapItemClickedListener");
+			throw new ClassCastException(getActivity().toString() + " must implement OnMapItemClickedListener");
 		}
 	}
 
-	public View onCreateView(LayoutInflater arg0, ViewGroup arg1, Bundle arg2) {
-		mView = arg0.inflate(R.layout.expose_detail_web_view, arg1, false);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.expose_detail_web_view, container, false);
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
-				Const.ANALYTICS_INTERVAL, getActivity().getApplicationContext());
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getActivity()
+				.getApplicationContext());
 
 		tracker.trackPageView(TrackingManager.VIEW_EXPOSE);
 
-		Button addExpose = (Button) mView.findViewById(R.id.BackButton);
+		Button addExpose = (Button) view.findViewById(R.id.BackButton);
 		addExpose.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -89,9 +95,9 @@ public class ExposeFragment extends Fragment {
 				addCurrentExpose(v);
 			}
 		});
-		webView = (WebView) mView.findViewById(R.id.exposeWevView);
-		webView.getSettings().setJavaScriptEnabled(true);
-		webView.setWebViewClient(new WebViewClient() {
+		mWebView = (WebView) view.findViewById(R.id.exposeWevView);
+		mWebView.getSettings().setJavaScriptEnabled(true);
+		mWebView.setWebViewClient(new WebViewClient() {
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
@@ -106,53 +112,48 @@ public class ExposeFragment extends Fragment {
 				view.loadUrl(sInjectJString);
 				if (url.matches(".+?\\/bilder\\.htm$")) {
 					// match image details
-					tracker.trackPageView(TrackingManager.ACTION_EXPOSE + "/"
-							+ TrackingManager.LABEL_IMAGES);
+					tracker.trackPageView(TrackingManager.ACTION_EXPOSE + "/" + TrackingManager.LABEL_IMAGES);
 				}
 				if (url.matches(".+?\\/bilder\\.htm#bigpicture$")) {
 					// navigate in details images
-					tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
-							TrackingManager.ACTION_VIEW,
+					tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_VIEW,
 							TrackingManager.LABEL_IMAGES_DETAILS, 0);
 				}
 				if (mLoadTwice) {
-					webView.loadUrl(url);
+					mWebView.loadUrl(url);
 					mLoadTwice = false;
 				} else {
-					mView.findViewById(R.id.progress).setVisibility(View.GONE);
+					getView().findViewById(R.id.progress).setVisibility(View.GONE);
 				}
 			}
 
 			@Override
 			public void onLoadResource(WebView view, String url) {
 				super.onLoadResource(view, url);
-				mView.findViewById(R.id.progress).setVisibility(View.VISIBLE);
+				getView().findViewById(R.id.progress).setVisibility(View.VISIBLE);
 			}
 
 		});
 		loadPage(getArguments());
-		return mView;
+		return view;
 	}
 
 	void loadPage(Bundle intent) {
 		if (intent != null && intent.containsKey(Const.EXPOSE_ID)) {
-			exposeID = intent.getString(Const.EXPOSE_ID);
+			mExposeId = intent.getString(Const.EXPOSE_ID);
 
-			tracker.setCustomVar(1, Const.SOURCE,
-					intent.getString(Const.SOURCE), 1);
+			tracker.setCustomVar(1, Const.SOURCE, intent.getString(Const.SOURCE), 1);
 
 			if (intent.getBoolean(Const.EXPOSE_IN_PORTOFOLIO, false)) {
-				((Button) mView.findViewById(R.id.BackButton))
-						.setText(getString(R.string.webview_back_button));
-				owned = true;
+				((Button) getView().findViewById(R.id.BackButton)).setText(getString(R.string.webview_back_button));
+				mOwned = true;
 			}
-			exposeName = intent.getString(Const.EXPOSE_NAME);
-			exposeDescription = intent.getString(Const.EXPOSE_DESC);
-			exposeURL = intent.getString(Const.EXPOSE_URL);
-			String url = Settings.getFlatLink(exposeID, true);
+			mExposeName = intent.getString(Const.EXPOSE_NAME);
+			mExposeDescription = intent.getString(Const.EXPOSE_DESC);
+			mExposeUrl = intent.getString(Const.EXPOSE_URL);
+			String url = Settings.getFlatLink(mExposeId, true);
 
-			SharedPreferences shared = getActivity().getSharedPreferences(
-					Const.SHARED_PREF_EXPOSE_WEBVIEW, 0);
+			SharedPreferences shared = getActivity().getSharedPreferences(Const.SHARED_PREF_EXPOSE_WEBVIEW, 0);
 			String visited = shared.getString(Const.KEY_VISITED, "");
 			if (visited.length() == 0) {
 				mLoadTwice = true;
@@ -160,7 +161,7 @@ public class ExposeFragment extends Fragment {
 				editor.putString(Const.KEY_VISITED, "true");
 				editor.commit();
 			}
-			webView.loadUrl(url);
+			mWebView.loadUrl(url);
 		}
 	}
 
@@ -169,20 +170,19 @@ public class ExposeFragment extends Fragment {
 		if (ImmopolyUser.getInstance().readToken(getActivity()).length() > 0) {
 			intent = new Intent();
 			intent.putExtra(Const.EXPOSE_ADD_PORTIFOLIO, true);
-			intent.putExtra(Const.EXPOSE_ID, exposeID);
-			intent.putExtra(Const.EXPOSE_NAME, exposeName);
-			intent.putExtra(Const.EXPOSE_DESC, exposeDescription);
-			intent.putExtra(Const.EXPOSE_URL, exposeURL);
+			intent.putExtra(Const.EXPOSE_ID, mExposeId);
+			intent.putExtra(Const.EXPOSE_NAME, mExposeName);
+			intent.putExtra(Const.EXPOSE_DESC, mExposeDescription);
+			intent.putExtra(Const.EXPOSE_URL, mExposeUrl);
 			intent.setAction("add_expose");
-			if (!owned) {
+			if (!mOwned) {
 				// setResult(Activity.RESULT_OK, i);
-				tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
-						TrackingManager.ACTION_EXPOSE,
+				tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE,
 						TrackingManager.LABEL_TRY, 0);
 			} else {
 				// setResult(RESULT_CANCELED, i);
 			}
-			mOnExposeClickedListener.onExposeClick(exposeID);
+			mOnExposeClickedListener.onExposeClick(mExposeId);
 			// finish();
 		} else {
 			mOnExposeClickedListener.onExposeClick(null);
@@ -192,9 +192,8 @@ public class ExposeFragment extends Fragment {
 	}
 
 	public void shareExpose(View v) {
-		Settings.shareMessage(getActivity(),
-				getString(R.string.link_share_flat), exposeName,
-				Settings.getFlatLink(exposeID, false));
+		Settings.shareMessage(getActivity(), getString(R.string.link_share_flat), mExposeName,
+				Settings.getFlatLink(mExposeId, false));
 	}
 
 	@Override
