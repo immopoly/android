@@ -193,6 +193,8 @@ public class ExposeFragment extends DialogFragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		mWebView.destroy();
+		mWebView = null;
 		tracker.stopSession();
 	}
 }
