@@ -1,6 +1,7 @@
 package org.immopoly.android.fragments;
 
 import org.immopoly.android.R;
+import org.immopoly.android.app.ExposeWebViewActivity;
 import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.Settings;
@@ -152,15 +153,6 @@ public class ExposeFragment extends DialogFragment {
 			mExposeDescription = intent.getString(Const.EXPOSE_DESC);
 			mExposeUrl = intent.getString(Const.EXPOSE_URL);
 			String url = Settings.getFlatLink(mExposeId, true);
-
-			SharedPreferences shared = getActivity().getSharedPreferences(Const.SHARED_PREF_EXPOSE_WEBVIEW, 0);
-			String visited = shared.getString(Const.KEY_VISITED, "");
-			if (visited.length() == 0) {
-				mLoadTwice = true;
-				SharedPreferences.Editor editor = shared.edit();
-				editor.putString(Const.KEY_VISITED, "true");
-				editor.commit();
-			}
 			mWebView.loadUrl(url);
 		}
 	}
@@ -183,10 +175,12 @@ public class ExposeFragment extends DialogFragment {
 				// setResult(RESULT_CANCELED, i);
 			}
 			mOnExposeClickedListener.onExposeClick(mExposeId);
+			dismiss();
 			// finish();
 		} else {
-			mOnExposeClickedListener.onExposeClick(null);
-			intent = new Intent(getActivity(), UserSignupActivity.class);
+			Intent intent2 = new Intent(getActivity(),
+					UserSignupActivity.class);
+			startActivity(intent2);
 		}
 
 	}

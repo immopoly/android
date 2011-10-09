@@ -182,7 +182,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 
 	@Override
 	public void onExposeClick(String exposeID) {
-		getSupportFragmentManager().popBackStack();
+		//getSupportFragmentManager().popBackStack();
 		if(exposeID != null){
 			new AddToPortifolioTask().execute(exposeID);
 		}
