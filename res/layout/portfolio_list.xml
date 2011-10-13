@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <ListView android:id="@+id/pf_list_view" android:layout_height="0dp" android:layout_width="match_parent"
+    		  android:layout_weight="1" ></ListView>
+
+    <LinearLayout android:id="@+id/linearLayout1" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <Button android:id="@+id/pf_map_btn" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:text="Karte" ></Button>
+        <Button android:id="@+id/pf_list_btn" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:text="Liste" android:enabled="false"></Button>
+    </LinearLayout>
+    
+</LinearLayout>

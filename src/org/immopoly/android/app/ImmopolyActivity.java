@@ -12,7 +12,9 @@ import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.ExposeFragment;
 import org.immopoly.android.fragments.ExposeFragment.OnExposeClickedListener;
 import org.immopoly.android.fragments.MapFragment;
-import org.immopoly.android.fragments.MapFragment.OnMapItemClickedListener;
+import org.immopoly.android.fragments.OnMapItemClickedListener;
+import org.immopoly.android.fragments.PortfolioListFragment;
+import org.immopoly.android.fragments.PortfolioMapFragment;
 import org.immopoly.android.fragments.callbacks.HudCallbacks;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
@@ -23,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.maps.MapView;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -32,7 +35,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -42,14 +47,16 @@ import android.widget.Toast;
 public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener, OnExposeClickedListener, HudCallbacks{
 
 	private static final String PROFILE_FRAGMENT_TAG = "PROFILE_FRAGMENT";
-	private static final String PORTFOLIO_FRAGMENT_TAG = "PORTFOLIO_FRAGMENT";
+	private static final String PORTFOLIO_MAP_FRAGMENT_TAG  = "PORTFOLIO_MAP_FRAGMENT";
+	private static final String PORTFOLIO_LIST_FRAGMENT_TAG = "PORTFOLIO_LIST_FRAGMENT";
 	private static final String MAP_FRAGMENT_TAG = "MAP_FRAGMENT";
 	private static final String EXPOSE_FRAGMENT_TAG = "EXPOSE_FRAGMENT";
 	
-	private static final int MAP_FRAGMENT = 1;
-	private static final int PROFILE_FRAGMENT = 2;
-	private static final int PORTFOLIO_FRAGMENT = 3;
-	private static final int EXPOSE_FRAGMENT = 4;
+	public static final int MAP_FRAGMENT = 1;
+	public static final int PROFILE_FRAGMENT = 2;
+	public static final int PORTFOLIO_MAP_FRAGMENT = 3;
+	public static final int PORTFOLIO_LIST_FRAGMENT = 4;
+	public static final int EXPOSE_FRAGMENT = 5;
 
 	private FrameLayout mFragmentContainer;
 
@@ -58,6 +65,9 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	private Fragment mLastFragment;
 	private boolean mIsVeryFirstFragment = true;
 	private GoogleAnalyticsTracker tracker;
+	private MapView mMapView;
+	private Fragment mMapViewHolder;
+	private int mCurrentFragment;
 	/**
 	 * Init the game
 	 */
@@ -101,6 +111,9 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	}
 
 	public void showFragment(int which, Bundle bundle) {
+		if ( mCurrentFragment == which )  
+			return;  // avoid "fragment already active" exception
+		mCurrentFragment = which;
 		FragmentManager fm = getSupportFragmentManager();
 		Fragment newFragment = null;
 		String newTag = "";
@@ -110,14 +123,20 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 			newFragment = fm.findFragmentByTag(MAP_FRAGMENT_TAG);
 			if (newFragment == null){
 				newFragment = new MapFragment();
-				
 			}
 			break;
-		case PORTFOLIO_FRAGMENT:
-			newTag = PORTFOLIO_FRAGMENT_TAG;
-			newFragment = fm.findFragmentByTag(PORTFOLIO_FRAGMENT_TAG);
+		case PORTFOLIO_MAP_FRAGMENT:
+			newTag = PORTFOLIO_MAP_FRAGMENT_TAG;
+			newFragment = fm.findFragmentByTag(PORTFOLIO_MAP_FRAGMENT_TAG);
 			if (newFragment == null){
-				newFragment = new MapFragment();
+				newFragment = new PortfolioMapFragment();
+			}
+			break;
+		case PORTFOLIO_LIST_FRAGMENT:
+			newTag = PORTFOLIO_LIST_FRAGMENT_TAG;
+			newFragment = fm.findFragmentByTag(PORTFOLIO_LIST_FRAGMENT_TAG);
+			if (newFragment == null){
+				newFragment = new PortfolioListFragment();
 			}
 			break;
 		case PROFILE_FRAGMENT:
@@ -137,15 +156,19 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		}
 		
 		if (newFragment != null) {
-			newFragment.setArguments(bundle);
+			if ( bundle != null )
+				newFragment.setArguments(bundle);
 			FragmentTransaction transaction = fm.beginTransaction();
-			transaction = transaction.replace(R.id.fragment_container, newFragment,newTag);
+			if ( mLastFragment != null )
+				transaction.remove( mLastFragment );
+			transaction.add(R.id.fragment_container, newFragment,newTag);
 			if(!mIsVeryFirstFragment ){
 				transaction = transaction.addToBackStack(null);
 			} else {
 				mIsVeryFirstFragment = false;
 			}
 			transaction.commit();
+			mLastFragment = newFragment;
 		}
 		
 	}
@@ -176,10 +199,60 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 
 	@Override
 	public void onHudAction(View view) {
-		// TODO Auto-generated method stub
-		
+		switch (view.getId()) {
+		case R.id.hud_map:
+			showFragment( MAP_FRAGMENT, null );
+			break;
+		case R.id.hud_portfolio:
+			showFragment( PORTFOLIO_MAP_FRAGMENT, null );
+			break;
+		case R.id.hud_profile:
+			showFragment( PROFILE_FRAGMENT, null );
+			break;
+		case R.id.hud_text:
+			// TODO
+			break;
+		default:
+			break;
+		}
+	}
+	
+	/**
+	 * Used by a Fragment to gain ownership of the one and only MapView
+	 * @param mapViewHolder The Fragment that wants to use the MapView
+	 * @return our MapView
+	 */
+	public MapView acquireMapView( Fragment mapViewHolder ) {
+		if ( this.mMapViewHolder != null ) {
+			throw new IllegalStateException( "The one and only MapView was not released by " 
+							+ mMapViewHolder.getClass().getName() );
+		}
+		this.mMapViewHolder = mapViewHolder;
+		if ( mMapView == null ) {
+			mMapView = new MapView( this, getString(R.string.google_maps_key_debug) );
+			mMapView.setClickable(true);
+			mMapView.setTag("map_view");
+		} 
+		return mMapView;
 	}
 
+	/**
+	 * Used by a Fragment to release ownership of the one and only MapView
+	 * @param mapViewHolder The Fragment that wants to release the MapView
+	 */
+	public void releaseMapView( Fragment mapViewHolder ) {
+		if ( mapViewHolder != mMapViewHolder ) {
+			throw new IllegalStateException( "Wrong Fragment tried to release the one and only MapView "
+					+ " Holder: " + this.mMapViewHolder.getClass().getName()
+					+ " Releaser: " + mapViewHolder.getClass().getName() );
+		}
+		if ( mMapView.getParent() != null && mMapView.getParent() instanceof ViewGroup )
+			((ViewGroup) mMapView.getParent()).removeView(mMapView);
+		mMapView.getOverlays().clear();
+		mMapView.removeAllViews();
+		mMapViewHolder = null;
+	}
+	
 	@Override
 	public void onExposeClick(String exposeID) {
 		//getSupportFragmentManager().popBackStack();

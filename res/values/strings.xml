@@ -13,9 +13,6 @@
     <string name="app_name">Immopoly</string>
     <string name="region_hint">Region Suche</string>
     <string name="settings_description">Beschreibung</string>
-    <string name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string>
-    <!-- <string name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string> -->
-    <!-- <string name="google_maps_key_debug">0bLS0H9J6frq-jJZADgTjmyp_hq84tDcy_BznUw</string> -->
     <string name="webview_back_button">Zurück</string>
     <string name="username_hint">Benutzername</string>
     <string name="password_hint">Passwort</string>

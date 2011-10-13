@@ -17,6 +17,7 @@ import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
 import org.immopoly.android.app.DashboardActivity;
+import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.app.WebViewActivity;
 import org.immopoly.android.constants.Const;
@@ -67,18 +68,13 @@ import android.widget.ZoomControls;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
-public class MapFragment extends Fragment implements Receiver, MapMarkerCallback, MapLocationCallback, HudCallbacks {
-
-	public interface OnMapItemClickedListener {
-		public void onMapItemClicked(int exposeID, boolean isInPortfolio);
-
-		public void onMapOverlayClicked(int exposeID, boolean isInPortfolio);
-
-	}
+public class MapFragment extends Fragment implements Receiver,
+		MapMarkerCallback, MapLocationCallback, HudCallbacks, OnMapItemClickedListener {
 
 	public static final String TAG = "Immopoly";
 
@@ -104,22 +100,14 @@ public class MapFragment extends Fragment implements Receiver, MapMarkerCallback
 	private OnMapItemClickedListener mOnMapItemClickedListener;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mMapView = new MapView(getActivity(), getString(R.string.google_maps_key_debug));
-		mMapView.setClickable(true);
-		mMapView.setTag("map_view");
-		/*
-		 * mFragmentView = inflater.inflate(R.layout.map_simple, null);
-		 * 
-		 * mMapView = (MapView) mFragmentView.findViewById(R.id.mapview);
-		 */
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+		mMapView = ((ImmopolyActivity) getActivity()).acquireMapView( this );
 		mMapView.setBuiltInZoomControls(true);
 		mMapController = mMapView.getController();
-
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
 		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getActivity()
-				.getApplicationContext());
+							.getApplicationContext());
 
 		// mState = (ReceiverState) getActivity()
 		// .getLastNonConfigurationInstance();
@@ -132,7 +120,7 @@ public class MapFragment extends Fragment implements Receiver, MapMarkerCallback
 		}
 		return mMapView;
 	}
-
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -143,13 +131,13 @@ public class MapFragment extends Fragment implements Receiver, MapMarkerCallback
 		}
 	}
 
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		((ViewGroup) mMapView.getParent()).removeView(mMapView);
+	public void onDestroyView() {
+		((ImmopolyActivity) getActivity()).releaseMapView( this );
+		Log.i( "IMPO", "MapFragment.onDestroyView" );
 		mMapView = null;
+		super.onDestroyView();
 	}
-
+	
 	public OnMapItemClickedListener getOnMapItemClickedListener() {
 		return mOnMapItemClickedListener;
 	}
@@ -198,7 +186,7 @@ public class MapFragment extends Fragment implements Receiver, MapMarkerCallback
 		// this is the bounding box container
 
 		myLocationOverlayItem = new PlaceOverlayItem(point, "my city", "This is wher you are");
-		overlays = new ImmoscoutPlacesOverlay(this, getActivity().getLayoutInflater());
+		overlays = new ImmoscoutPlacesOverlay(this, mMapView, getActivity().getLayoutInflater());
 		myLocationOverlays = new MyPositionOverlay(getResources().getDrawable(R.drawable.house_icon), getActivity(),
 				mMapView, getLayoutInflater());
 		myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.house_icon));
@@ -292,7 +280,7 @@ public class MapFragment extends Fragment implements Receiver, MapMarkerCallback
 	}
 
 	public void updateMap(boolean centerMap) {
-		if (mFlats != null) {
+		if ( mMapView != null && mFlats != null) {
 			int count = 0;
 			double minX = 999, minY = 999, maxX = -999, maxY = -999;
 			myLocationOverlays.clear();
@@ -536,11 +524,11 @@ public class MapFragment extends Fragment implements Receiver, MapMarkerCallback
 		builder.setView(alertDialogView);
 		builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-			}
-		}).show();
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				}).show();
 	}
 
 	@Override
@@ -572,6 +560,16 @@ public class MapFragment extends Fragment implements Receiver, MapMarkerCallback
 		getActivity().sendBroadcast(arg0);
 	}
 
+	@Override
+	public void onMapItemClicked(int exposeID, boolean isInPortfolio) {
+		mOnMapItemClickedListener.onMapItemClicked(exposeID, isInPortfolio);
+	}
+	
+	@Override
+	public void onMapOverlayClicked(int exposeID, boolean isInPortfolio) {
+		mOnMapItemClickedListener.onMapOverlayClicked(exposeID, isInPortfolio);
+	}
+	
 	@Override
 	public Context getContext() {
 		return getActivity();

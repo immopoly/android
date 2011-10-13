@@ -70,6 +70,8 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 	public String priceValue;
 	public String priceIntervaleType;
 	public String currency;
+	public String livingSpace;
+	public String numRooms;
 	public long creationDate=0;
 	public int age;
 	
@@ -132,6 +134,8 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 		name = objRealEstate.optString("title");
 		description = objRealEstate.optString("descriptionNote");
 		locationNote = objRealEstate.optString("locationNote");
+		livingSpace = objRealEstate.optString("livingSpace", "?");
+		numRooms = objRealEstate.optString("numberOfRooms", "?");
 		// OWN OBJECT
 
 		/**
@@ -183,6 +187,8 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 					.optString("priceIntervalType");
 			currency = objRealEstate.getJSONObject("price").optString(
 					"currency");
+		} else {
+			priceValue = "?";
 		}
 		//schtief issue #7 2006-09-19T15:27:19.000+02:00
 		if (jsonObject.has("@modification")) {
