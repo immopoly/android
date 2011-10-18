@@ -183,7 +183,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		Toast.makeText(this, "onMapOverlayClicked", Toast.LENGTH_LONG).show();
 		Bundle tmp = new Bundle();
 		tmp.putString(Const.EXPOSE_ID, String.valueOf(exposeID));
-		tmp.putBoolean(Const.EXPOSE_OWNED, isInPortfolio);
+		tmp.putBoolean(Const.EXPOSE_IN_PORTOFOLIO, isInPortfolio);
 //		showFragment(EXPOSE_FRAGMENT,tmp);
 		
         DialogFragment newFragment = ExposeFragment.newInstance(exposeID, isInPortfolio);

@@ -60,7 +60,7 @@ public class ExposeFragment extends DialogFragment {
 		ExposeFragment f = new ExposeFragment();
 		Bundle b = new Bundle();
 		b.putString(Const.EXPOSE_ID, String.valueOf(exposeID));
-		b.putBoolean(Const.EXPOSE_OWNED, isInPortfolio);
+		b.putBoolean(Const.EXPOSE_IN_PORTOFOLIO, isInPortfolio);
 		f.setArguments(b);
 		return f;
 	}
@@ -89,13 +89,7 @@ public class ExposeFragment extends DialogFragment {
 		tracker.trackPageView(TrackingManager.VIEW_EXPOSE);
 
 		Button addExpose = (Button) view.findViewById(R.id.BackButton);
-		addExpose.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				addCurrentExpose(v);
-			}
-		});
 		mWebView = (WebView) view.findViewById(R.id.exposeWevView);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebViewClient(new WebViewClient() {
@@ -136,6 +130,18 @@ public class ExposeFragment extends DialogFragment {
 
 		});
 		loadPage(getArguments());
+		
+		if ( mOwned ) {
+			addExpose.setEnabled( false );
+		} else {
+			addExpose.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					addCurrentExpose(v);
+				}
+			});
+		}
+		
 		return view;
 	}
 
@@ -146,7 +152,7 @@ public class ExposeFragment extends DialogFragment {
 			tracker.setCustomVar(1, Const.SOURCE, intent.getString(Const.SOURCE), 1);
 
 			if (intent.getBoolean(Const.EXPOSE_IN_PORTOFOLIO, false)) {
-				((Button) getView().findViewById(R.id.BackButton)).setText(getString(R.string.webview_back_button));
+//				((Button) getView().findViewById(R.id.BackButton)).setText(getString(R.string.webview_back_button));
 				mOwned = true;
 			}
 			mExposeName = intent.getString(Const.EXPOSE_NAME);

@@ -22,6 +22,7 @@ package org.immopoly.android.adapter;
 import java.util.ArrayList;
 
 import org.immopoly.android.R;
+import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.MapFragment;
 import org.immopoly.android.fragments.OnMapItemClickedListener;
@@ -106,21 +107,11 @@ public class FlatsPagerAdapter extends PagerAdapter {
 		((TextView) markerView.findViewById( R.id.price_text )).setText( flat.priceValue + "€" ); // TODO kommt im IS24 JSON immer EUR/MONTH ? 
 
 		markerView.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent i = new Intent();
-						i.putExtra(Const.EXPOSE_ID, String.valueOf(flat.uid));
-						i.putExtra(Const.EXPOSE_NAME, String.valueOf(flat.name));
-						i.putExtra(Const.EXPOSE_DESC, String.valueOf(flat.description));
-						i.putExtra(Const.EXPOSE_PICTURE_SMALL,
-								String.valueOf(flat.titlePictureSmall));
-						i.putExtra(Const.EXPOSE_IN_PORTOFOLIO, flat.owned);
-						i.putExtra(Const.SOURCE, MapActivity.class.getSimpleName());
-						i.setAction("expose_view");
-						//v.getContext().sendBroadcast(i);
-						((OnMapItemClickedListener) mContext).onMapOverlayClicked(flat.uid, flat.owned);
-					}
-				});
+			@Override
+			public void onClick(View v) {
+				((OnMapItemClickedListener) mContext.getActivity()).onMapOverlayClicked(flat.uid, flat.owned);
+			}
+		});
 
 		return markerView;
 	}

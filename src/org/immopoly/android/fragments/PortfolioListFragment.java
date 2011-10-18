@@ -15,9 +15,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class PortfolioListFragment extends Fragment {
+public class PortfolioListFragment extends Fragment implements OnItemClickListener{
 
 	private Flats flats;
 
@@ -28,6 +30,8 @@ public class PortfolioListFragment extends Fragment {
 		ListView listView = (ListView) layout.findViewById(R.id.pf_list_view);
 		if ( flats != null )
 			listView.setAdapter( new PortfolioFlatsAdapter( getActivity(), flats ) );
+	
+		listView.setOnItemClickListener( this );
 		
 		layout.findViewById( R.id.pf_map_btn ).setOnClickListener( new View.OnClickListener() {
 			public void onClick(View v) {
@@ -38,6 +42,7 @@ public class PortfolioListFragment extends Fragment {
 		
 		return layout;
 	}
+	
 	
 //	@Override
 //	public void onListItemClick( ListView listView, View itemView, int idx, long id ) {
@@ -68,5 +73,12 @@ public class PortfolioListFragment extends Fragment {
         cur.close();
         return flats;
     }
+
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		Flat flat = flats.get( position );
+		((OnMapItemClickedListener) getActivity()).onMapOverlayClicked(flat.uid, flat.owned);
+	}
 
 }
