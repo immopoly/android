@@ -16,76 +16,73 @@
   ~
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see http://www.gnu.org/licenses/.
-  -->
-
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:orientation="horizontal"
-	android:layout_margin="3dip"
-	android:gravity="center"
-	android:background="@drawable/map_overlay_markery"
-	android:id="@+id/MapMarkerPopup">
-	<ImageView
-		android:id="@+id/imagePreview"
-		android:background="@drawable/loading"
-		android:layout_width="60dip"
-		android:scaleType="centerCrop"
-		android:layout_height="60dip"
-		android:layout_margin="5dip" />
-	<LinearLayout
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:layout_weight="1"
-		android:orientation="horizontal">
-		<LinearLayout
-			android:layout_height="fill_parent"
-			android:layout_width="0dip"
-			android:layout_weight="1"
-			android:layout_margin="2dip"
-			android:orientation="vertical">
-			<TextView
-				
-				android:id="@+id/titleMarkerText"
-				android:textStyle="bold"
-				android:layout_weight="1"
-				android:textColor="@android:color/white"
-				android:layout_width="wrap_content"
-				android:layout_height="0dip" />
-			<TextView
-				android:layout_margin="5dip"
-				android:id="@+id/priceInfo"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:textColor="@android:color/black" />
-
-		</LinearLayout>
-		<View
-			android:id="@+id/view1"
-			android:layout_margin="10dip"
-			android:layout_height="fill_parent"
-			android:layout_width="3dip"
-			android:background="@android:color/darker_gray"></View>
-		<LinearLayout
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:layout_width="wrap_content"
-			android:orientation="vertical">
-			<Button
-				android:id="@+id/btnOpenExpose"
-				android:background="@drawable/ic_watch_button"
-				android:layout_gravity="center"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-			<TextView
-				android:id="@+id/pagerPages"
-				android:layout_gravity="center"
-				android:textStyle="bold"
-				android:layout_weight="1"
-				android:textColor="@android:color/white"
-				android:layout_width="wrap_content"
-				android:layout_height="0dip"/>
-		</LinearLayout>
-	</LinearLayout>
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/MapMarkerPopup"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="3dip"
+    android:background="@drawable/map_overlay_markery"
+    android:gravity="center"
+    android:orientation="horizontal" >
+    <ImageView
+        android:id="@+id/imagePreview"
+        android:layout_width="60dip"
+        android:layout_height="60dip"
+        android:layout_margin="5dip"
+        android:background="@drawable/loading"
+        android:scaleType="centerCrop" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal" >
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_margin="2dip"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+            <TextView
+                android:id="@+id/titleMarkerText"
+                android:layout_width="wrap_content"
+                android:layout_height="0dip"
+                android:layout_weight="1"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/priceInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dip"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+        <View
+            android:id="@+id/view1"
+            android:layout_width="3dip"
+            android:layout_height="fill_parent"
+            android:layout_margin="10dip"
+            android:background="@android:color/darker_gray" >
+        </View>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical" >
+            <Button
+                android:id="@+id/btnOpenExpose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_watch_button" />
+            <TextView
+                android:id="@+id/pagerPages"
+                android:layout_width="wrap_content"
+                android:layout_height="0dip"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

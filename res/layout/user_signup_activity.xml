@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ~ This is the Android component of Immopoly ~ http://immopoly.appspot.com 
+<!--
+     ~ This is the Android component of Immopoly ~ http://immopoly.appspot.com 
 	~ Copyright (C) 2011 Tobias Sasse ~ ~ This program is free software: you 
 	can redistribute it and/or modify ~ it under the terms of the GNU Affero 
 	General Public License as ~ published by the Free Software Foundation, either 
@@ -8,51 +9,99 @@
 	ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY or FITNESS 
 	FOR A PARTICULAR PURPOSE. See the ~ GNU Affero General Public License for 
 	more details. ~ ~ You should have received a copy of the GNU Affero General 
-	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/. -->
+	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/.
+-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/dialog" android:layout_width="wrap_content"
-	android:layout_height="wrap_content" android:paddingLeft="6dp"
-	android:paddingRight="6dp" android:paddingBottom="6dp"
-	android:paddingTop="6dp">
-	<!-- <ProgressBar android:layout_centerVertical="true" android:layout_centerHorizontal="true" 
+    android:id="@+id/dialog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingBottom="6dp"
+    android:paddingLeft="6dp"
+    android:paddingRight="6dp"
+    android:paddingTop="6dp" >
+    <!--
+         <ProgressBar android:layout_centerVertical="true" android:layout_centerHorizontal="true" 
 		android:layout_height="wrap_content" style="?android:attr/progressBarStyleLarge" 
-		android:layout_width="wrap_content" android:id="@+id/progressBar1"></ProgressBar> -->
-	<TextView android:layout_alignParentLeft="true"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_alignParentTop="true" android:id="@+id/login_header"
-		android:text="@string/header_login" style="@style/headerText" />
-	<ImageButton android:onClick="closeLogin" android:id="@+id/closeButton"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:background="@drawable/btn_close"
-		android:layout_alignParentTop="true" android:layout_alignParentRight="true"></ImageButton>
-	<LinearLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:id="@+id/loginview" android:layout_alignParentLeft="true"
-		android:layout_below="@+id/closeButton">
-		<TextView android:layout_width="fill_parent"
-			android:layout_margin="15dip" android:layout_weight="1"
-			android:text="@string/welcome_message" android:layout_height="wrap_content"></TextView>
-		<EditText android:layout_width="match_parent" android:id="@+id/user_name"
-			android:layout_weight="1" android:hint="@string/username_hint"
-			android:layout_height="wrap_content">
-			<requestFocus></requestFocus>
-		</EditText>
-		<EditText android:layout_width="match_parent" android:id="@+id/user_password"
-			android:layout_weight="1" android:hint="@string/password_hint"
-			android:inputType="textPassword" android:layout_height="wrap_content"></EditText>
-		<EditText android:layout_width="match_parent" android:id="@+id/user_password_confirm"
-			android:layout_weight="1" android:hint="@string/password_confirm_hint"
-			android:visibility="gone" android:inputType="textPassword"
-			android:layout_height="wrap_content"></EditText>
-		<LinearLayout android:layout_width="fill_parent"
-			android:orientation="horizontal" android:layout_height="wrap_content"
-			android:layout_weight="1">
-			<Button android:layout_width="0dip" android:id="@+id/register"
-				android:layout_weight="1" android:layout_height="wrap_content"
-				android:text="@string/register" android:onClick="registerUser"></Button>
-			<Button android:layout_width="0dip" android:id="@+id/login"
-				android:layout_weight="1" android:layout_height="wrap_content"
-				android:text="@string/login" android:onClick="loginUser"></Button>
-		</LinearLayout>
-	</LinearLayout>
+		android:layout_width="wrap_content" android:id="@+id/progressBar1"></ProgressBar>
+    -->
+    <TextView
+        android:id="@+id/login_header"
+        style="@style/headerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/header_login" />
+    <ImageButton
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/btn_close"
+        android:onClick="closeLogin" >
+    </ImageButton>
+    <LinearLayout
+        android:id="@+id/loginview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/closeButton"
+        android:orientation="vertical" >
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dip"
+            android:layout_weight="1"
+            android:text="@string/welcome_message" >
+        </TextView>
+        <EditText
+            android:id="@+id/user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/username_hint" >
+            <requestFocus >
+            </requestFocus>
+        </EditText>
+        <EditText
+            android:id="@+id/user_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/password_hint"
+            android:inputType="textPassword" >
+        </EditText>
+        <EditText
+            android:id="@+id/user_password_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/password_confirm_hint"
+            android:inputType="textPassword"
+            android:visibility="gone" >
+        </EditText>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+            <Button
+                android:id="@+id/register"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="registerUser"
+                android:text="@string/register" >
+            </Button>
+            <Button
+                android:id="@+id/login"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="loginUser"
+                android:text="@string/login" >
+            </Button>
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>

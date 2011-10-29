@@ -1,21 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent" android:layout_height="wrap_content"
-	style="@style/hud" android:gravity="center_vertical" android:id="@+id/hud_root"
-	android:orientation="horizontal">
-	<ImageButton style="@style/hudElement" android:id="@+id/hud_map"
-		android:src="@drawable/btn_map" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:onClick="onHudAction" />
-	<ImageButton style="@style/hudElement" android:id="@+id/hud_portfolio"
-		android:src="@drawable/btn_portfolio" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:onClick="onHudAction" />
-	<ImageButton style="@style/hudElement" android:id="@+id/hud_profile"
-		android:src="@drawable/btn_profile" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:onClick="onHudAction" />
-	<Button style="@style/hudElement" android:id="@+id/hud_notification"
-		android:background="@drawable/btn_notify" android:text="4" android:layout_width="40dip" android:layout_height="30dip" android:onClick="onHudAction" />
-	<Button style="@style/hudElement" android:id="@+id/hud_text"
-		android:text="4000 €" android:layout_height="wrap_content"
-		android:layout_width="match_parent" android:gravity="right"
-		android:onClick="onHudAction" />
+    android:id="@+id/hud_root"
+    style="@style/hud"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+    <ImageButton
+        android:id="@+id/hud_map"
+        style="@style/hudElement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onHudAction"
+        android:src="@drawable/btn_map" />
+    <ImageButton
+        android:id="@+id/hud_portfolio"
+        style="@style/hudElement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onHudAction"
+        android:src="@drawable/btn_portfolio" />
+    <ImageButton
+        android:id="@+id/hud_profile"
+        style="@style/hudElement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onHudAction"
+        android:src="@drawable/btn_profile" />
+    <Button
+        android:id="@+id/hud_notification"
+        style="@style/hudElement"
+        android:layout_width="40dip"
+        android:layout_height="30dip"
+        android:background="@drawable/btn_notify"
+        android:onClick="onHudAction"
+        android:text="4" />
+    <Button
+        android:id="@+id/hud_text"
+        style="@style/hudElement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:onClick="onHudAction"
+        android:text="4000 €" />
 </LinearLayout>
