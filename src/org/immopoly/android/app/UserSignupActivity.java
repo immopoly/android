@@ -111,7 +111,7 @@ public class UserSignupActivity extends Activity {
 		} else {
 			init();
 		}
-		C2DMessaging.register(this, Const.IMMOPOLY_EMAIL);
+		
 	}
 
 	@Override
@@ -345,6 +345,7 @@ public class UserSignupActivity extends Activity {
 		// start game
 		//Intent i = new Intent(this, PlacesMapActivity.class);
 		//startActivity(i);
+		C2DMessaging.register(this, Const.IMMOPOLY_EMAIL);
 		finish();
 	}
 
