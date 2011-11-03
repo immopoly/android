@@ -1,7 +1,7 @@
 package org.immopoly.android.notification;
 
 import org.immopoly.android.R;
-import org.immopoly.android.app.PlacesMapActivity;
+import org.immopoly.android.app.ImmopolyActivity;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -34,8 +34,9 @@ public class UserNotification {
 		Context appContext = context.getApplicationContext();      // application Context
 		CharSequence contentTitle = title;  // message title
 		CharSequence contentText = message;      // message text
-
-		Intent notificationIntent = new Intent(context, PlacesMapActivity.class);
+		
+		// TODO need to define proper starting point
+		Intent notificationIntent = new Intent(context, ImmopolyActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
 
