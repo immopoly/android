@@ -346,6 +346,8 @@ public class UserSignupActivity extends Activity {
 		//Intent i = new Intent(this, PlacesMapActivity.class);
 		//startActivity(i);
 		C2DMessaging.register(this, Const.IMMOPOLY_EMAIL);
+		// login success, trigger action requested before login
+		setResult(Activity.RESULT_OK);
 		finish();
 	}
 

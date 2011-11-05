@@ -7,6 +7,7 @@ import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.ImmopolyUser;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -44,11 +45,12 @@ public class ExposeFragment extends DialogFragment {
 	private OnExposeClickedListener mOnExposeClickedListener;
 
 	private final static String sInjectJString;
+	private static final int USER_SIGNUP = 110;
 	static {
 		StringBuilder jsInjectString;
 		jsInjectString = new StringBuilder("var headID = document.getElementsByTagName('head')[0];");
 		jsInjectString.append("var cssNode = document.createElement('style');")
-				.append("cssNode.innerHTML = '.layer{display:none;}';").append("headID.appendChild(cssNode);");
+				.append("cssNode.innerHTML = '#layer{display:none;}';").append("headID.appendChild(cssNode);");
 		sInjectJString = "javascript:" + jsInjectString.toString() + ";";
 	}
 
@@ -192,7 +194,7 @@ public class ExposeFragment extends DialogFragment {
 		} else {
 			Intent intent2 = new Intent(getActivity(),
 					UserSignupActivity.class);
-			startActivity(intent2);
+			startActivityForResult(intent2,USER_SIGNUP);
 		}
 	}
 
@@ -232,5 +234,13 @@ public class ExposeFragment extends DialogFragment {
 		mWebView.destroy();
 		mWebView = null;
 		tracker.stopSession();
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode,
+            Intent data) {
+		if(requestCode == USER_SIGNUP && resultCode == Activity.RESULT_OK){
+			addCurrentExpose(null);
+		}
 	}
 }
