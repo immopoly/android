@@ -11,9 +11,9 @@
         android:layout_margin="20dp"
         android:src="@drawable/profile_avatar" />
     <TextView
+        android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="bashtian"
         android:textColor="@android:color/black"
         android:textSize="20dp" />
     <TextView
