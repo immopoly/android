@@ -21,7 +21,6 @@ import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.app.WebViewActivity;
 import org.immopoly.android.constants.Const;
-import org.immopoly.android.fragments.callbacks.HudCallbacks;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.MapLocationCallback;
@@ -68,13 +67,12 @@ import android.widget.ZoomControls;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
 public class MapFragment extends Fragment implements Receiver,
-		MapMarkerCallback, MapLocationCallback, HudCallbacks, OnMapItemClickedListener {
+		MapMarkerCallback, MapLocationCallback, OnMapItemClickedListener {
 
 	public static final String TAG = "Immopoly";
 
@@ -142,31 +140,31 @@ public class MapFragment extends Fragment implements Receiver,
 		return mOnMapItemClickedListener;
 	}
 
-	@Override
-	public void onHudAction(View view) {
-		switch (view.getId()) {
-		case R.id.hud_map:
-			// hud map
-			// already there
-			LocationHelper.getLastLocation(getActivity());
-			break;
-		case R.id.hud_portfolio:
-			startActivity(new Intent(getActivity(), DashboardActivity.class));
-			break;
-		case R.id.hud_profile:
-			startActivity(new Intent(getActivity(), DashboardActivity.class));
-			break;
-		case R.id.hud_text:
-			// Toast.makeText(this, ImmopolyUser.getInstance().flats.toString(),
-			// Toast.LENGTH_LONG);
-			if (mHudPopup != null) {
-				mHudPopup.show(getActivity().findViewById(R.id.hud_text), -200, -60);
-			}
-			break;
-		default:
-			break;
-		}
-	}
+//	@Override
+//	public void onHudAction(View view) {
+//		switch (view.getId()) {
+//		case R.id.hud_map:
+//			// hud map
+//			// already there
+//			LocationHelper.getLastLocation(getActivity());
+//			break;
+//		case R.id.hud_portfolio:
+//			startActivity(new Intent(getActivity(), DashboardActivity.class));
+//			break;
+//		case R.id.hud_profile:
+//			startActivity(new Intent(getActivity(), DashboardActivity.class));
+//			break;
+//		case R.id.hud_text:
+//			// Toast.makeText(this, ImmopolyUser.getInstance().flats.toString(),
+//			// Toast.LENGTH_LONG);
+//			if (mHudPopup != null) {
+//				mHudPopup.show(getActivity().findViewById(R.id.hud_text), -200, -60);
+//			}
+//			break;
+//		default:
+//			break;
+//		}
+//	}
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -537,7 +535,6 @@ public class MapFragment extends Fragment implements Receiver,
 		tracker.stopSession();
 	}
 
-	@Override
 	public void updateHud(Intent data, int element) {
 		if (mapButton != null) {
 			mapButton.setSelected(true);

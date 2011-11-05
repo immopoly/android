@@ -6,7 +6,6 @@ import java.net.URL;
 import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.HudFragment;
-import org.immopoly.android.fragments.callbacks.HudCallbacks;
 import org.immopoly.android.helper.ActivityHelper;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
@@ -39,8 +38,7 @@ import android.widget.Toast;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
-public class MainActivity extends FragmentActivity implements HudCallbacks,
-		LoaderCallbacks<Cursor> {
+public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -86,7 +84,6 @@ public class MainActivity extends FragmentActivity implements HudCallbacks,
 
 	}
 
-	@Override
 	public void updateHud(Intent data, int element) {
 		// TODO Auto-generated method stub
 
@@ -121,7 +118,6 @@ public class MainActivity extends FragmentActivity implements HudCallbacks,
 		registerReceiver(mReceiver, filter);
 	}
 
-	@Override
 	public void onHudAction(View view) {
 		switch (view.getId()) {
 		case R.id.hud_map:
@@ -129,12 +125,12 @@ public class MainActivity extends FragmentActivity implements HudCallbacks,
 			// already there
 			LocationHelper.getLastLocation(this);
 			break;
-		case R.id.hud_portfolio:
-			startActivity(new Intent(this, DashboardActivity.class));
-			break;
-		case R.id.hud_profile:
-			startActivity(new Intent(this, DashboardActivity.class));
-			break;
+//		case R.id.hud_portfolio:
+//			startActivity(new Intent(this, DashboardActivity.class));
+//			break;
+//		case R.id.hud_profile:
+//			startActivity(new Intent(this, DashboardActivity.class));
+//			break;
 		case R.id.hud_text:
 			// Toast.makeText(this, ImmopolyUser.getInstance().flats.toString(),
 			// Toast.LENGTH_LONG);
