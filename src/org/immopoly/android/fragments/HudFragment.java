@@ -7,10 +7,8 @@ import org.immopoly.android.R;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.provider.UserProvider;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -29,10 +27,9 @@ public class HudFragment extends Fragment implements OnClickListener, LoaderCall
 
 	public interface OnHudEventListener {
 		public void updateHud(Intent data, int element);
+
 		public void onHudAction(View view);
 	}
-
-	private IntentFilter mHudFilter;
 
 	class UserObserver extends ContentObserver {
 
@@ -51,16 +48,7 @@ public class HudFragment extends Fragment implements OnClickListener, LoaderCall
 	private UserObserver mUserObserver;
 
 	@Override
-	public void onAttach(Activity arg0) {
-		super.onAttach(arg0);
-		// mHudFilter = new IntentFilter();
-		// mHudFilter.
-		// arg0.registerReceiver(mBroadcastReceiver, )
-	}
-
-	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
 		View view = inflater.inflate(R.layout.hud, container);
 		((Button) view.findViewById(R.id.hud_text)).setOnClickListener(this);
 		return view;
@@ -98,7 +86,7 @@ public class HudFragment extends Fragment implements OnClickListener, LoaderCall
 		if (hudButton != null) {
 			NumberFormat nFormat = NumberFormat.getCurrencyInstance(Locale.GERMANY);
 			nFormat.setMinimumIntegerDigits(1);
-			nFormat.setMaximumFractionDigits(2);
+			nFormat.setMaximumFractionDigits(0);
 			hudButton.setText(nFormat.format(ImmopolyUser.getInstance().getBalance()));
 		}
 	}

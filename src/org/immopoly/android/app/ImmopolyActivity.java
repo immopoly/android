@@ -11,6 +11,7 @@ import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.ExposeFragment;
 import org.immopoly.android.fragments.ExposeFragment.OnExposeClickedListener;
+import org.immopoly.android.fragments.HistoryFragment;
 import org.immopoly.android.fragments.MapFragment;
 import org.immopoly.android.fragments.OnMapItemClickedListener;
 import org.immopoly.android.fragments.PortfolioListFragment;
@@ -103,6 +104,8 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		addTab(R.drawable.btn_map, "map", MapFragment.class);
 		addTab(R.drawable.btn_portfolio, "portofolio", PortfolioListFragment.class);
 		addTab(R.drawable.btn_profile, "profile", ProfileFragment.class);
+		addTab(R.drawable.btn_notify, "history", HistoryFragment.class);
+
 
 		if (savedInstanceState != null) {
 			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
