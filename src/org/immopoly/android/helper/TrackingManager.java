@@ -22,8 +22,11 @@ public class TrackingManager {
 	public static final String ACTION_VIEW = "view";
 	public static final String ACTION_ERROR = "error";
 	public static final String ACTION_EXPOSE = "tookExpose";
+	public static final String ACTION_TOOK_EXPOSE = "tookExpose";
+	public static final String ACTION_RELEASED_EXPOSE = "releasedExpose";
 	
 	public static final String LABEL_TRY = "try";
+	public static final String LABEL_RELEASE = "release";
 	public static final String LABEL_POSITIVE = "positive";
 	public static final String LABEL_NEGATIVE = "negative";
 	public static final String LABEL_IMAGES = "image";

@@ -13,13 +13,11 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 
 import org.immopoly.android.R;
-import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
-import org.immopoly.android.app.DashboardActivity;
+import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserSignupActivity;
-import org.immopoly.android.app.WebViewActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
@@ -52,12 +50,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.View.OnTouchListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -375,10 +373,12 @@ public class MapFragment extends Fragment implements Receiver,
 			}
 
 			// Login in web view
-			Intent i = new Intent(getActivity(), WebViewActivity.class);
-			i.putExtra(Const.AUTH_URL, authUrl);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(i);
+			// TODO schtief war hier hat das weg gemacht weil die webactivity
+			// nich mehr da is
+			// Intent i = new Intent(getActivity(), WebViewActivity.class);
+			// i.putExtra(Const.AUTH_URL, authUrl);
+			// i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			// startActivity(i);
 		}
 
 	}
@@ -391,7 +391,10 @@ public class MapFragment extends Fragment implements Receiver,
 			// R.anim.locating_animation));
 			break;
 		case R.id.header_logo:
-			startActivity(new Intent(getActivity(), DashboardActivity.class));
+			// TODO schtief war hier hat das weg gemacht weil die
+			// DashboardActivity nich mehr da is
+			// startActivity(new Intent(getActivity(),
+			// DashboardActivity.class));
 			break;
 		}
 

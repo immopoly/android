@@ -16,6 +16,7 @@ public class Const {
 
 	// Intent add portofolio
 	public static final String EXPOSE_ADD_PORTIFOLIO = "addToPortifolio";
+	public static final String EXPOSE_RELEASE_PORTIFOLIO = "releaseFromPortifolio";
 
 	public static final String SOURCE = "source";
 

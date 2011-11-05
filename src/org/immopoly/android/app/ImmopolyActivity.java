@@ -10,13 +10,13 @@ import java.util.HashMap;
 import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.ExposeFragment;
-import org.immopoly.android.fragments.ExposeFragment.OnExposeClickedListener;
 import org.immopoly.android.fragments.HistoryFragment;
 import org.immopoly.android.fragments.MapFragment;
 import org.immopoly.android.fragments.OnMapItemClickedListener;
 import org.immopoly.android.fragments.PortfolioListFragment;
 import org.immopoly.android.fragments.PortfolioMapFragment;
 import org.immopoly.android.fragments.ProfileFragment;
+import org.immopoly.android.fragments.ExposeFragment.OnExposeClickedListener;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.helper.WebHelper;
@@ -34,6 +34,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -261,17 +262,23 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	}
 
 	@Override
-	public void onExposeClick(String exposeID) {
+	public void onExposeTakeOver(String exposeID) {
 		// getSupportFragmentManager().popBackStack();
 		if (exposeID != null) {
 			new AddToPortifolioTask().execute(exposeID);
 		}
 	}
+	@Override
+	public void onExposeRelease(String exposeID) {
+		// getSupportFragmentManager().popBackStack();
+		if (exposeID != null) {
+			new ReleaseFromPortifolioTask().execute(exposeID);
+		}
+	}
 
 	@Override
 	public void onShareClick(int exposeID, boolean isInPortfolio) {
-		// TODO Auto-generated method stub
-
+		Log.i(Const.LOG_TAG, "https://github.com/immopoly/android/issues/15");
 	}
 
 	class AddToPortifolioTask extends AsyncTask<String, Void, ImmopolyHistory> {
@@ -289,7 +296,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 				if (obj != null && !obj.has("org.immopoly.common.ImmopolyException")) {
 					history = new ImmopolyHistory();
 					history.fromJSON(obj);
-					tracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_EXPOSE,
+					tracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_TOOK_EXPOSE,
 							TrackingManager.LABEL_TRY, 0);
 				} else if (obj != null) {
 					history = new ImmopolyHistory();
@@ -307,7 +314,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 					case 441:
 						history.mText = getString(R.string.expose_location_spoofing);
 					}
-					tracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_EXPOSE,
+					tracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_TOOK_EXPOSE,
 							TrackingManager.LABEL_NEGATIVE, 0);
 				}
 			} catch (MalformedURLException e) {
@@ -338,6 +345,67 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 
 	}
 
+	class ReleaseFromPortifolioTask extends AsyncTask<String, Void, ImmopolyHistory> {
+
+		@Override
+		protected ImmopolyHistory doInBackground(String... params) {
+			JSONObject obj = null;
+			ImmopolyHistory history = null;
+			try {
+				ImmopolyUser.getInstance().readToken(ImmopolyActivity.this);
+				obj = WebHelper.getHttpData(new URL(WebHelper.SERVER_URL_PREFIX + "/portfolio/remove?token="
+						+ ImmopolyUser.getInstance().getToken() + "&expose=" + params[0]), false, ImmopolyActivity.this);
+				if (obj != null && !obj.has("org.immopoly.common.ImmopolyException")) {
+					history = new ImmopolyHistory();
+					history.fromJSON(obj);
+					tracker
+							.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_RELEASED_EXPOSE, TrackingManager.LABEL_TRY,
+									0);
+				} else if (obj != null) {
+					history = new ImmopolyHistory();
+					switch (obj.getJSONObject("org.immopoly.common.ImmopolyException").getInt("errorCode")) {
+					case 201:
+						history.mText = getString(R.string.flat_already_in_portifolio);
+						break;
+					case 301:
+						history.mText = getString(R.string.flat_does_not_exist_anymore);
+
+						break;
+					case 302:
+						history.mText = getString(R.string.flat_has_no_raw_rent);
+						break;
+					case 441:
+						history.mText = getString(R.string.expose_location_spoofing);
+					}
+					tracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_RELEASED_EXPOSE,
+							TrackingManager.LABEL_NEGATIVE, 0);
+				}
+			} catch (MalformedURLException e) {
+				Log.e(Const.LOG_TAG, "release error", e);
+			} catch (JSONException e) {
+				Log.e(Const.LOG_TAG, "release error", e);
+			}
+
+			return history;
+		}
+
+		@Override
+		protected void onPostExecute(ImmopolyHistory result) {
+			final ImmopolyHistory res = result;
+			if (result != null && result.mText != null && result.mText.length() > 0) {
+
+				Toast.makeText(ImmopolyActivity.this, res.mText, Toast.LENGTH_LONG).show();
+				// new GetUserInfoUpdateTask(PlacesMapActivity.this)
+				// .execute(ImmopolyUser.getInstance().getToken());
+			} else if (Settings.isOnline(ImmopolyActivity.this)) {
+				Toast.makeText(ImmopolyActivity.this, R.string.expose_couldnt_release, Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(ImmopolyActivity.this, R.string.no_internet_connection, Toast.LENGTH_LONG).show();
+			}
+			super.onPostExecute(result);
+		}
+
+	}
 	public static class TabManager implements TabHost.OnTabChangeListener {
 		private final FragmentActivity mActivity;
 		private final TabHost mTabHost;

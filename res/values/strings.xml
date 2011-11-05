@@ -13,7 +13,7 @@
     <string name="app_name">Immopoly</string>
     <string name="region_hint">Region Suche</string>
     <string name="settings_description">Beschreibung</string>
-    <string name="webview_back_button">Zurück</string>
+    <string name="release_expose">Wohnung aufgeben</string>
     <string name="username_hint">Benutzername</string>
     <string name="password_hint">Passwort</string>
     <string name="password_confirm_hint">Passwort bestätigen</string>
@@ -46,7 +46,8 @@
     <string name="take_over_try">Übernahme Versuch!</string>
     <string name="share_item">Share</string>
     <string name="expose_couldnt_add">Expose konnte nicht hinzugefügt werden.</string>
-    <string name="allow_localization_title">Lokalisierung erlauben!</string>
+    <string name="expose_couldnt_release">Expose konnte nicht freigegeben werden.</string>
+        <string name="allow_localization_title">Lokalisierung erlauben!</string>
     <string name="allow_localization_message">Für das Spiel die Lokalisierung notwendig</string>
     <!-- Toasty stuff -->
     <string name="toast_min_lenght_username">Username muss mindestens $1%s Zeichen lang sein
@@ -75,4 +76,5 @@
     <string name="current_cost_text">Laufende Kosten: $1%s \/ Tag </string>
     <string name="calculated_cost_text">Voraussichtliche kosten 30 Tage: $1%s</string>
     <string name="current_ballance_text">Verfügbares Bargeld: $1%s</string>
+     <string name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string>
 </resources>
