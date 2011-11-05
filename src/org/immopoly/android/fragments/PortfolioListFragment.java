@@ -3,6 +3,7 @@ package org.immopoly.android.fragments;
 import org.immopoly.android.R;
 import org.immopoly.android.adapter.PortfolioFlatsAdapter;
 import org.immopoly.android.app.ImmopolyActivity;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.provider.FlatsProvider;
@@ -10,14 +11,13 @@ import org.immopoly.android.provider.FlatsProvider;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class PortfolioListFragment extends Fragment implements OnItemClickListener{
 
@@ -35,7 +35,7 @@ public class PortfolioListFragment extends Fragment implements OnItemClickListen
 		
 		layout.findViewById( R.id.pf_map_btn ).setOnClickListener( new View.OnClickListener() {
 			public void onClick(View v) {
-				Log.i( "IMPO", "PortfolioMapFragment show listg" );
+				Log.i(Const.LOG_TAG, "PortfolioMapFragment show listg");
 				((ImmopolyActivity) getActivity()).showFragment( ImmopolyActivity.PORTFOLIO_MAP_FRAGMENT, null );
 			}
 		});

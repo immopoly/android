@@ -48,7 +48,6 @@ public class HistoryAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		List<ImmopolyHistory> h = ImmopolyUser.getInstance().mUserHistory;
 		return h.size();
 	}

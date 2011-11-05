@@ -2,6 +2,8 @@ package org.immopoly.android.constants;
 
 public class Const {
 
+	public static final String LOG_TAG = "IMPO";
+
 	// Intents
 
 	// Intent open webview

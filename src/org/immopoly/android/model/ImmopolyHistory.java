@@ -61,4 +61,10 @@ public class ImmopolyHistory extends History{
 	public void setType2(int type2) {
 		mtype = type2;
 	}
+
+	@Override
+	public void setExposeId(Long exposeId) {
+		// TODO Auto-generated method stub
+
+	}
 }
