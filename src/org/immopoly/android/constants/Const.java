@@ -42,6 +42,8 @@ public class Const {
 
 	public static final String IMMOPOLY_EMAIL = "immopolyteam@gmail.com";
 	public static final int ANALYTICS_INTERVAL = 20;
+
+	public static final int USER_SIGNUP = 110;
 	
 
 }

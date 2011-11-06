@@ -77,4 +77,5 @@
     <string name="calculated_cost_text">Voraussichtliche kosten 30 Tage: %s</string>
     <string name="current_ballance_text">Verfügbares Bargeld: %s</string>
     <string name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string>
+    <string name="login_button">Anmelden</string>
 </resources>
