@@ -1,13 +1,17 @@
 package org.immopoly.android.helper;
 
 import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.Locale;
 
 import org.immopoly.android.R;
 import org.immopoly.android.model.ImmopolyUser;
 
 import android.app.Activity;
+import android.graphics.drawable.BitmapDrawable;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -34,7 +38,22 @@ public class HudPopupHelper {
 		}
 		if (mLayoutView != null) {
 			mPopupView = new PopupWindow(mLayoutView,
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,false);
+			mPopupView.setOutsideTouchable(true);
+			mPopupView.setBackgroundDrawable(new BitmapDrawable());
+			mPopupView.setTouchable(true);
+			mPopupView.setTouchInterceptor(new View.OnTouchListener() {
+				
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+
+						mPopupView.dismiss();
+						return true;
+					}
+					return false;
+				}
+			});
 		}
 	}
 
@@ -49,6 +68,7 @@ public class HudPopupHelper {
 							.getCurrencyInstance(Locale.GERMANY);
 					nFormat.setMinimumIntegerDigits(1);
 					nFormat.setMaximumFractionDigits(2);
+					nFormat.setCurrency(Currency.getInstance(Locale.GERMANY));
 
 					currentCostTextView.setText(mLayoutView.getResources()
 							.getString(R.string.current_cost_text,
@@ -79,11 +99,11 @@ public class HudPopupHelper {
 		}
 
 	}
-	
-	public boolean isShowing(){
+
+	public boolean isShowing() {
 		return (mPopupView != null && mPopupView.isShowing());
 	}
-	
+
 	public void dismiss() {
 		if (mPopupView != null) {
 			mPopupView.dismiss();

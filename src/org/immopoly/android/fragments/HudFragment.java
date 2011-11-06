@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import org.immopoly.android.R;
+import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.provider.UserProvider;
 
@@ -25,6 +26,8 @@ import android.widget.Button;
 
 public class HudFragment extends Fragment implements OnClickListener, LoaderCallbacks<Cursor> {
 
+	private HudPopupHelper mHudPopup;
+	
 	public interface OnHudEventListener {
 		public void updateHud(Intent data, int element);
 
@@ -51,9 +54,20 @@ public class HudFragment extends Fragment implements OnClickListener, LoaderCall
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.hud, container);
 		((Button) view.findViewById(R.id.hud_text)).setOnClickListener(this);
+		mHudPopup = new HudPopupHelper(getActivity(), HudPopupHelper.TYPE_FINANCE_POPUP);
 		return view;
 	}
+	
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		if(mHudPopup != null){
+			mHudPopup.dismiss();
+		}
+	}
 
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -93,7 +107,9 @@ public class HudFragment extends Fragment implements OnClickListener, LoaderCall
 
 	@Override
 	public void onClick(View arg0) {
-
+		if(mHudPopup != null){
+			mHudPopup.show(getView().findViewById(R.id.hud_text), -200, -60);
+		}
 	}
 
 	@Override
