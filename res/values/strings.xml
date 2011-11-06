@@ -73,8 +73,9 @@
     <string name="time">Zeit</string>
     <string name="expose_location_spoofing">Nicht schneller reisen als die Polizei erlaubt :).</string>
     <string name="header_login">Jetzt Anmelden</string>
-    <string name="current_cost_text">Laufende Kosten: $1%s \/ Tag </string>
-    <string name="calculated_cost_text">Voraussichtliche kosten 30 Tage: $1%s</string>
-    <string name="current_ballance_text">Verfügbares Bargeld: $1%s</string>
-     <string name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string>
+    <string name="current_cost_text">Laufende Kosten: %s \/ Tag </string>
+    <string name="calculated_cost_text">Voraussichtliche kosten 30 Tage: %s</string>
+    <string name="current_ballance_text">Verfügbares Bargeld: %s</string>
+    <string name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string>
+    <string name="login_button">Anmelden</string>
 </resources>

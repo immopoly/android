@@ -45,7 +45,7 @@ public class ExposeFragment extends DialogFragment {
 	private OnExposeClickedListener mOnExposeClickedListener;
 
 	private final static String sInjectJString;
-	private static final int USER_SIGNUP = 110;
+	
 	static {
 		StringBuilder jsInjectString;
 		jsInjectString = new StringBuilder("var headID = document.getElementsByTagName('head')[0];");
@@ -194,7 +194,7 @@ public class ExposeFragment extends DialogFragment {
 		} else {
 			Intent intent2 = new Intent(getActivity(),
 					UserSignupActivity.class);
-			startActivityForResult(intent2,USER_SIGNUP);
+			startActivityForResult(intent2,Const.USER_SIGNUP);
 		}
 	}
 
@@ -218,8 +218,9 @@ public class ExposeFragment extends DialogFragment {
 			dismiss();
 			// finish();
 		} else {
-			Intent intent2 = new Intent(getActivity(), UserSignupActivity.class);
-			startActivity(intent2);
+			Intent intent2 = new Intent(getActivity(),
+					UserSignupActivity.class);
+			startActivityForResult(intent2,Const.USER_SIGNUP);
 		}
 	}
 
@@ -239,7 +240,7 @@ public class ExposeFragment extends DialogFragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode,
             Intent data) {
-		if(requestCode == USER_SIGNUP && resultCode == Activity.RESULT_OK){
+		if(requestCode == Const.USER_SIGNUP && resultCode == Activity.RESULT_OK){
 			addCurrentExpose(null);
 		}
 	}
