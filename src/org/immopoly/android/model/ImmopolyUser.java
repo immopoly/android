@@ -43,7 +43,7 @@ public class ImmopolyUser extends User {
 	private String mTwitter;
 	private double mBalance;
 	public List<ImmopolyHistory> mUserHistory;
-	public List<Flat> flats;
+	public Flats flats;
 	private double sLastProvision;
 	private double sLastRent;
 	private static ImmopolyUser sInstance = null;
@@ -52,7 +52,7 @@ public class ImmopolyUser extends User {
 
 	private ImmopolyUser() {
 		mUserHistory = new ArrayList<ImmopolyHistory>();
-		flats = new ArrayList<Flat>();
+		flats = new Flats();
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class ImmopolyUser extends User {
 
 				JSONObject expose;
 				JSONObject realEstate;
-				flats = new ArrayList<Flat>();
+				flats = new Flats();
 				for (int i = 0; i < resultEntries.length(); i++) {
 					item = new Flat();
 					expose = resultEntries.getJSONObject(i).getJSONObject(
@@ -146,8 +146,12 @@ public class ImmopolyUser extends User {
 				e.printStackTrace();
 			}
 		}
-
 	}
+	
+	public Flats getPortfolio() {
+		return flats;
+	}
+	
 
 	@Override
 	public History instantiateHistory() {

@@ -2,22 +2,22 @@ package org.immopoly.android.provider;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.immopoly.android.helper.WebHelper;
+import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.common.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
-import android.provider.BaseColumns;
 
 public class UserProvider extends ContentProvider {
 
@@ -110,7 +110,6 @@ public class UserProvider extends ContentProvider {
 						+ "/user/info?token="
 						+ ImmopolyUser.getInstance().getToken()), false,
 						getContext());
-
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -121,42 +120,37 @@ public class UserProvider extends ContentProvider {
 			if (obj == null || obj.has("org.immopoly.common.ImmopolyException")) {
 				user = null;
 			} else {
+				// fill user objects from server's UserInfo data
 				ImmopolyUser.getInstance().fromJSON(obj);
 				user = ImmopolyUser.getInstance();
 
-				// getContentResolver().delete(
-				// FlatsProvider.CONTENT_URI,
-				// org.immopoly.android.provider.FlatsProvider.Flat.FLAT_ID
-				// + " > 0", null);
-				Cursor cur = getContext().getContentResolver().query(
+				// synchronize local flats DB
+				ArrayList<Flat>    toBeAdded   = new ArrayList<Flat>( user.flats );
+				ArrayList<Integer> toBeDeleted = new ArrayList<Integer>();
+				Cursor cur = getContext().getContentResolver().query( 
 						FlatsProvider.CONTENT_URI, null, null, null, null);
 				if (cur.getCount() > 0) {
 					boolean isIn;
-					int current;
 					cur.moveToFirst();
 					do {
 						isIn = false;
-						current = -1;
+						int id = cur.getInt(cur.getColumnIndex(FlatsProvider.Flat.FLAT_ID));
 						for (int i = 0; i < user.flats.size(); i++) {
-							if (cur.getInt(cur
-									.getColumnIndex(FlatsProvider.Flat.FLAT_ID)) == user.flats
-									.get(i).uid) {
+							if (user.flats.get(i).uid == id) {
 								isIn = true;
-								current = i;
+								toBeAdded.remove( user.flats.get(i) );
 								break;
 							}
 						}
-						if (isIn == false) {
-							// delete
-							deleteFlat(cur
-									.getInt(cur
-											.getColumnIndex(FlatsProvider.Flat.FLAT_ID)));
-						} else if (current != -1) {
-							user.flats.remove(current);
+						if ( ! isIn ) {
+							toBeDeleted.add( id );
 						}
 					} while (cur.moveToNext());
 				}
-				for (org.immopoly.android.model.Flat f : user.flats) {
+				for ( Integer id : toBeDeleted ) {
+					deleteFlat( id );
+				}
+				for ( Flat f : toBeAdded ) {
 					addFlat(f);
 				}
 			}
@@ -179,23 +173,12 @@ public class UserProvider extends ContentProvider {
 	private void addFlat(org.immopoly.android.model.Flat f) {
 		ContentValues values;
 		values = new ContentValues();
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_ID,
-				f.uid);
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_NAME,
-				f.name);
-		values.put(
-				org.immopoly.android.provider.FlatsProvider.Flat.FLAT_DESCRIPTION,
-				"-");
-		values.put(
-				org.immopoly.android.provider.FlatsProvider.Flat.FLAT_LATITUDE,
-				f.lat);
-		values.put(
-				org.immopoly.android.provider.FlatsProvider.Flat.FLAT_LONGITUDE,
-				f.lng);
-		values.put(
-				org.immopoly.android.provider.FlatsProvider.Flat.FLAT_CREATIONDATE,
-				f.creationDate);
-		getContext().getContentResolver().insert(FlatsProvider.CONTENT_URI,
-				values);
+		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_ID, f.uid);
+		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_NAME, f.name);
+		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_DESCRIPTION, "-");
+		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_LATITUDE, f.lat);
+		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_LONGITUDE, f.lng);
+		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_CREATIONDATE, f.creationDate);
+		getContext().getContentResolver().insert(FlatsProvider.CONTENT_URI, values);
 	}
 }

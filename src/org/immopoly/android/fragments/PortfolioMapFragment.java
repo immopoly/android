@@ -2,22 +2,18 @@ package org.immopoly.android.fragments;
 
 import org.immopoly.android.R;
 import org.immopoly.android.app.ImmopolyActivity;
-import org.immopoly.android.model.Flat;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.model.Flats;
-import org.immopoly.android.provider.FlatsProvider;
+import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.widget.ImmoscoutPlacesOverlay;
 
-import android.app.Activity;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 
 import com.google.android.maps.MapView;
 
@@ -29,9 +25,11 @@ public class PortfolioMapFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Log.i( "IMPO", "PortfolioMapFragment.onCreateView" );
-		mFlats = queryFlats();
+		Log.i( Const.LOG_TAG, "PortfolioMapFragment.onCreateView" );
 		View layout = getActivity().getLayoutInflater().inflate( R.layout.portfolio_map, null, false );
+		
+		ImmopolyUser user = ImmopolyUser.getInstance();
+		mFlats = user.getPortfolio();
 		
 		mMapView = ((ImmopolyActivity) getActivity()).acquireMapView( this );
 		flatsOverlay = new ImmoscoutPlacesOverlay( this, mMapView, getActivity().getLayoutInflater() );
@@ -53,29 +51,9 @@ public class PortfolioMapFragment extends Fragment {
 
 	@Override
 	public void onDestroyView() {
+		Log.i( Const.LOG_TAG, "PortfolioMapFragment.onCreateView" );
 		((ImmopolyActivity) getActivity()).releaseMapView( this );
 		super.onDestroyView();
 	}
-	
-	// TODO flats vom server nehmen
-    private Flats queryFlats() {
-        Cursor cur = getActivity().getContentResolver().query(FlatsProvider.CONTENT_URI, null, null, null, null);
-        Flats flats = new Flats();
-        if ( cur.moveToFirst() )
-            do {
-            	Flat flat         = new Flat();
-            	flat.uid          = cur.getInt( cur.getColumnIndex( FlatsProvider.Flat.FLAT_ID ) );
-            	flat.name         = cur.getString( cur.getColumnIndex( FlatsProvider.Flat.FLAT_NAME ) );
-            	flat.description  = cur.getString( cur.getColumnIndex( FlatsProvider.Flat.FLAT_DESCRIPTION ) );
-            	// TODO lat & lng are swapped in the DB !?
-            	flat.lng          = cur.getDouble( cur.getColumnIndex( FlatsProvider.Flat.FLAT_LATITUDE ) );
-            	flat.lat          = cur.getDouble( cur.getColumnIndex( FlatsProvider.Flat.FLAT_LONGITUDE ) );
-            	flat.creationDate = cur.getInt( cur.getColumnIndex( FlatsProvider.Flat.FLAT_CREATIONDATE ) ) * 1000;
-            	flat.owned        = true;
-            	flats.add( flat );
-            } while ( cur.moveToNext() );
-        cur.close();
-        return flats;
-    }
-	
+
 }
