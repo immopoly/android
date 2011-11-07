@@ -45,13 +45,12 @@ public class PortfolioMapFragment extends Fragment {
 				((ImmopolyActivity) getActivity()).showFragment( ImmopolyActivity.PORTFOLIO_LIST_FRAGMENT, null );
 			}
 		});
-		
+
 		return layout;
 	}
 
 	@Override
 	public void onDestroyView() {
-		Log.i( Const.LOG_TAG, "PortfolioMapFragment.onCreateView" );
 		((ImmopolyActivity) getActivity()).releaseMapView( this );
 		super.onDestroyView();
 	}

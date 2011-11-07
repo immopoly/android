@@ -28,9 +28,7 @@ public class PortfolioListFragment extends Fragment implements OnItemClickListen
 		ListView listView = (ListView) layout.findViewById(R.id.pf_list_view);
 		
 		ImmopolyUser user = ImmopolyUser.getInstance();
-		flats = user.getPortfolio();
-		Log.i( "IMPO", "Flats in Portfolio: " + flats.size() );
-		
+		flats = user.getPortfolio();	
 		if ( flats != null )
 			listView.setAdapter( new PortfolioFlatsAdapter( getActivity(), flats ) );
 	

@@ -134,12 +134,12 @@ public class ImmopolyUser extends User {
 					item.uid = realEstate.optInt("@id");
 					item.lat = realEstate.getJSONObject("address")
 							.getJSONObject("wgs84Coordinate")
-							.optDouble("longitude");
+							.optDouble("latitude");
 					item.lng = realEstate.getJSONObject("address")
 							.getJSONObject("wgs84Coordinate")
-							.optDouble("latitude");
+							.optDouble("longitude");
+					item.owned = true;
 					flats.add(item);
-
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
