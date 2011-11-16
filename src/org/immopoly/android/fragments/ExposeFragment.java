@@ -11,6 +11,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,7 +92,9 @@ public class ExposeFragment extends DialogFragment {
 
 		tracker.trackPageView(TrackingManager.VIEW_EXPOSE);
 
-		Button takeOrReleaseButton = (Button) view.findViewById(R.id.TakeOrReleaseButton);
+		final Button takeOrReleaseButton = (Button) view.findViewById(R.id.TakeOrReleaseButton);
+		// wait for activating the button
+		buttonWait(takeOrReleaseButton);
 
 		mWebView = (WebView) view.findViewById(R.id.exposeWevView);
 		mWebView.getSettings().setJavaScriptEnabled(true);
@@ -134,7 +138,6 @@ public class ExposeFragment extends DialogFragment {
 		loadPage(getArguments());
 		
 		if ( mOwned ) {
-			takeOrReleaseButton.setText(getString(R.string.release_expose));
 			takeOrReleaseButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -151,6 +154,19 @@ public class ExposeFragment extends DialogFragment {
 		}
 		
 		return view;
+	}
+
+	private void buttonWait(final Button takeOrReleaseButton) {
+		Handler buttonDelayFinishedHandler = new Handler() {
+			public void handleMessage(Message msg) {
+				takeOrReleaseButton.setEnabled(true);
+				if (mOwned)
+					takeOrReleaseButton.setText(getString(R.string.release_expose));
+				else
+					takeOrReleaseButton.setText(getString(R.string.try_takeover));
+			}
+		};
+		buttonDelayFinishedHandler.sendMessageDelayed(new Message(), 10000);
 	}
 
 	void loadPage(Bundle intent) {

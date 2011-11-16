@@ -78,4 +78,5 @@
     <string name="current_ballance_text">Verfügbares Bargeld: %s</string>
     <string name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string>
     <string name="login_button">Anmelden</string>
+    <string name="please_wait">10 Sekunden warten &amp; lesen ;)</string>
 </resources>

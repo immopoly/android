@@ -41,7 +41,8 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/progress"
                 android:layout_weight="1"
-                android:text="@string/try_takeover" />
+                android:enabled="false"
+                android:text="@string/please_wait" />
             <Button
                 android:id="@+id/shareExpose"
                 android:layout_width="wrap_content"
