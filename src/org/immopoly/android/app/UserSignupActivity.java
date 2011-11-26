@@ -77,8 +77,8 @@ public class UserSignupActivity extends Activity {
 		setContentView(R.layout.user_signup_activity);
 		// check if user as token and is already logedin
 		ImmopolyUser.getInstance().readToken(this);
-		LocationHelper.getLastLocation(this);
-		if (LocationHelper.getBestProvider() == null) {
+//		LocationHelper.getLastLocation(this);
+		if (LocationHelper.getBestProvider(getApplicationContext()) == null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.allow_localization_title);
 			builder.setMessage(R.string.allow_localization_message);
@@ -123,7 +123,7 @@ public class UserSignupActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		init();
-		LocationHelper.getLastLocation(this);
+//		LocationHelper.getLastLocation(this);
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
@@ -351,32 +351,32 @@ public class UserSignupActivity extends Activity {
 		finish();
 	}
 
-	public void showInfo(View v) {
-
-		LayoutInflater inflater = LayoutInflater.from(UserSignupActivity.this);
-
-		View alertDialogView = inflater.inflate(R.layout.info_webview, null);
-
-		WebView myWebView = (WebView) alertDialogView
-				.findViewById(R.id.DialogWebView);
-		myWebView.setWebViewClient(new WebViewClient());
-		myWebView.getSettings().setSupportZoom(true);
-		myWebView.getSettings().setUseWideViewPort(true);
-
-		myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
-		AlertDialog.Builder builder = new AlertDialog.Builder(
-				UserSignupActivity.this);
-		builder.setView(alertDialogView);
-		builder.setPositiveButton(R.string.button_ok,
-				new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
-					}
-				}).show();
-
-	}
+//	public void showInfo(View v) {
+//
+//		LayoutInflater inflater = LayoutInflater.from(UserSignupActivity.this);
+//
+//		View alertDialogView = inflater.inflate(R.layout.info_webview, null);
+//
+//		WebView myWebView = (WebView) alertDialogView
+//				.findViewById(R.id.DialogWebView);
+//		myWebView.setWebViewClient(new WebViewClient());
+//		myWebView.getSettings().setSupportZoom(true);
+//		myWebView.getSettings().setUseWideViewPort(true);
+//
+//		myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
+//		AlertDialog.Builder builder = new AlertDialog.Builder(
+//				UserSignupActivity.this);
+//		builder.setView(alertDialogView);
+//		builder.setPositiveButton(R.string.button_ok,
+//				new DialogInterface.OnClickListener() {
+//
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						dialog.cancel();
+//					}
+//				}).show();
+//
+//	}
 
 	@Override
 	protected void onDestroy() {

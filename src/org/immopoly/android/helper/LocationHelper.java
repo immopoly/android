@@ -31,11 +31,14 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 public class LocationHelper {
-	
+
+	public interface LocationCallback {
+		void onLocationChanged(boolean center);
+	}
 
 	// teshhold when location is too old
 	private static final int TRESH = 150000;
-	
+
 	public static double sLat = 52.548932;
 	public static double sLng = 13.416416;
 	public static float sAccuracy = Float.MAX_VALUE;;
@@ -43,10 +46,8 @@ public class LocationHelper {
 	public static String mAddress = "";
 	private static LocationListener mlocListener;
 	private static LocationManager mLocationManager;
-	private static Context mContext;
 	private static Criteria mCriteria = null;
-	public static MapLocationCallback callback;
-	
+
 	// user can force location update
 	private static final int LOCATION_REFRESH_TRESH = 1;
 	private static int sCountRequest = 0;
@@ -58,11 +59,11 @@ public class LocationHelper {
 	// The maximum time that should pass before the user gets a location update.
 	public static long MAX_TIME = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 
-	public static void getLastLocation(Context context) {
+	public static void getLastLocation(Context context, final LocationCallback callback) {
 		double tmpLat = sLat;
 		double tmpLng = sLng;
 		sCountRequest++;
-		mContext = context;
+
 		if (mCriteria == null) {
 			mCriteria = new Criteria();
 		}
@@ -72,9 +73,8 @@ public class LocationHelper {
 		mCriteria.setCostAllowed(true);
 		mCriteria.setPowerRequirement(Criteria.POWER_LOW);
 		if (mLocationManager == null) {
-			mLocationManager = (LocationManager) mContext
-					.getApplicationContext().getSystemService(
-							Context.LOCATION_SERVICE);
+			mLocationManager = (LocationManager) context.getApplicationContext().getSystemService(
+					Context.LOCATION_SERVICE);
 		}
 
 		// /getLastLocationFromProvider(mContext);
@@ -91,8 +91,7 @@ public class LocationHelper {
 					sLng = location.getLongitude();
 					sAccuracy = accuracy;
 					sTime = time;
-				} else if (time < minTime && sAccuracy == Float.MAX_VALUE
-						&& time > sTime) {
+				} else if (time < minTime && sAccuracy == Float.MAX_VALUE && time > sTime) {
 					sLat = location.getLatitude();
 					sLng = location.getLongitude();
 					sTime = time;
@@ -118,7 +117,7 @@ public class LocationHelper {
 							newLoc = true;
 						}
 						if (callback != null) {
-							callback.updateMapData(newLoc);
+							callback.onLocationChanged(newLoc);
 						}
 						if (mlocListener != null)
 							mLocationManager.removeUpdates(mlocListener);
@@ -140,35 +139,29 @@ public class LocationHelper {
 					}
 
 					@Override
-					public void onStatusChanged(String arg0, int arg1,
-							Bundle arg2) {
+					public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 						if (mlocListener != null)
 							mLocationManager.removeUpdates(mlocListener);
 						mlocListener = null;
 						if (callback != null) {
-							callback.updateMapData(true);
+							callback.onLocationChanged(true);
 						}
 					}
 				};
 			}
-				String bestProvider = getBestProvider();
-				if (bestProvider != null) {
-					mLocationManager.requestLocationUpdates(bestProvider, 0, 0,
-							mlocListener);
-				} else {
-					Toast.makeText(
-							mContext,
-							"Lokalisierung ist deaktiviert, bitte unter Einstellungen aktivieren.",
-							Toast.LENGTH_LONG);
-				}
+			String bestProvider = getBestProvider(context);
+			if (bestProvider != null) {
+				mLocationManager.requestLocationUpdates(bestProvider, 0, 0, mlocListener);
+			} else {
+				Toast.makeText(context, "Lokalisierung ist deaktiviert, bitte unter Einstellungen aktivieren.",
+						Toast.LENGTH_LONG);
+			}
 		} else if (sLat != tmpLat && sLng != tmpLng) {
 			if (callback != null) {
-				callback.updateMapData(true);
+				callback.onLocationChanged(true);
 			}
-		} else {
-			if (callback != null) {
-				callback.updateMapData(false);
-			}
+		} else if (callback != null) {
+			callback.onLocationChanged(false);
 		}
 	}
 
@@ -176,9 +169,7 @@ public class LocationHelper {
 
 		Location lastLocation = null;
 		try {
-			lastLocation = mLocationManager
-					.getLastKnownLocation(mLocationManager.getBestProvider(
-                            mCriteria, true));
+			lastLocation = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(mCriteria, true));
 			if (lastLocation != null) {
 				sLat = lastLocation.getLatitude();
 				sLng = lastLocation.getLongitude();
@@ -188,15 +179,15 @@ public class LocationHelper {
 		} catch (IllegalArgumentException e) {
 			// do nothing at the moment, ideas ?
 		}
-		
+
 	}
 
-	public static String getBestProvider() {
+	public static String getBestProvider(Context context) {
 		if (mLocationManager == null) {
-			mLocationManager = (LocationManager) mContext
-					.getApplicationContext().getSystemService(
-							Context.LOCATION_SERVICE);
+			mLocationManager = (LocationManager) context.getApplicationContext().getSystemService(
+					Context.LOCATION_SERVICE);
 		}
 		return mLocationManager.getBestProvider(mCriteria, true);
 	}
+
 }

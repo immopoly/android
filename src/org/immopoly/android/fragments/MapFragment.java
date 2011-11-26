@@ -15,7 +15,6 @@ import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
-import org.immopoly.android.helper.MapLocationCallback;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.helper.WebHelper;
@@ -60,7 +59,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
-public class MapFragment extends Fragment implements Receiver, MapLocationCallback, OnMapItemClickedListener {
+public class MapFragment extends Fragment implements Receiver, OnMapItemClickedListener {
 
 	public static final String TAG = "Immopoly";
 
@@ -84,45 +83,6 @@ public class MapFragment extends Fragment implements Receiver, MapLocationCallba
 	private ImageButton mapButton;
 
 	private OnMapItemClickedListener mOnMapItemClickedListener;
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mMapView = ((ImmopolyActivity) getActivity()).acquireMapView(this);
-		mMapView.setBuiltInZoomControls(true);
-		mMapController = mMapView.getController();
-		tracker = GoogleAnalyticsTracker.getInstance();
-		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getActivity()
-				.getApplicationContext());
-
-		// mState = (ReceiverState) getActivity()
-		// .getLastNonConfigurationInstance();
-		if (mState != null) {
-			// Start listening for Service updates again
-			mState.mReceiver.setReceiver(this);
-		} else {
-			mState = new ReceiverState();
-			mState.mReceiver.setReceiver(this);
-		}
-		return mMapView;
-	}
-
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		try {
-			mOnMapItemClickedListener = (OnMapItemClickedListener) activity;
-		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString() + " must implement OnMapItemClickedListener");
-		}
-	}
-
-	public void onDestroyView() {
-		((ImmopolyActivity) getActivity()).releaseMapView(this);
-		Log.i("IMPO", "MapFragment.onDestroyView");
-		mMapView = null;
-		super.onDestroyView();
-	}
 
 	public OnMapItemClickedListener getOnMapItemClickedListener() {
 		return mOnMapItemClickedListener;
@@ -155,20 +115,51 @@ public class MapFragment extends Fragment implements Receiver, MapLocationCallba
 	// }
 
 	@Override
-	public void onCreate(Bundle icicle) {
-		super.onCreate(icicle);
-		setRetainInstance(true);
-		// signIn();
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			mOnMapItemClickedListener = (OnMapItemClickedListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString() + " must implement OnMapItemClickedListener");
+		}
 	}
 
 	@Override
-	public void onActivityCreated(Bundle arg0) {
-		super.onActivityCreated(arg0);
+	public void onCreate(Bundle icicle) {
+		super.onCreate(icicle);
+		setRetainInstance(true);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		mMapView = ((ImmopolyActivity) getActivity()).acquireMapView(this);
+		mMapView.setBuiltInZoomControls(true);
+		mMapController = mMapView.getController();
+		tracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getActivity()
+				.getApplicationContext());
+
+		// mState = (ReceiverState) getActivity()
+		// .getLastNonConfigurationInstance();
+		if (mState != null) {
+			// Start listening for Service updates again
+			mState.mReceiver.setReceiver(this);
+		} else {
+			mState = new ReceiverState();
+			mState.mReceiver.setReceiver(this);
+		}
+		return mMapView;
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
 
 		GeoPoint point = new GeoPoint((int) (LocationHelper.sLat * 1E6), (int) (LocationHelper.sLng * 1E6));
+
 		mMapOverlays = mMapView.getOverlays();
-		LocationHelper.callback = this;
-		LocationHelper.getLastLocation(getActivity());
+
 		// this is the bounding box container
 
 		myLocationOverlayItem = new PlaceOverlayItem(point, "my city", "This is wher you are");
@@ -188,17 +179,37 @@ public class MapFragment extends Fragment implements Receiver, MapLocationCallba
 		mMapView.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-
 				return gDetector.onTouchEvent(event);
-
 			}
-
 		});
+
+		if (mFlats == null) {
+			LocationHelper.getLastLocation(getActivity(), new MapLocationCallback());
+		} else {
+			updateMap(true);
+		}
+	}
+
+	class MapLocationCallback implements LocationHelper.LocationCallback {
+
+		@Override
+		public void onLocationChanged(boolean center) {
+			if (getActivity() != null) {
+				requestFlatUpdate(center);
+			}
+		}
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		tracker.trackPageView(TrackingManager.VIEW_MAP);
+		updateHud(null, 0);
 	}
 
 	@Override
 	public void onPause() {
-		// TODO Auto-generated method stub
 		super.onPause();
 		if (mHudPopup != null) {
 			mHudPopup.dismiss();
@@ -206,16 +217,15 @@ public class MapFragment extends Fragment implements Receiver, MapLocationCallba
 	}
 
 	@Override
-	public void onStart() {
-		super.onStart();
-		LocationHelper.callback = this;
-		tracker.trackPageView(TrackingManager.VIEW_MAP);
-		updateHud(null, 0);
-	}
-
-	@Override
 	public void onStop() {
 		super.onStop();
+	}
+
+	public void onDestroyView() {
+		((ImmopolyActivity) getActivity()).releaseMapView(this);
+		Log.i("IMPO", "MapFragment.onDestroyView");
+		mMapView = null;
+		super.onDestroyView();
 	}
 
 	public MapView getMapView() {
@@ -242,6 +252,22 @@ public class MapFragment extends Fragment implements Receiver, MapLocationCallba
 			}
 		});
 	}
+	
+	private void requestFlatUpdate(boolean newLoc) {
+		if (newLoc || LocationHelper.mAddress == null) {
+			new GeoCodeLocationTask().execute(LocationHelper.sLat, LocationHelper.sLng);
+		} else {
+			setAddress(LocationHelper.mAddress);
+		}
+		Intent i = new Intent(getActivity(), IS24ApiService.class);
+		i.putExtra(IS24ApiService.COMMAND, IS24ApiService.CMD_SEARCH);
+		i.putExtra(IS24ApiService.LAT, LocationHelper.sLat);
+		i.putExtra(IS24ApiService.LNG, LocationHelper.sLng);
+		i.putExtra(IS24ApiService.API_RECEIVER, mState.mReceiver);
+		getActivity().startService(i);
+		updateHud(null, 0);
+	}
+
 
 	@Override
 	public void onReceiveResult(int resultCode, Bundle resultData) {
@@ -290,10 +316,13 @@ public class MapFragment extends Fragment implements Receiver, MapLocationCallba
 					f.owned = cur.getCount() == 1;
 					cur.close();
 
-					if (f.lng < minX)
+					if (f.lng < minX) {
 						minX = f.lng;
-					if (f.lng > maxX)
+					}
+					if (f.lng > maxX){
 						maxX = f.lng;
+					}
+						
 
 					if (f.lat < minY)
 						minY = f.lat;
@@ -330,23 +359,6 @@ public class MapFragment extends Fragment implements Receiver, MapLocationCallba
 			}
 
 			mMapView.invalidate();
-		}
-
-	}
-
-	public void headerClick(View v) {
-		switch (v.getId()) {
-		case R.id.location_refresh:
-			LocationHelper.getLastLocation(getActivity());
-			// mRefreshButton.startAnimation(AnimationUtils.loadAnimation(this,
-			// R.anim.locating_animation));
-			break;
-		case R.id.header_logo:
-			// TODO schtief war hier hat das weg gemacht weil die
-			// DashboardActivity nich mehr da is
-			// startActivity(new Intent(getActivity(),
-			// DashboardActivity.class));
-			break;
 		}
 
 	}
@@ -441,46 +453,6 @@ public class MapFragment extends Fragment implements Receiver, MapLocationCallba
 			}
 			updateHud(null, 0);
 		}
-	}
-
-	@Override
-	public void updateMapData(boolean newLoc) {
-		// mRefreshButton.clearAnimation();
-		if (newLoc || LocationHelper.mAddress == null) {
-			new GeoCodeLocationTask().execute(LocationHelper.sLat, LocationHelper.sLng);
-		} else {
-			setAddress(LocationHelper.mAddress);
-		}
-		Intent i = new Intent(getActivity(), IS24ApiService.class);
-		i.putExtra(IS24ApiService.COMMAND, IS24ApiService.CMD_SEARCH);
-		i.putExtra(IS24ApiService.LAT, LocationHelper.sLat);
-		i.putExtra(IS24ApiService.LNG, LocationHelper.sLng);
-		i.putExtra(IS24ApiService.API_RECEIVER, mState.mReceiver);
-		getActivity().startService(i);
-		updateHud(null, 0);
-	}
-
-	public void showInfo(View v) {
-
-		LayoutInflater inflater = LayoutInflater.from(getActivity());
-
-		View alertDialogView = inflater.inflate(R.layout.info_webview, null);
-
-		WebView myWebView = (WebView) alertDialogView.findViewById(R.id.DialogWebView);
-		myWebView.setWebViewClient(new WebViewClient());
-		myWebView.getSettings().setSupportZoom(true);
-		myWebView.getSettings().setUseWideViewPort(true);
-
-		myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setView(alertDialogView);
-		builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-			}
-		}).show();
 	}
 
 	@Override
