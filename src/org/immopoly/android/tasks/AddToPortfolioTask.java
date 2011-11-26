@@ -14,12 +14,12 @@ import org.immopoly.android.provider.FlatsProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.widget.Toast;
+
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class AddToPortfolioTask extends AsyncTask<Flat, Void, AddToPortfolioTask.Result> {
 
@@ -74,9 +74,12 @@ public class AddToPortfolioTask extends AsyncTask<Flat, Void, AddToPortfolioTask
 					break;
 				case 441:
 					history.mText = this.mActivity.getString(R.string.expose_location_spoofing);
+				default:
+					history.mText = obj.getJSONObject("org.immopoly.common.ImmopolyException").getString("message");
 				}
 				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_TOOK_EXPOSE,
 						TrackingManager.LABEL_NEGATIVE, 0);
+				result.success = false;
 			}
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
