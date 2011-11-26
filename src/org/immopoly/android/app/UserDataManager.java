@@ -52,7 +52,8 @@ public class UserDataManager
 		this.mActivity = activity;
 
 		// try to get user info on first activity start if we have a token
-		if ( state == USER_UNKNOWN && ImmopolyUser.getInstance().readToken( mActivity ) != null ) {
+		String token = ImmopolyUser.getInstance().readToken( mActivity );
+		if ( state == USER_UNKNOWN &&  token != null && token.length() > 0 ) {
 			getUserInfo();
 		}
 		
@@ -80,7 +81,7 @@ public class UserDataManager
 	 * informs listeners on successful operation
 	 */
 	public void login() {
-		Log.i( Const.LOG_TAG, "UserDataManager.login()" );
+		Log.i( Const.LOG_TAG, "UserDataManager.login() state = " + state );
 		if ( actionPending ) {
 			Log.w( Const.LOG_TAG, "Refusing to log in while another server request is running" );
 			return;
@@ -106,19 +107,22 @@ public class UserDataManager
 	 * 
 	 */
 	void onActivityResult( int requestCode, int resultCode, Intent data ) {
-		Log.i( Const.LOG_TAG, "UserDataManager.onActivityResult()" );
+		Log.i( Const.LOG_TAG, "UserDataManager.onActivityResult() state = " + state );
+		actionPending = false;
 		if(requestCode == Const.USER_SIGNUP ) {
 			if ( resultCode == Activity.RESULT_OK ) {
 				state = LOGGED_IN;
+				Log.i( Const.LOG_TAG, "UserDataManager.onActivityResult() state2  = " + state );
 				fireUsedDataChanged();
 				if ( flatToAddAfterLogin != null )
 					addToPortfolio( flatToAddAfterLogin );
 			} else {
+				Log.i( Const.LOG_TAG, "UserDataManager.onActivityResult() state3  = " + state );
 				state = USER_UNKNOWN;
 				fireUsedDataChanged();
 			}
 		}
-		actionPending = false;
+		Log.i( Const.LOG_TAG, "UserDataManager.onActivityResult() state4  = " + state );
 	}
 	
 	/**
@@ -127,13 +131,15 @@ public class UserDataManager
 	 * informs listeners on successful operation
 	 */
 	public void getUserInfo() {
-		Log.i( Const.LOG_TAG, "UserDataManager.getUserInfo()" );
+		Log.i( Const.LOG_TAG, "UserDataManager.getUserInfo() state = " + state );
 		if ( actionPending ) {
 			Log.w( Const.LOG_TAG, "Refusing to get user info while another server request is running" );
 			return;
 		}
+		Log.i( Const.LOG_TAG, "UserDataManager.getUserInfo() state2 = " + state );
 		actionPending = true;
 		state = LOGIN_PENDING;
+		Log.i( Const.LOG_TAG, "UserDataManager.getUserInfo() state3 = " + state );
 		GetUserInfoTask task = new GetUserInfoTask( mActivity ) {
 			@Override
 			protected void onPostExecute(ImmopolyUser user) {
@@ -143,6 +149,7 @@ public class UserDataManager
 				} else {
 					state = USER_UNKNOWN;
 				}
+				Log.i( Const.LOG_TAG, "UserDataManager.getUserInfo() state4 = " + state );
 				fireUsedDataChanged();
 			}
 		};
