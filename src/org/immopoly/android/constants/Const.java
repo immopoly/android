@@ -12,6 +12,7 @@ public class Const {
 	public static final String EXPOSE_DESC = "exposeDescription";
 	public static final String EXPOSE_URL = "exposeURL";
 	public static final String EXPOSE_IN_PORTOFOLIO = "exposeInPortfolio";
+	
 //	public static final String EXPOSE_OWNED = "exposeOwned";
 
 	// Intent add portofolio

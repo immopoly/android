@@ -344,45 +344,6 @@ public class MapFragment extends Fragment implements Receiver,
 
 	}
 
-	public void signIn() {
-		String authUrl = "";
-		SharedPreferences shared = getActivity().getSharedPreferences("oauth", 0);
-		String accessToken = shared.getString("oauth_token", "");
-		if (accessToken.length() != accessToken.length()) {
-			OAuthData.getInstance(getActivity().getBaseContext()).signedIn = true;
-			OAuthData.getInstance(getActivity().getBaseContext()).accessToken = accessToken;
-
-		} else {
-			OAuthData.getInstance(getActivity().getBaseContext()).signedIn = false;
-			try {
-				authUrl = OAuthData.getInstance(getActivity().getBaseContext()).provider.retrieveRequestToken(
-						OAuthData.getInstance(getActivity().getBaseContext()).consumer, OAuth.OUT_OF_BAND);
-				Log.d("OAUTH", authUrl);
-			} catch (OAuthMessageSignerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OAuthNotAuthorizedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OAuthExpectationFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OAuthCommunicationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			// Login in web view
-			// TODO schtief war hier hat das weg gemacht weil die webactivity
-			// nich mehr da is
-			// Intent i = new Intent(getActivity(), WebViewActivity.class);
-			// i.putExtra(Const.AUTH_URL, authUrl);
-			// i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			// startActivity(i);
-		}
-
-	}
-
 	public void headerClick(View v) {
 		switch (v.getId()) {
 		case R.id.location_refresh:
@@ -561,13 +522,8 @@ public class MapFragment extends Fragment implements Receiver,
 	}
 
 	@Override
-	public void onMapItemClicked(int exposeID, boolean isInPortfolio) {
-		mOnMapItemClickedListener.onMapItemClicked(exposeID, isInPortfolio);
-	}
-	
-	@Override
-	public void onMapOverlayClicked(int exposeID, boolean isInPortfolio) {
-		mOnMapItemClickedListener.onMapOverlayClicked(exposeID, isInPortfolio);
+	public void onFlatClicked(Flat flat) {
+		mOnMapItemClickedListener.onFlatClicked(flat);
 	}
 	
 	@Override

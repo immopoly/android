@@ -48,13 +48,13 @@ public class HistoryAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		List<ImmopolyHistory> h = ImmopolyUser.getInstance().mUserHistory;
+		List<ImmopolyHistory> h = ImmopolyUser.getInstance().getHistory();
 		return h.size();
 	}
 
 	@Override
 	public History getItem(int arg0) {
-		return ImmopolyUser.getInstance().mUserHistory.get(arg0);
+		return ImmopolyUser.getInstance().getHistory().get(arg0);
 	}
 
 	@Override

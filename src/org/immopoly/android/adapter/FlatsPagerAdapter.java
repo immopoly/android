@@ -109,7 +109,7 @@ public class FlatsPagerAdapter extends PagerAdapter {
 		markerView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				((OnMapItemClickedListener) mContext.getActivity()).onMapOverlayClicked(flat.uid, flat.owned);
+				((OnMapItemClickedListener) mContext.getActivity()).onFlatClicked( flat );
 			}
 		});
 

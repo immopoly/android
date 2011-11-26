@@ -317,8 +317,8 @@ public class UserSignupActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(ImmopolyUser user) {
+			super.onPostExecute(user);
 			if (user != null) {
-
 				startGame();
 			} else if (Settings.isOnline(UserSignupActivity.this)) {
 				Toast.makeText(UserSignupActivity.this,

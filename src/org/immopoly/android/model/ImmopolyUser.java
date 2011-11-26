@@ -42,7 +42,7 @@ public class ImmopolyUser extends User {
 	private String mEmail;
 	private String mTwitter;
 	private double mBalance;
-	public List<ImmopolyHistory> mUserHistory;
+	private List<ImmopolyHistory> mUserHistory;
 	public Flats flats;
 	private double sLastProvision;
 	private double sLastRent;
@@ -167,6 +167,10 @@ public class ImmopolyUser extends User {
 
 	}
 
+	public List<ImmopolyHistory> getHistory() {
+		return mUserHistory;
+	}
+
 	@Override
 	public void setLastProvision(double lastProvision) {
 		sLastProvision = lastProvision;
@@ -222,4 +226,5 @@ public class ImmopolyUser extends User {
 	public void setTwitter(String twitter) {
 		mTwitter = twitter;
 	}
+
 }

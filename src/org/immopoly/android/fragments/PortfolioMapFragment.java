@@ -2,6 +2,8 @@ package org.immopoly.android.fragments;
 
 import org.immopoly.android.R;
 import org.immopoly.android.app.ImmopolyActivity;
+import org.immopoly.android.app.UserDataListener;
+import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyUser;
@@ -17,7 +19,7 @@ import android.widget.FrameLayout;
 
 import com.google.android.maps.MapView;
 
-public class PortfolioMapFragment extends Fragment {
+public class PortfolioMapFragment extends Fragment implements UserDataListener {
 
 	private MapView mMapView;
 	private ImmoscoutPlacesOverlay flatsOverlay;
@@ -46,6 +48,8 @@ public class PortfolioMapFragment extends Fragment {
 			}
 		});
 
+		UserDataManager.instance.addUserDataListener( this );
+		
 		return layout;
 	}
 
@@ -53,6 +57,14 @@ public class PortfolioMapFragment extends Fragment {
 	public void onDestroyView() {
 		((ImmopolyActivity) getActivity()).releaseMapView( this );
 		super.onDestroyView();
+	}
+
+	@Override
+	public void onUserDataUpdated() {
+		// TODO check my vilibility
+		mFlats = ImmopolyUser.getInstance().getPortfolio();
+		flatsOverlay.setFlats( mFlats );
+		mMapView.invalidate();
 	}
 
 }

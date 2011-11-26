@@ -50,6 +50,11 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 		return mFlats.size();
 	}
 
+	public void setFlats(Flats mFlats) {
+		this.mFlats = mFlats;
+		notifyDataSetChanged();
+	}
+	
 	public Flat getItem(int pos) {
 		return mFlats.get(pos);
 	}
@@ -102,4 +107,5 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 		}
 		return convertView;
 	}
+
 }

@@ -1,19 +1,18 @@
 package org.immopoly.android.fragments;
 
 import org.immopoly.android.R;
-import org.immopoly.android.app.UserSignupActivity;
+import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
-import org.immopoly.android.model.ImmopolyUser;
+import org.immopoly.android.model.Flat;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,26 +24,12 @@ import android.widget.Button;
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class ExposeFragment extends DialogFragment {
-	private String mExposeId;
-	private String mExposeName;
-	private String mExposeDescription;
 
-	private String mExposeUrl;
 	private Boolean mLoadTwice = false;
 	private WebView mWebView;
-	private boolean mOwned = false;
-
-	public interface OnExposeClickedListener {
-		public void onExposeTakeOver(String exposeID);
-
-		public void onExposeRelease(String exposeID);
-
-		public void onShareClick(int exposeID, boolean isInPortfolio);
-
-	}
 
 	private GoogleAnalyticsTracker tracker;
-	private OnExposeClickedListener mOnExposeClickedListener;
+	private Flat flat;
 
 	private final static String sInjectJString;
 	
@@ -60,26 +45,25 @@ public class ExposeFragment extends DialogFragment {
 	 * Create a new instance of MyFragment that will be initialized with the
 	 * given arguments.
 	 */
-	public static ExposeFragment newInstance(int exposeID, boolean isInPortfolio) {
+	public static ExposeFragment newInstance( Flat flat ) {
 		ExposeFragment f = new ExposeFragment();
-		Bundle b = new Bundle();
-		b.putString(Const.EXPOSE_ID, String.valueOf(exposeID));
-		b.putBoolean(Const.EXPOSE_IN_PORTOFOLIO, isInPortfolio);
-		f.setArguments(b);
+		f.setFlat( flat );
 		return f;
 	}
 
+	/**
+	 * sets the Flat to show the exposee for
+	 * @param flat the flat
+	 */
+	public void setFlat( Flat flat ) {
+		this.flat = flat;
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// fullscreen dialog with no title
 		setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme);
-
-		try {
-			mOnExposeClickedListener = (OnExposeClickedListener) getActivity();
-		} catch (ClassCastException e) {
-			throw new ClassCastException(getActivity().toString() + " must implement OnMapItemClickedListener");
-		}
 	}
 
 	@Override
@@ -137,7 +121,7 @@ public class ExposeFragment extends DialogFragment {
 		});
 		loadPage(getArguments());
 		
-		if ( mOwned ) {
+		if ( flat.owned ) {
 			takeOrReleaseButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -160,7 +144,7 @@ public class ExposeFragment extends DialogFragment {
 		Handler buttonDelayFinishedHandler = new Handler() {
 			public void handleMessage(Message msg) {
 				takeOrReleaseButton.setEnabled(true);
-				if (mOwned)
+				if (flat.owned)
 					takeOrReleaseButton.setText(getString(R.string.release_expose));
 				else
 					takeOrReleaseButton.setText(getString(R.string.try_takeover));
@@ -170,79 +154,31 @@ public class ExposeFragment extends DialogFragment {
 	}
 
 	void loadPage(Bundle intent) {
-		if (intent != null && intent.containsKey(Const.EXPOSE_ID)) {
-			mExposeId = intent.getString(Const.EXPOSE_ID);
-
-			tracker.setCustomVar(1, Const.SOURCE, intent.getString(Const.SOURCE), 1);
-
-			if (intent.getBoolean(Const.EXPOSE_IN_PORTOFOLIO, false)) {
-//				((Button) getView().findViewById(R.id.BackButton)).setText(getString(R.string.webview_back_button));
-				mOwned = true;
-			}
-			mExposeName = intent.getString(Const.EXPOSE_NAME);
-			mExposeDescription = intent.getString(Const.EXPOSE_DESC);
-			mExposeUrl = intent.getString(Const.EXPOSE_URL);
-			String url = Settings.getFlatLink(mExposeId, true);
-			mWebView.loadUrl(url);
-		}
+		String url = Settings.getFlatLink( String.valueOf( flat.uid ), true);
+		mWebView.loadUrl(url);
 	}
 
 	public void addCurrentExpose(View v) {
-		Intent intent;
-		if (ImmopolyUser.getInstance().readToken(getActivity()).length() > 0) {
-			intent = new Intent();
-			intent.putExtra(Const.EXPOSE_ADD_PORTIFOLIO, true);
-			intent.putExtra(Const.EXPOSE_ID, mExposeId);
-			intent.putExtra(Const.EXPOSE_NAME, mExposeName);
-			intent.putExtra(Const.EXPOSE_DESC, mExposeDescription);
-			intent.putExtra(Const.EXPOSE_URL, mExposeUrl);
-			intent.setAction("add_expose");
-			if (!mOwned) {
-				// setResult(Activity.RESULT_OK, i);
-				tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE,
-						TrackingManager.LABEL_TRY, 0);
-			} else {
-				// setResult(RESULT_CANCELED, i);
-			}
-			mOnExposeClickedListener.onExposeTakeOver(mExposeId);
-			dismiss();
-			// finish();
-		} else {
-			Intent intent2 = new Intent(getActivity(),
-					UserSignupActivity.class);
-			startActivityForResult(intent2,Const.USER_SIGNUP);
+		if (! flat.owned) {
+			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE,
+					TrackingManager.LABEL_TRY, 0);
 		}
+		UserDataManager.instance.addToPortfolio( flat );
+		dismiss();
 	}
 
 	public void releaseCurrentExpose(View v) {
-		Intent intent;
-		if (ImmopolyUser.getInstance().readToken(getActivity()).length() > 0) {
-			intent = new Intent();
-			intent.putExtra(Const.EXPOSE_RELEASE_PORTIFOLIO, true);
-			intent.putExtra(Const.EXPOSE_ID, mExposeId);
-			intent.putExtra(Const.EXPOSE_NAME, mExposeName);
-			intent.putExtra(Const.EXPOSE_DESC, mExposeDescription);
-			intent.putExtra(Const.EXPOSE_URL, mExposeUrl);
-			intent.setAction("add_expose");
-			if (mOwned) {
-				// setResult(Activity.RESULT_OK, i);
-				tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE, TrackingManager.LABEL_RELEASE, 0);
-			} else {
-				// setResult(RESULT_CANCELED, i);
-			}
-			mOnExposeClickedListener.onExposeRelease(mExposeId);
-			dismiss();
-			// finish();
-		} else {
-			Intent intent2 = new Intent(getActivity(),
-					UserSignupActivity.class);
-			startActivityForResult(intent2,Const.USER_SIGNUP);
+		// assuming user is logged in - there shouldn't be any "release flat" button otherwise  
+		if (flat.owned) {  // TODO if that isn't true, why are we here anyway
+			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE, TrackingManager.LABEL_RELEASE, 0);
 		}
+		UserDataManager.instance.releaseFromPortfolio( flat );
+		dismiss();
 	}
 
 	public void shareExpose(View v) {
-		Settings.shareMessage(getActivity(), getString(R.string.link_share_flat), mExposeName,
-				Settings.getFlatLink(mExposeId, false));
+		Settings.shareMessage(getActivity(), getString(R.string.link_share_flat), flat.name,
+				Settings.getFlatLink( String.valueOf( flat.uid ), false));
 	}
 
 	@Override
@@ -252,12 +188,5 @@ public class ExposeFragment extends DialogFragment {
 		mWebView = null;
 		tracker.stopSession();
 	}
-	
-	@Override
-	public void onActivityResult(int requestCode, int resultCode,
-            Intent data) {
-		if(requestCode == Const.USER_SIGNUP && resultCode == Activity.RESULT_OK){
-			addCurrentExpose(null);
-		}
-	}
 }
+

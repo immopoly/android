@@ -21,8 +21,11 @@ package org.immopoly.android.tasks;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
+import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.helper.WebHelper;
+import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.provider.FlatsProvider;
 import org.json.JSONException;
@@ -62,41 +65,37 @@ public abstract class GetUserInfoTask extends
 		if (obj == null || obj.has("org.immopoly.common.ImmopolyException")) {
 			user = null;
 		} else {
+			// fill user objects from server's UserInfo data
 			ImmopolyUser.getInstance().fromJSON(obj);
 			user = ImmopolyUser.getInstance();
 
-			// getContentResolver().delete(
-			// FlatsProvider.CONTENT_URI,
-			// org.immopoly.android.provider.FlatsProvider.Flat.FLAT_ID
-			// + " > 0", null);
-			Cursor cur = mContext.getContentResolver().query(
+			// synchronize local flats DB
+			ArrayList<Flat>    toBeAdded   = new ArrayList<Flat>( user.flats );
+			ArrayList<Integer> toBeDeleted = new ArrayList<Integer>();
+			Cursor cur = mContext.getContentResolver().query( 
 					FlatsProvider.CONTENT_URI, null, null, null, null);
 			if (cur.getCount() > 0) {
 				boolean isIn;
-				int current;
 				cur.moveToFirst();
 				do {
 					isIn = false;
-					current = -1;
-					for (int i = 0; i < ImmopolyUser.getInstance().flats.size(); i++) {
-						if (cur.getInt(cur
-								.getColumnIndex(FlatsProvider.Flat.FLAT_ID)) == ImmopolyUser
-								.getInstance().flats.get(i).uid) {
+					int id = cur.getInt(cur.getColumnIndex(FlatsProvider.Flat.FLAT_ID));
+					for (int i = 0; i < user.flats.size(); i++) {
+						if (user.flats.get(i).uid == id) {
 							isIn = true;
-							current = i;
+							toBeAdded.remove( user.flats.get(i) );
 							break;
 						}
 					}
-					if (isIn == false) {
-						// delete
-						deleteFlat(cur.getInt(cur
-								.getColumnIndex(FlatsProvider.Flat.FLAT_ID)));
-					} else if (current != -1) {
-						ImmopolyUser.getInstance().flats.remove(current);
+					if ( ! isIn ) {
+						toBeDeleted.add( id );
 					}
 				} while (cur.moveToNext());
 			}
-			for (org.immopoly.android.model.Flat f : ImmopolyUser.getInstance().flats) {
+			for ( Integer id : toBeDeleted ) {
+				deleteFlat( id );
+			}
+			for ( Flat f : toBeAdded ) {
 				addFlat(f);
 			}
 		}
@@ -105,7 +104,6 @@ public abstract class GetUserInfoTask extends
 
 	@Override
 	protected void onPostExecute(ImmopolyUser user) {
-
 	}
 
 	private void deleteFlat(int id) {
@@ -113,7 +111,7 @@ public abstract class GetUserInfoTask extends
 				FlatsProvider.Flat.FLAT_ID + "=" + id, null);
 	}
 
-	private void addFlat(org.immopoly.android.model.Flat f) {
+	private void addFlat(Flat f) {
 		ContentValues values;
 		values = new ContentValues();
 		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_ID,f.uid);
