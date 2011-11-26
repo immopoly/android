@@ -58,8 +58,12 @@ public class AddToPortfolioTask extends AsyncTask<Flat, Void, AddToPortfolioTask
 				history.fromJSON(obj);
 				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_TOOK_EXPOSE,
 						TrackingManager.LABEL_TRY, 0);
-				addFlatToDB( flat );
-				result.success = true;
+				if (history.getType() == 1) {
+					addFlatToDB(flat);
+					result.success = true;
+				} else {
+					result.success = false;
+				}
 			} else if (obj != null) {
 				history = new ImmopolyHistory();
 				switch (obj.getJSONObject("org.immopoly.common.ImmopolyException").getInt("errorCode")) {
