@@ -34,13 +34,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
 
 public class HistoryAdapter extends BaseAdapter {
 
 	private LayoutInflater inflater;
-
 
 	public HistoryAdapter(Activity context) {
 		inflater = context.getLayoutInflater();
@@ -79,7 +78,7 @@ public class HistoryAdapter extends BaseAdapter {
 
 			holder.text = (TextView) convertView.findViewById(R.id.historyText);
 		}
-
+		boolean isPlus = true;
 		int color = Color.BLACK;
 		switch (((ImmopolyHistory) getItem(position)).mtype) {
 		case History.TYPE_EXPOSE_SOLD:
@@ -93,19 +92,22 @@ public class HistoryAdapter extends BaseAdapter {
 			break;
 		case History.TYPE_EXPOSE_MONOPOLY_NEGATIVE:
 			color = Color.RED;
+			isPlus = false;
 			break;
 		case History.TYPE_DAILY_RENT:
 			color = Color.RED;
+			isPlus = false;
 			break;
 		default:
 			break;
 		}
 
-		holder.date.setTextColor(color);
+		// holder.date.setTextColor(color);
 		holder.date.setText(create_datestring(((ImmopolyHistory) getItem(position)).mTime));
-		holder.time.setTextColor(color);
+		// holder.time.setTextColor(color);
 		holder.time.setText(create_timestring(((ImmopolyHistory) getItem(position)).mTime) + " Uhr");
-		holder.text.setTextColor(color);
+		// holder.text.setTextColor(color);
+		holder.text.setBackgroundResource(isPlus ? R.drawable.bg_history_text_plus : R.drawable.bg_history_text_minus);
 		holder.text.setText(((ImmopolyHistory) getItem(position)).mText);
 		return convertView;
 	}

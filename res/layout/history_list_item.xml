@@ -20,19 +20,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dip"
-    android:background="@android:color/white"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:padding="5dp" >
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="2dip"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_history_time"
+        android:gravity="center"
         android:orientation="vertical" >
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginLeft="4dip"
             android:layout_marginRight="4dip"
             android:text="@string/date"
@@ -41,7 +40,6 @@
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginLeft="4dip"
             android:layout_marginRight="4dip"
             android:text="@string/time"
@@ -51,6 +49,9 @@
         android:id="@+id/historyText"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
+        android:background="@drawable/bg_history_time"
+        android:padding="5dp"
         android:textColor="@android:color/black" />
 </LinearLayout>
