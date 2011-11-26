@@ -41,7 +41,7 @@ public class PortfolioListFragment extends Fragment implements OnItemClickListen
 		layout.findViewById( R.id.pf_map_btn ).setOnClickListener( new View.OnClickListener() {
 			public void onClick(View v) {
 				Log.i(Const.LOG_TAG, "PortfolioMapFragment show listg");
-				((ImmopolyActivity) getActivity()).showFragment( ImmopolyActivity.PORTFOLIO_MAP_FRAGMENT, null );
+				((ImmopolyActivity) getActivity()).getTabManager().onTabChanged( "portfolio_map" );
 			}
 		});
 		UserDataManager.instance.addUserDataListener( this );
@@ -64,11 +64,11 @@ public class PortfolioListFragment extends Fragment implements OnItemClickListen
 
 	@Override
 	public void onUserDataUpdated() {
-		Log.i(Const.LOG_TAG, "PortfolioMapFragment.onUserDataUpdated!!");
+		Log.i( Const.LOG_TAG, "PortfolioMapFragment.onUserDataUpdated!!" );
 		ImmopolyUser user = ImmopolyUser.getInstance();
 		flats = user.getPortfolio();
 		updateVisibility(getView());
-		mListAdapter.setFlats(flats);
+		mListAdapter.setFlats( flats );
 	}
 
 	private void updateVisibility(View v) {

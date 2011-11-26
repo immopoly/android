@@ -44,7 +44,7 @@ public class PortfolioMapFragment extends Fragment implements UserDataListener {
 		layout.findViewById( R.id.pf_list_btn ).setOnClickListener( new View.OnClickListener() {
 			public void onClick(View v) {
 				Log.i( "IMPO", "PortfolioMapFragment show listg" );
-				((ImmopolyActivity) getActivity()).showFragment( ImmopolyActivity.PORTFOLIO_LIST_FRAGMENT, null );
+				((ImmopolyActivity) getActivity()).getTabManager().onTabChanged( "portfolio" );
 			}
 		});
 
