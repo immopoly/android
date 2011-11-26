@@ -100,6 +100,6 @@ public class ReleaseFromPortfolioTask extends AsyncTask<String, Void, ReleaseFro
 	
 	private void deleteFlatFromDB(int id) {
 		mActivity.getContentResolver().delete(FlatsProvider.CONTENT_URI,
-				FlatsProvider.Flat.FLAT_ID + "=" + id, null);
+				FlatsProvider.FLAT_ID + "=" + id, null);
 	}
 }

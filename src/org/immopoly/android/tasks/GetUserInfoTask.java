@@ -79,7 +79,7 @@ public abstract class GetUserInfoTask extends
 				cur.moveToFirst();
 				do {
 					isIn = false;
-					int id = cur.getInt(cur.getColumnIndex(FlatsProvider.Flat.FLAT_ID));
+					int id = cur.getInt(cur.getColumnIndex(FlatsProvider.FLAT_ID));
 					for (int i = 0; i < user.flats.size(); i++) {
 						if (user.flats.get(i).uid == id) {
 							isIn = true;
@@ -108,18 +108,18 @@ public abstract class GetUserInfoTask extends
 
 	private void deleteFlat(int id) {
 		mContext.getContentResolver().delete(FlatsProvider.CONTENT_URI,
-				FlatsProvider.Flat.FLAT_ID + "=" + id, null);
+				FlatsProvider.FLAT_ID + "=" + id, null);
 	}
 
 	private void addFlat(Flat f) {
 		ContentValues values;
 		values = new ContentValues();
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_ID,f.uid);
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_NAME,f.name);
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_DESCRIPTION,"-");
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_LATITUDE, f.lat);
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_LONGITUDE, f.lng);
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_CREATIONDATE, f.creationDate);
+		values.put(FlatsProvider.FLAT_ID, f.uid);
+		values.put(FlatsProvider.FLAT_NAME, f.name);
+		values.put(FlatsProvider.FLAT_DESCRIPTION, "-");
+		values.put(FlatsProvider.FLAT_LATITUDE, f.lat);
+		values.put(FlatsProvider.FLAT_LONGITUDE, f.lng);
+		values.put(FlatsProvider.FLAT_CREATIONDATE, f.creationDate);
 		mContext.getContentResolver().insert(FlatsProvider.CONTENT_URI, values);
 	}
 }

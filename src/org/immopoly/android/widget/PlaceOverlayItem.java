@@ -19,21 +19,20 @@
 
 package org.immopoly.android.widget;
 
-import org.immopoly.android.helper.MapMarkerCallback;
 import org.immopoly.android.model.Flat;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
 
+
 public class PlaceOverlayItem extends OverlayItem {
 
 	public Flat flat;
-	public MapMarkerCallback callback;
 
-	public PlaceOverlayItem(GeoPoint point, Flat f, MapMarkerCallback callback) {
+
+	public PlaceOverlayItem(GeoPoint point, Flat f) {
 		super(point, f.name, f.locationNote);
-		this.callback = callback;
 		flat = f;
 		// TODO Auto-generated constructor stub
 	}
