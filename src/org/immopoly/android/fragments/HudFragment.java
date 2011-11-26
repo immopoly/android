@@ -6,28 +6,18 @@ import java.util.Locale;
 import org.immopoly.android.R;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
-import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.model.ImmopolyUser;
-import org.immopoly.android.provider.UserProvider;
 
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.database.ContentObserver;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class HudFragment extends Fragment implements OnClickListener, UserDataListener
@@ -66,7 +56,10 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 	}
 
 	public void updateHud() {
+
 		Button hudButton = (Button) getView().findViewById(R.id.hud_text);
+		View spacer = (View) getView().findViewById(R.id.hud_progress_spacer);
+		View progress = (View) getView().findViewById(R.id.hud_progress);
 		if (hudButton != null) {
 			if ( UserDataManager.instance.getState() == UserDataManager.LOGGED_IN ) {
 				NumberFormat nFormat = NumberFormat
@@ -75,8 +68,14 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 				nFormat.setMaximumFractionDigits(0);
 				hudButton.setText(nFormat.format(ImmopolyUser.getInstance()
 						.getBalance()));
-			} else {
+			}
+			if (UserDataManager.instance.getState() == UserDataManager.USER_UNKNOWN) {
+				progress.setVisibility(View.GONE);
+				spacer.setVisibility(View.GONE);
+				hudButton.setVisibility(View.VISIBLE);
 				hudButton.setText(R.string.login_button);
+			} else {
+				Log.i(Const.LOG_TAG, "unknown state " + UserDataManager.instance.getState());
 			}
 		}
 	}
