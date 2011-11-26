@@ -41,5 +41,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="right"
-        android:text="" />
+        android:text="" android:visibility="gone"/>
+    <View android:id="@+id/hud_progress_spacer" 
+        android:layout_width="0dp" 
+        android:layout_weight="1"
+        android:layout_height="match_parent"/>
+   <ProgressBar android:id="@+id/hud_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         style="@android:style/Widget.ProgressBar.Small"
+         android:gravity="right"
+         android:layout_marginRight="15dp" />
 </LinearLayout>

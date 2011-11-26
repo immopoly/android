@@ -11,7 +11,6 @@ import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -46,12 +45,12 @@ public class HudPopupHelper {
 				
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
-					if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+					// if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
 
 						mPopupView.dismiss();
 						return true;
-					}
-					return false;
+					// }
+					// return false;
 				}
 			});
 		}

@@ -16,13 +16,22 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
-
+/**
+ * contains methods that interact with the immopoly server.
+ *  - login/signup (using UserSignupActivity)
+ *  - getUserInfo (using GetUserInfoTask)
+ *  - addToPortfolio (using AddToPortfolioTask)
+ *  - releaseFromPortfolio (using ReleaseFromPortfolioTask)
+ * 
+ * @author bjoern
+ * TODO re-enable  addToPortfolio after signup
+ *
+ */
 public class UserDataManager
 {
 	public static final int USER_UNKNOWN  = 0;
-	public static final int USER_KNOWN    = 1;
-	public static final int LOGIN_PENDING = 2; // TODO unused (yet)
-	public static final int LOGGED_IN     = 3;
+	public static final int LOGIN_PENDING = 1; // TODO unused (yet)
+	public static final int LOGGED_IN     = 2;
 
 	private boolean actionPending;
 	
@@ -31,6 +40,7 @@ public class UserDataManager
 	private GoogleAnalyticsTracker mTracker;
 
 	private Vector<UserDataListener> listeners = new Vector<UserDataListener>();
+	private Flat flatToAddAfterLogin;
 
 	// the singleton instance
 	public static final UserDataManager instance = new UserDataManager();
@@ -41,8 +51,9 @@ public class UserDataManager
 	public void setActivity( Activity activity ) {
 		this.mActivity = activity;
 
-		if ( state == USER_UNKNOWN && ImmopolyUser.getInstance().readToken( mActivity ) != null ) {
-			state = USER_KNOWN;
+		// try to get user info on first activity start if we have a token
+		String token = ImmopolyUser.getInstance().readToken( mActivity );
+		if ( state == USER_UNKNOWN &&  token != null && token.length() > 0 ) {
 			getUserInfo();
 		}
 		
@@ -70,7 +81,7 @@ public class UserDataManager
 	 * informs listeners on successful operation
 	 */
 	public void login() {
-		Log.i( Const.LOG_TAG, "UserDataManager.login()" );
+		Log.i( Const.LOG_TAG, "UserDataManager.login() state = " + state );
 		if ( actionPending ) {
 			Log.w( Const.LOG_TAG, "Refusing to log in while another server request is running" );
 			return;
@@ -81,13 +92,14 @@ public class UserDataManager
 		}
 		
 		actionPending = true;
+		state = LOGIN_PENDING;
 		Intent intent = new Intent( mActivity, UserSignupActivity.class );
 		mActivity.startActivityForResult( intent, Const.USER_SIGNUP );
 	}
 
 
 	/**
-	 * Reveives results from Actitvies (UserSignupActivity for now)
+	 * Receives results from Actitvies (UserSignupActivity for now)
 	 * 
 	 * informs listeners if signup succeeded
 	 * 
@@ -95,16 +107,22 @@ public class UserDataManager
 	 * 
 	 */
 	void onActivityResult( int requestCode, int resultCode, Intent data ) {
-		Log.i( Const.LOG_TAG, "UserDataManager.onActivityResult()" );
+		Log.i( Const.LOG_TAG, "UserDataManager.onActivityResult() state = " + state );
+		actionPending = false;
 		if(requestCode == Const.USER_SIGNUP ) {
 			if ( resultCode == Activity.RESULT_OK ) {
-				fireUsedDataChanged();
 				state = LOGGED_IN;
+				Log.i( Const.LOG_TAG, "UserDataManager.onActivityResult() state2  = " + state );
+				fireUsedDataChanged();
+				if ( flatToAddAfterLogin != null )
+					addToPortfolio( flatToAddAfterLogin );
 			} else {
+				Log.i( Const.LOG_TAG, "UserDataManager.onActivityResult() state3  = " + state );
 				state = USER_UNKNOWN;
+				fireUsedDataChanged();
 			}
 		}
-		actionPending = false;
+		Log.i( Const.LOG_TAG, "UserDataManager.onActivityResult() state4  = " + state );
 	}
 	
 	/**
@@ -113,20 +131,26 @@ public class UserDataManager
 	 * informs listeners on successful operation
 	 */
 	public void getUserInfo() {
-		Log.i( Const.LOG_TAG, "UserDataManager.getUserInfo()" );
+		Log.i( Const.LOG_TAG, "UserDataManager.getUserInfo() state = " + state );
 		if ( actionPending ) {
 			Log.w( Const.LOG_TAG, "Refusing to get user info while another server request is running" );
 			return;
 		}
+		Log.i( Const.LOG_TAG, "UserDataManager.getUserInfo() state2 = " + state );
 		actionPending = true;
+		state = LOGIN_PENDING;
+		Log.i( Const.LOG_TAG, "UserDataManager.getUserInfo() state3 = " + state );
 		GetUserInfoTask task = new GetUserInfoTask( mActivity ) {
 			@Override
 			protected void onPostExecute(ImmopolyUser user) {
 				actionPending = false;
 				if ( user != null ) {
 					state = LOGGED_IN;
-					fireUsedDataChanged();
+				} else {
+					state = USER_UNKNOWN;
 				}
+				Log.i( Const.LOG_TAG, "UserDataManager.getUserInfo() state4 = " + state );
+				fireUsedDataChanged();
 			}
 		};
 		task.execute( ImmopolyUser.getInstance().getToken() );
@@ -140,8 +164,13 @@ public class UserDataManager
 	 */
 	public void addToPortfolio( final Flat flat ) {
 		Log.i( Const.LOG_TAG, "UserDataManager.addToPortfolio() tracker: " +mTracker );
-//		TODO	login first if not yet		
-//		if ( state == USER_UNKNOWN )
+		// login first if not yet		
+		if ( state == USER_UNKNOWN ) {
+			flatToAddAfterLogin = flat;
+			login();
+			return;
+		}
+			
 		if ( ! checkState() )
 			return;
 		actionPending = true;
@@ -203,7 +232,7 @@ public class UserDataManager
 	
 	private boolean checkState() {
 		if ( actionPending ) {
-			Log.w( Const.LOG_TAG, "Refusing to get user info while another server request is running" );
+			Log.w( Const.LOG_TAG, "Refusing to send request while another server request is running" );
 			return false;
 		}
 		if ( state != LOGGED_IN ) {
