@@ -56,12 +56,15 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 	}
 
 	public void updateHud() {
-
+		Log.i(Const.LOG_TAG, "updateHud " + UserDataManager.instance.getState());
 		Button hudButton = (Button) getView().findViewById(R.id.hud_text);
 		View spacer = (View) getView().findViewById(R.id.hud_progress_spacer);
 		View progress = (View) getView().findViewById(R.id.hud_progress);
 		if (hudButton != null) {
 			if ( UserDataManager.instance.getState() == UserDataManager.LOGGED_IN ) {
+				progress.setVisibility(View.GONE);
+				spacer.setVisibility(View.GONE);
+				hudButton.setVisibility(View.VISIBLE);
 				NumberFormat nFormat = NumberFormat
 						.getCurrencyInstance(Locale.GERMANY);
 				nFormat.setMinimumIntegerDigits(1);
@@ -74,6 +77,13 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 				spacer.setVisibility(View.GONE);
 				hudButton.setVisibility(View.VISIBLE);
 				hudButton.setText(R.string.login_button);
+				// progress.setVisibility(View.VISIBLE);
+				// spacer.setVisibility(View.VISIBLE);
+				// hudButton.setVisibility(View.GONE);
+			} else if (UserDataManager.instance.getState() == UserDataManager.LOGIN_PENDING) {
+				progress.setVisibility(View.VISIBLE);
+				spacer.setVisibility(View.VISIBLE);
+				hudButton.setVisibility(View.GONE);
 			} else {
 				Log.i(Const.LOG_TAG, "unknown state " + UserDataManager.instance.getState());
 			}
@@ -83,7 +93,7 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 	@Override
 	public void onClick(View arg0) {
 		if (mHudPopup != null) {
-			if ( UserDataManager.instance.getState() == UserDataManager.LOGGED_IN ) {  
+			if (UserDataManager.instance.getState() == UserDataManager.LOGGED_IN && !mHudPopup.isShowing()) {
 				mHudPopup.show(getView().findViewById(R.id.hud_text), -200, -60);
 			} else {
 				UserDataManager.instance.login();
