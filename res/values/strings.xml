@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<!-- ~ This is the Android component of Immopoly ~ http://immopoly.appspot.com 
+<!--
+     ~ This is the Android component of Immopoly ~ http://immopoly.appspot.com 
 	~ Copyright (C) 2011 Tobias Sasse ~ ~ This program is free software: you 
 	can redistribute it and/or modify ~ it under the terms of the GNU Affero 
 	General Public License as ~ published by the Free Software Foundation, either 
@@ -8,7 +9,8 @@
 	ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY or FITNESS 
 	FOR A PARTICULAR PURPOSE. See the ~ GNU Affero General Public License for 
 	more details. ~ ~ You should have received a copy of the GNU Affero General 
-	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/. -->
+	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/.
+-->
 <resources>
     <string name="app_name">Immopoly</string>
     <string name="region_hint">Region Suche</string>
@@ -47,7 +49,7 @@
     <string name="share_item">Share</string>
     <string name="expose_couldnt_add">Expose konnte nicht hinzugefügt werden.</string>
     <string name="expose_couldnt_release">Expose konnte nicht freigegeben werden.</string>
-        <string name="allow_localization_title">Lokalisierung erlauben!</string>
+    <string name="allow_localization_title">Lokalisierung erlauben!</string>
     <string name="allow_localization_message">Für das Spiel die Lokalisierung notwendig</string>
     <!-- Toasty stuff -->
     <string name="toast_min_lenght_username">Username muss mindestens $1%s Zeichen lang sein
@@ -76,7 +78,12 @@
     <string name="current_cost_text">Laufende Kosten: %s \/ Tag </string>
     <string name="calculated_cost_text">Voraussichtliche kosten 30 Tage: %s</string>
     <string name="current_ballance_text">Verfügbares Bargeld: %s</string>
-    <string name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string>
     <string name="login_button">Anmelden</string>
     <string name="please_wait">10 Sekunden warten &amp; lesen ;)</string>
+    <string name="notification_setting_detail">Benachrichtigungen einschalten</string>
+    <string name="notification_setting">Benachrichtigungen</string>
+    <string name="menu_settings">Einstellungen</string>
+    <string name="menu_logout">Abmelden</string>
+    <string name="menu_website">Webseite</string>
+    <string name="menu_contact">Kontakt</string>
 </resources>

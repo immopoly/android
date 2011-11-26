@@ -5,7 +5,6 @@ package org.immopoly.android.app;
 
 
 import org.immopoly.android.R;
-import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.ExposeFragment;
 import org.immopoly.android.fragments.HistoryFragment;
 import org.immopoly.android.fragments.MapFragment;
@@ -14,31 +13,31 @@ import org.immopoly.android.fragments.PortfolioListFragment;
 import org.immopoly.android.fragments.PortfolioMapFragment;
 import org.immopoly.android.fragments.ProfileFragment;
 import org.immopoly.android.model.Flat;
-import org.immopoly.android.tasks.ReleaseFromPortfolioTask;
 import org.immopoly.android.widget.TabManager;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TabHost;
 import android.widget.Toast;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.MapView;
 
 /**
  * @author tosa,sebastia,björn Example implementation of fragments communication
  */
-public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener  {
+public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener {
 
 	private static final String PROFILE_FRAGMENT_TAG = "PROFILE_FRAGMENT";
 	private static final String PORTFOLIO_MAP_FRAGMENT_TAG = "PORTFOLIO_MAP_FRAGMENT";
@@ -51,7 +50,6 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	public static final int PORTFOLIO_MAP_FRAGMENT = 3;
 	public static final int PORTFOLIO_LIST_FRAGMENT = 4;
 	public static final int EXPOSE_FRAGMENT = 5;
-
 
 	// Fragments
 	private Fragment mLastFragment;
@@ -70,7 +68,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		UserDataManager.instance.setActivity( this );
+		UserDataManager.instance.setActivity(this);
 		setContentView(R.layout.immopoly_activity);
 
 		// mFragmentContainer = (FrameLayout)
@@ -88,7 +86,6 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		addTab(R.drawable.btn_portfolio, "portofolio", PortfolioListFragment.class);
 		addTab(R.drawable.btn_profile, "profile", ProfileFragment.class);
 		addTab(R.drawable.btn_notify, "history", HistoryFragment.class);
-
 
 		if (savedInstanceState != null) {
 			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
@@ -111,6 +108,12 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		// update original intent
 		setIntent(newIntent);
 		parseData();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putString("tab", mTabHost.getCurrentTabTag());
 	}
 
 	/*
@@ -187,7 +190,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	}
 
 	@Override
-	public void onFlatClicked( Flat flat ) {
+	public void onFlatClicked(Flat flat) {
 		Toast.makeText(this, "onFlatClicked", Toast.LENGTH_LONG).show();
 		DialogFragment newFragment = ExposeFragment.newInstance(flat);
 		// newFragment.setArguments(tmp);
@@ -233,15 +236,50 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		mMapViewHolder = null;
 	}
 
-
-//	@Override
-//	public void onShareClick(int exposeID, boolean isInPortfolio) {
-//		Log.i(Const.LOG_TAG, "https://github.com/immopoly/android/issues/15");
-//	}
+	// @Override
+	// public void onShareClick(int exposeID, boolean isInPortfolio) {
+	// Log.i(Const.LOG_TAG, "https://github.com/immopoly/android/issues/15");
+	// }
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		UserDataManager.instance.onActivityResult(requestCode, resultCode, data);
 	}
-	
+
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+		int itemId = item.getItemId();
+		switch (itemId) {
+		case R.id.menu_settings:
+			intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.menu_website:
+			intent = new Intent(Intent.ACTION_VIEW);
+			intent.setData(Uri.parse("http://immopoly.appspot.com"));
+			startActivity(intent);
+			break;
+		case R.id.menu_contact:
+			intent = new Intent(Intent.ACTION_SEND);
+			intent.setType("text/plain");
+			intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "immopolyteam@gmail.com" });
+			intent.putExtra(Intent.EXTRA_SUBJECT, "immopoly Feedback");
+			startActivity(Intent.createChooser(intent, "Feedback:"));
+			break;
+		default:
+			break;
+		}
+
+		return true;
+	}
+
 }

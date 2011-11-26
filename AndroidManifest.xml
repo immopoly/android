@@ -74,6 +74,7 @@
         <activity
             android:launchMode="singleTop"
             android:name=".app.DashboardActivity" />
+        <activity android:name=".app.SettingsActivity" />
         <activity
             android:launchMode="singleTop"
             android:name=".app.ExposeWebViewActivity" >
