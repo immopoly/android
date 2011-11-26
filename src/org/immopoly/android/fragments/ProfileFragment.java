@@ -68,12 +68,20 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 	}
 
 	private void updateVisibility(View v) {
+		if (null == v)
+			return;
 		if (UserDataManager.instance.getState() == UserDataManager.LOGGED_IN) {
 			// helptext deaktiveren
 			v.findViewById(R.id.profile_notloggedin).setVisibility(View.GONE);
 		} else {
 			v.findViewById(R.id.profile_notloggedin).setVisibility(View.VISIBLE);
 		}
+	}
+
+	@Override
+	public void onDestroyView() {
+		UserDataManager.instance.removeUserDataListener(this);
+		super.onDestroyView();
 	}
 
 	@Override

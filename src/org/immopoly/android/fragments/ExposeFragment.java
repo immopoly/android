@@ -10,9 +10,7 @@ import org.immopoly.android.model.Flat;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +30,7 @@ public class ExposeFragment extends DialogFragment {
 	private Flat flat;
 
 	private final static String sInjectJString;
-	
+	Handler buttonDelayFinishedHandler = null;
 	static {
 		StringBuilder jsInjectString;
 		jsInjectString = new StringBuilder("var headID = document.getElementsByTagName('head')[0];");
@@ -78,7 +76,7 @@ public class ExposeFragment extends DialogFragment {
 
 		final Button takeOrReleaseButton = (Button) view.findViewById(R.id.TakeOrReleaseButton);
 		// wait for activating the button
-		buttonWait(takeOrReleaseButton);
+		// buttonWait(takeOrReleaseButton);
 
 		mWebView = (WebView) view.findViewById(R.id.exposeWevView);
 		mWebView.getSettings().setJavaScriptEnabled(true);
@@ -109,6 +107,11 @@ public class ExposeFragment extends DialogFragment {
 					mLoadTwice = false;
 				} else {
 					getView().findViewById(R.id.progress).setVisibility(View.GONE);
+					takeOrReleaseButton.setEnabled(true);
+					if (flat.owned)
+						takeOrReleaseButton.setText(getString(R.string.release_expose));
+					else
+						takeOrReleaseButton.setText(getString(R.string.try_takeover));
 				}
 			}
 
@@ -140,18 +143,25 @@ public class ExposeFragment extends DialogFragment {
 		return view;
 	}
 
-	private void buttonWait(final Button takeOrReleaseButton) {
-		Handler buttonDelayFinishedHandler = new Handler() {
-			public void handleMessage(Message msg) {
-				takeOrReleaseButton.setEnabled(true);
-				if (flat.owned)
-					takeOrReleaseButton.setText(getString(R.string.release_expose));
-				else
-					takeOrReleaseButton.setText(getString(R.string.try_takeover));
-			}
-		};
-		buttonDelayFinishedHandler.sendMessageDelayed(new Message(), 10000);
-	}
+	// @Override
+	// public void onDestroyView() {
+	// // TODO schtief #22
+	// // buttonDelayFinishedHandler.
+	// super.onDestroyView();
+	// }
+
+	// private void buttonWait(final Button takeOrReleaseButton) {
+	// buttonDelayFinishedHandler = new Handler() {
+	// public void handleMessage(Message msg) {
+	// takeOrReleaseButton.setEnabled(true);
+	// if (flat.owned)
+	// takeOrReleaseButton.setText(getString(R.string.release_expose));
+	// else
+	// takeOrReleaseButton.setText(getString(R.string.try_takeover));
+	// }
+	// };
+	// buttonDelayFinishedHandler.sendMessageDelayed(new Message(), 10000);
+	// }
 
 	void loadPage(Bundle intent) {
 		String url = Settings.getFlatLink( String.valueOf( flat.uid ), true);
