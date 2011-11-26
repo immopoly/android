@@ -69,5 +69,4 @@ public class ImmopolyHistory extends History{
 	public int getType() {
 		return mtype;
 	}
-
 }

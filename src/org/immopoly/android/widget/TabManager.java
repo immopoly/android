@@ -16,7 +16,7 @@ public class TabManager implements TabHost.OnTabChangeListener {
 	private final int mContainerId;
 	private final HashMap<String, TabManager.TabInfo> mTabs = new HashMap<String, TabManager.TabInfo>();
 	TabManager.TabInfo mLastTab;
-
+	
 	static final class TabInfo {
 		private final String tag;
 		private final Class<?> clss;
@@ -53,7 +53,7 @@ public class TabManager implements TabHost.OnTabChangeListener {
 		mTabHost.setOnTabChangedListener(this);
 	}
 
-	public void addTab(TabHost.TabSpec tabSpec, Class<?> clss, Bundle args) {
+	public void addTab(TabHost.TabSpec tabSpec, Class<?> clss, Bundle args, boolean tabless ) {
 		tabSpec.setContent(new DummyTabFactory(mActivity));
 		String tag = tabSpec.getTag();
 
@@ -63,14 +63,15 @@ public class TabManager implements TabHost.OnTabChangeListener {
 		// from a previously saved state. If so, deactivate it, because our
 		// initial state is that a tab isn't shown.
 		info.fragment = mActivity.getSupportFragmentManager().findFragmentByTag(tag);
-		if (info.fragment != null && !info.fragment.isDetached()) {
+		if (info.fragment != null &&  !info.fragment.isDetached()) {
 			FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();
 			ft.detach(info.fragment);
 			ft.commit();
 		}
 
 		mTabs.put(tag, info);
-		mTabHost.addTab(tabSpec);
+		if ( ! tabless )
+			mTabHost.addTab(tabSpec);
 	}
 
 	@Override

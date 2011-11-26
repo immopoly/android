@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
 import com.google.android.maps.MapView;
@@ -37,7 +38,7 @@ import com.google.android.maps.MapView;
 /**
  * @author tosa,sebastia,björn Example implementation of fragments communication
  */
-public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener {
+public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener  {
 
 	private static final String PROFILE_FRAGMENT_TAG = "PROFILE_FRAGMENT";
 	private static final String PORTFOLIO_MAP_FRAGMENT_TAG = "PORTFOLIO_MAP_FRAGMENT";
@@ -50,6 +51,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	public static final int PORTFOLIO_MAP_FRAGMENT = 3;
 	public static final int PORTFOLIO_LIST_FRAGMENT = 4;
 	public static final int EXPOSE_FRAGMENT = 5;
+
 
 	// Fragments
 	private Fragment mLastFragment;
@@ -68,7 +70,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		UserDataManager.instance.setActivity(this);
+		UserDataManager.instance.setActivity( this );
 		setContentView(R.layout.immopoly_activity);
 
 		// mFragmentContainer = (FrameLayout)
@@ -82,10 +84,11 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 
 		mTabManager = new TabManager(this, mTabHost, R.id.fragment_container);
 
-		addTab(R.drawable.btn_map, "map", MapFragment.class);
-		addTab(R.drawable.btn_portfolio, "portofolio", PortfolioListFragment.class);
-		addTab(R.drawable.btn_profile, "profile", ProfileFragment.class);
-		addTab(R.drawable.btn_notify, "history", HistoryFragment.class);
+		addTab(R.drawable.btn_map, "map", MapFragment.class, false);
+		addTab(R.drawable.btn_portfolio, "portfolio", PortfolioListFragment.class, false);
+		addTab(R.drawable.btn_portfolio, "portfolio_map", PortfolioMapFragment.class, true);
+		addTab(R.drawable.btn_profile, "profile", ProfileFragment.class, false);
+		addTab(R.drawable.btn_notify, "history", HistoryFragment.class, false);
 
 		if (savedInstanceState != null) {
 			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
@@ -93,10 +96,18 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 
 	}
 
-	private void addTab(int imageId, String name, Class<?> clss) {
-		ImageButton tab = (ImageButton) LayoutInflater.from(this).inflate(R.layout.tab_map, null);
-		tab.setImageResource(imageId);
-		mTabManager.addTab(mTabHost.newTabSpec(name).setIndicator(tab), clss, null);
+	private void addTab(int imageId, String name, Class<?> clss, boolean tabless ) {
+		TabSpec tabSpec = mTabHost.newTabSpec(name);
+		if ( ! tabless ) {
+			ImageButton tab = (ImageButton) LayoutInflater.from(this).inflate(R.layout.tab_map, null);
+			tab.setImageResource(imageId);
+			tabSpec.setIndicator(tab);
+		}
+		mTabManager.addTab( tabSpec, clss, null, tabless );
+	}
+
+	public TabManager getTabManager() {
+		return mTabManager;
 	}
 
 	/**
@@ -190,7 +201,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	}
 
 	@Override
-	public void onFlatClicked(Flat flat) {
+	public void onFlatClicked( Flat flat ) {
 		Toast.makeText(this, "onFlatClicked", Toast.LENGTH_LONG).show();
 		DialogFragment newFragment = ExposeFragment.newInstance(flat);
 		// newFragment.setArguments(tmp);
@@ -236,16 +247,17 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		mMapViewHolder = null;
 	}
 
-	// @Override
-	// public void onShareClick(int exposeID, boolean isInPortfolio) {
-	// Log.i(Const.LOG_TAG, "https://github.com/immopoly/android/issues/15");
-	// }
+
+//	@Override
+//	public void onShareClick(int exposeID, boolean isInPortfolio) {
+//		Log.i(Const.LOG_TAG, "https://github.com/immopoly/android/issues/15");
+//	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		UserDataManager.instance.onActivityResult(requestCode, resultCode, data);
 	}
-
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
