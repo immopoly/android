@@ -3,30 +3,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    <ListView
-        android:id="@+id/pf_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
-    </ListView>
+
     <LinearLayout
-        android:id="@+id/linearLayout1"
+        android:id="@+id/portfolio_loggedin_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <Button
-            android:id="@+id/pf_map_btn"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Karte" >
-        </Button>
-        <Button
-            android:id="@+id/pf_list_btn"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:text="Liste" >
-        </Button>
+        android:layout_height="match_parent"
+        android:orientation="vertical" android:visibility="gone">
+
+        <ListView
+            android:id="@+id/pf_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+        </ListView>
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/pf_map_btn"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Karte" >
+            </Button>
+
+            <Button
+                android:id="@+id/pf_list_btn"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="Liste" >
+            </Button>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/portfolio_notloggedin_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView android:text="Not Logged In"   android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/portfolio_loggedinempty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"  android:visibility="gone">
+
+        <TextView android:text="Portfolio empty"   android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     </LinearLayout>
 </LinearLayout>

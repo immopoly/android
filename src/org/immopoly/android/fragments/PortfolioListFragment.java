@@ -18,8 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class PortfolioListFragment extends Fragment implements OnItemClickListener, UserDataListener {
 
@@ -45,6 +45,7 @@ public class PortfolioListFragment extends Fragment implements OnItemClickListen
 			}
 		});
 		UserDataManager.instance.addUserDataListener( this );
+		updateVisibility(layout);
 		return layout;
 	}
 
@@ -63,10 +64,32 @@ public class PortfolioListFragment extends Fragment implements OnItemClickListen
 
 	@Override
 	public void onUserDataUpdated() {
-		Log.i( Const.LOG_TAG, "PortfolioMapFragment.onUserDataUpdated!!" );
+		Log.i(Const.LOG_TAG, "PortfolioMapFragment.onUserDataUpdated!!");
 		ImmopolyUser user = ImmopolyUser.getInstance();
 		flats = user.getPortfolio();
-		mListAdapter.setFlats( flats );
+		updateVisibility(getView());
+		mListAdapter.setFlats(flats);
+	}
+
+	private void updateVisibility(View v) {
+		if (UserDataManager.instance.getState() == UserDataManager.LOGGED_IN) {
+			// helptext deaktiveren
+			v.findViewById(R.id.portfolio_notloggedin_view).setVisibility(View.GONE);
+			// liste und buttons aktivieren
+			if (flats.size() > 0) {
+				v.findViewById(R.id.portfolio_loggedin_view).setVisibility(View.VISIBLE);
+				v.findViewById(R.id.portfolio_loggedinempty_view).setVisibility(View.GONE);
+			} else {
+				v.findViewById(R.id.portfolio_loggedin_view).setVisibility(View.GONE);
+				v.findViewById(R.id.portfolio_loggedinempty_view).setVisibility(View.VISIBLE);
+			}
+		} else {
+			// helptext aktiveren
+			v.findViewById(R.id.portfolio_notloggedin_view).setVisibility(View.VISIBLE);
+			// liste und buttons deaktivieren
+			v.findViewById(R.id.portfolio_loggedin_view).setVisibility(View.GONE);
+			v.findViewById(R.id.portfolio_loggedinempty_view).setVisibility(View.GONE);
+		}
 	}
 
 }

@@ -1,8 +1,9 @@
 package org.immopoly.android.fragments;
 
 import org.immopoly.android.R;
+import org.immopoly.android.app.UserDataListener;
+import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.model.ImmopolyUser;
-import org.w3c.dom.Text;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,10 +15,13 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements UserDataListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_profile, container, false);
+		View layout = inflater.inflate(R.layout.fragment_profile, container, false);
+		UserDataManager.instance.addUserDataListener(this);
+		updateVisibility(layout);
+		return layout;
 	}
 
 	@Override
@@ -61,5 +65,19 @@ public class ProfileFragment extends Fragment {
 			return imageView;
 		}
 
+	}
+
+	private void updateVisibility(View v) {
+		if (UserDataManager.instance.getState() == UserDataManager.LOGGED_IN) {
+			// helptext deaktiveren
+			v.findViewById(R.id.profile_notloggedin).setVisibility(View.GONE);
+		} else {
+			v.findViewById(R.id.profile_notloggedin).setVisibility(View.VISIBLE);
+		}
+	}
+
+	@Override
+	public void onUserDataUpdated() {
+		updateVisibility(getView());
 	}
 }
