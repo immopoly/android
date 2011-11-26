@@ -6,30 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import oauth.signpost.OAuth;
-import oauth.signpost.exception.OAuthCommunicationException;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.exception.OAuthNotAuthorizedException;
-
 import org.immopoly.android.R;
+import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
-import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.MapLocationCallback;
-import org.immopoly.android.helper.MapMarkerCallback;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.helper.WebHelper;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyUser;
-import org.immopoly.android.model.OAuthData;
 import org.immopoly.android.provider.FlatsProvider;
 import org.immopoly.android.tasks.GetUserInfoTask;
 import org.immopoly.android.widget.ImmoscoutPlacesOverlay;
@@ -41,7 +33,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
@@ -50,12 +41,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -69,8 +60,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
-public class MapFragment extends Fragment implements Receiver,
-		MapMarkerCallback, MapLocationCallback, OnMapItemClickedListener {
+public class MapFragment extends Fragment implements Receiver, MapLocationCallback, OnMapItemClickedListener {
 
 	public static final String TAG = "Immopoly";
 
@@ -96,14 +86,14 @@ public class MapFragment extends Fragment implements Receiver,
 	private OnMapItemClickedListener mOnMapItemClickedListener;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-		mMapView = ((ImmopolyActivity) getActivity()).acquireMapView( this );
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		mMapView = ((ImmopolyActivity) getActivity()).acquireMapView(this);
 		mMapView.setBuiltInZoomControls(true);
 		mMapController = mMapView.getController();
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
 		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getActivity()
-							.getApplicationContext());
+				.getApplicationContext());
 
 		// mState = (ReceiverState) getActivity()
 		// .getLastNonConfigurationInstance();
@@ -116,7 +106,7 @@ public class MapFragment extends Fragment implements Receiver,
 		}
 		return mMapView;
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -128,41 +118,41 @@ public class MapFragment extends Fragment implements Receiver,
 	}
 
 	public void onDestroyView() {
-		((ImmopolyActivity) getActivity()).releaseMapView( this );
-		Log.i( "IMPO", "MapFragment.onDestroyView" );
+		((ImmopolyActivity) getActivity()).releaseMapView(this);
+		Log.i("IMPO", "MapFragment.onDestroyView");
 		mMapView = null;
 		super.onDestroyView();
 	}
-	
+
 	public OnMapItemClickedListener getOnMapItemClickedListener() {
 		return mOnMapItemClickedListener;
 	}
 
-//	@Override
-//	public void onHudAction(View view) {
-//		switch (view.getId()) {
-//		case R.id.hud_map:
-//			// hud map
-//			// already there
-//			LocationHelper.getLastLocation(getActivity());
-//			break;
-//		case R.id.hud_portfolio:
-//			startActivity(new Intent(getActivity(), DashboardActivity.class));
-//			break;
-//		case R.id.hud_profile:
-//			startActivity(new Intent(getActivity(), DashboardActivity.class));
-//			break;
-//		case R.id.hud_text:
-//			// Toast.makeText(this, ImmopolyUser.getInstance().flats.toString(),
-//			// Toast.LENGTH_LONG);
-//			if (mHudPopup != null) {
-//				mHudPopup.show(getActivity().findViewById(R.id.hud_text), -200, -60);
-//			}
-//			break;
-//		default:
-//			break;
-//		}
-//	}
+	// @Override
+	// public void onHudAction(View view) {
+	// switch (view.getId()) {
+	// case R.id.hud_map:
+	// // hud map
+	// // already there
+	// LocationHelper.getLastLocation(getActivity());
+	// break;
+	// case R.id.hud_portfolio:
+	// startActivity(new Intent(getActivity(), DashboardActivity.class));
+	// break;
+	// case R.id.hud_profile:
+	// startActivity(new Intent(getActivity(), DashboardActivity.class));
+	// break;
+	// case R.id.hud_text:
+	// // Toast.makeText(this, ImmopolyUser.getInstance().flats.toString(),
+	// // Toast.LENGTH_LONG);
+	// if (mHudPopup != null) {
+	// mHudPopup.show(getActivity().findViewById(R.id.hud_text), -200, -60);
+	// }
+	// break;
+	// default:
+	// break;
+	// }
+	// }
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -184,7 +174,7 @@ public class MapFragment extends Fragment implements Receiver,
 		myLocationOverlayItem = new PlaceOverlayItem(point, "my city", "This is wher you are");
 		overlays = new ImmoscoutPlacesOverlay(this, mMapView, getActivity().getLayoutInflater());
 		myLocationOverlays = new MyPositionOverlay(getResources().getDrawable(R.drawable.house_icon), getActivity(),
-				mMapView, getLayoutInflater());
+				mMapView, getActivity().getLayoutInflater());
 		myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.house_icon));
 
 		myLocationOverlays.addOverlay(myLocationOverlayItem);
@@ -276,7 +266,7 @@ public class MapFragment extends Fragment implements Receiver,
 	}
 
 	public void updateMap(boolean centerMap) {
-		if ( mMapView != null && mFlats != null) {
+		if (mMapView != null && mFlats != null) {
 			int count = 0;
 			double minX = 999, minY = 999, maxX = -999, maxY = -999;
 			myLocationOverlays.clear();
@@ -296,7 +286,7 @@ public class MapFragment extends Fragment implements Receiver,
 			for (Flat f : mFlats) {
 				if (f.lat != 0.0 || f.lng != 0.0) {
 					cur = getActivity().getContentResolver().query(FlatsProvider.CONTENT_URI, null,
-							FlatsProvider.Flat.FLAT_ID + "=" + f.uid, null, null);
+							FlatsProvider.FLAT_ID + "=" + f.uid, null, null);
 					f.owned = cur.getCount() == 1;
 					cur.close();
 
@@ -347,7 +337,7 @@ public class MapFragment extends Fragment implements Receiver,
 	public void headerClick(View v) {
 		switch (v.getId()) {
 		case R.id.location_refresh:
-			LocationHelper.getLastLocation(getContext());
+			LocationHelper.getLastLocation(getActivity());
 			// mRefreshButton.startAnimation(AnimationUtils.loadAnimation(this,
 			// R.anim.locating_animation));
 			break;
@@ -486,11 +476,11 @@ public class MapFragment extends Fragment implements Receiver,
 		builder.setView(alertDialogView);
 		builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
-					}
-				}).show();
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		}).show();
 	}
 
 	@Override
@@ -512,11 +502,6 @@ public class MapFragment extends Fragment implements Receiver,
 	}
 
 	@Override
-	public LayoutInflater getLayoutInflater() {
-		return getActivity().getLayoutInflater();
-	}
-
-	@Override
 	public void startActivity(Intent arg0) {
 		getActivity().sendBroadcast(arg0);
 	}
@@ -525,9 +510,5 @@ public class MapFragment extends Fragment implements Receiver,
 	public void onFlatClicked(Flat flat) {
 		mOnMapItemClickedListener.onFlatClicked(flat);
 	}
-	
-	@Override
-	public Context getContext() {
-		return getActivity();
-	}
+
 }

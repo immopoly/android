@@ -20,7 +20,8 @@
 package org.immopoly.android.adapter;
 
 import org.immopoly.android.R;
-import org.immopoly.android.provider.FlatsProvider.Flat;
+import org.immopoly.android.model.Flat;
+import org.immopoly.android.provider.FlatsProvider;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -50,7 +51,7 @@ public class FlatsCursorAdapter extends SimpleCursorAdapter {
 	public long getItemId(int position) {
 		if (position < getCount()) {
 			this.getCursor().moveToPosition(position);
-			int columnID = getCursor().getColumnIndex(Flat.FLAT_ID);
+			int columnID = getCursor().getColumnIndex(FlatsProvider.FLAT_ID);
 			long id = getCursor().getLong(columnID);
 			return id;
 		} else {
@@ -72,7 +73,7 @@ public class FlatsCursorAdapter extends SimpleCursorAdapter {
 		if (v == null) {
 			v = newView(context, c, null);
 		}
-		int nameCol = c.getColumnIndex(Flat.FLAT_NAME);
+		int nameCol = c.getColumnIndex(FlatsProvider.FLAT_NAME);
 		// int urlCol = c.getColumnIndex(Flat.FLAT_URL);
 
 		String name = c.getString(nameCol);

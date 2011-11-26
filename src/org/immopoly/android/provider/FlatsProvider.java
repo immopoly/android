@@ -43,11 +43,16 @@ public class FlatsProvider extends ContentProvider {
 	private static final int DATABASE_VERSION = 2;
 
 	private static final String FLATS_TABLE_NAME = "flats";
+	public static String FLAT_ID = "_id";
+	public static String FLAT_NAME = "flat_name";
+	public static String FLAT_DESCRIPTION = "flat_description";
+	public static String FLAT_LATITUDE = "flat_lat";
+	public static String FLAT_LONGITUDE = "flat_lng";
+	public static String FLAT_CREATIONDATE = "flat_creationDate";
 
 	public static final String AUTHORITY = "org.immopoly.android.provider.flats_provider";
 
-	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ FlatsProvider.AUTHORITY + "/flats");
+	public static final Uri CONTENT_URI = Uri.parse("content://" + FlatsProvider.AUTHORITY + "/flats");
 
 	private static final int FLATS = 1;
 
@@ -61,21 +66,15 @@ public class FlatsProvider extends ContentProvider {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			db
-					.execSQL("CREATE TABLE " + FLATS_TABLE_NAME + " ("
-							+ Flat.FLAT_ID + " INTEGER PRIMARY KEY,"
-							+ Flat.FLAT_NAME + " VARCHAR(255),"
-							+ Flat.FLAT_DESCRIPTION + " LONGTEXT,"
-							+ Flat.FLAT_LATITUDE + " REAL,"
-							+ Flat.FLAT_LONGITUDE + " REAL,"
-							+ Flat.FLAT_CREATIONDATE + " INTEGER"
-							+ " );");
+			db.execSQL("CREATE TABLE " + FLATS_TABLE_NAME + " (" + FLAT_ID + " INTEGER PRIMARY KEY," + FLAT_NAME
+					+ " VARCHAR(255)," + FLAT_DESCRIPTION + " LONGTEXT," + FLAT_LATITUDE + " REAL," + FLAT_LONGITUDE
+					+ " REAL," + FLAT_CREATIONDATE + " INTEGER" + " );");
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-					+ newVersion + ", which will destroy all old data");
+			Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion
+					+ ", which will destroy all old data");
 			db.execSQL("DROP TABLE IF EXISTS " + FLATS_TABLE_NAME);
 			onCreate(db);
 		}
@@ -83,26 +82,17 @@ public class FlatsProvider extends ContentProvider {
 
 	private static final UriMatcher sUriMatcher;
 
-	public interface Flat {
-		String FLAT_ID = "_id";
-		String FLAT_NAME = "flat_name";
-		String FLAT_DESCRIPTION = "flat_description";
-		String FLAT_LATITUDE = "flat_lat";
-		String FLAT_LONGITUDE = "flat_lng";
-		String FLAT_CREATIONDATE = "flat_creationDate";
-	}
-
 	static {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		sUriMatcher.addURI(AUTHORITY, FLATS_TABLE_NAME, FLATS);
 
 		flatsProjectionMap = new HashMap<String, String>();
-		flatsProjectionMap.put(Flat.FLAT_ID, Flat.FLAT_ID);
-		flatsProjectionMap.put(Flat.FLAT_NAME, Flat.FLAT_NAME);
-		flatsProjectionMap.put(Flat.FLAT_DESCRIPTION, Flat.FLAT_DESCRIPTION);
-		flatsProjectionMap.put(Flat.FLAT_LATITUDE, Flat.FLAT_LATITUDE);
-		flatsProjectionMap.put(Flat.FLAT_LONGITUDE, Flat.FLAT_LONGITUDE);
-		flatsProjectionMap.put(Flat.FLAT_CREATIONDATE, Flat.FLAT_CREATIONDATE);
+		flatsProjectionMap.put(FLAT_ID, FLAT_ID);
+		flatsProjectionMap.put(FLAT_NAME, FLAT_NAME);
+		flatsProjectionMap.put(FLAT_DESCRIPTION, FLAT_DESCRIPTION);
+		flatsProjectionMap.put(FLAT_LATITUDE, FLAT_LATITUDE);
+		flatsProjectionMap.put(FLAT_LONGITUDE, FLAT_LONGITUDE);
+		flatsProjectionMap.put(FLAT_CREATIONDATE, FLAT_CREATIONDATE);
 
 	}
 
@@ -136,7 +126,7 @@ public class FlatsProvider extends ContentProvider {
 		}
 
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		long rowId = db.insert(FLATS_TABLE_NAME, Flat.FLAT_DESCRIPTION, values);
+		long rowId = db.insert(FLATS_TABLE_NAME, FLAT_DESCRIPTION, values);
 		if (rowId > 0) {
 			Uri noteUri = ContentUris.withAppendedId(CONTENT_URI, rowId);
 			getContext().getContentResolver().notifyChange(noteUri, null);
@@ -145,7 +135,6 @@ public class FlatsProvider extends ContentProvider {
 			throw new SQLException("Failed to insert row into " + uri);
 		}
 
-		
 	}
 
 	@Override
@@ -155,8 +144,7 @@ public class FlatsProvider extends ContentProvider {
 	}
 
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
+	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
 		switch (sUriMatcher.match(uri)) {
@@ -170,8 +158,7 @@ public class FlatsProvider extends ContentProvider {
 		}
 
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor c = qb.query(db, projection, selection, selectionArgs, null,
-				null, sortOrder);
+		Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 
 		c.setNotificationUri(getContext().getContentResolver(), uri);
 		return c;
@@ -179,7 +166,6 @@ public class FlatsProvider extends ContentProvider {
 
 	@Override
 	public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
