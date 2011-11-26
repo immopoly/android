@@ -72,20 +72,21 @@
 		<dependency>
 			<groupId>android</groupId>
 			<artifactId>android</artifactId>
-			<version>3.2_r1</version>
+			<version>4.0_r1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.android.maps</groupId>
 			<artifactId>maps</artifactId>
-			<version>13_r1</version>
+			<version>14_r1</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- <dependency>
-			<groupId>android.support</groupId>
-			<artifactId>compatibility-v4</artifactId>
-			<version>r3</version>
-       </dependency> -->
+		<dependency>
+				<groupId>android.support</groupId>
+				<artifactId>compatibility-v4</artifactId>
+				<version>r4</version>
+				<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.immopoly</groupId>
 			<artifactId>common</artifactId>
@@ -195,7 +196,7 @@
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
 			<snapshots>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 				<updatePolicy>never</updatePolicy>
 				<checksumPolicy>fail</checksumPolicy>
 			</snapshots>
@@ -203,7 +204,7 @@
 		<repository>
 			<id>immopoly-releases</id>
 			<releases>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 				<updatePolicy>never</updatePolicy>
 				<checksumPolicy>fail</checksumPolicy>
 			</releases>
