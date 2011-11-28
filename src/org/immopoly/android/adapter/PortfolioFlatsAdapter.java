@@ -20,16 +20,19 @@
 package org.immopoly.android.adapter;
 
 import org.immopoly.android.R;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.widget.EllipsizingTextView;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -72,7 +75,7 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 			selectIdx = 0;
 			
 		if ( convertView == null )
-			convertView = inflater.inflate( R.layout.bubble_content, parent, false);
+			convertView = inflater.inflate( R.layout.portfolio_list_item, parent, false);
 		
 		ImageView iconView = (ImageView) convertView.findViewById( R.id.teaser_icon );
 		if ( flat.owned )
@@ -82,29 +85,38 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 			iconView.setImageResource( R.drawable.house_old );
 		else if ( flat.age == Flat.AGE_NEW )
 			iconView.setImageResource( R.drawable.house_new );
-		((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setMaxLines( 3 );
 		((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setText( flat.name );
 		((TextView) convertView.findViewById( R.id.rooms_text )).setText( flat.numRooms );
 		((TextView) convertView.findViewById( R.id.qm_text )).setText( flat.livingSpace );
 		((TextView) convertView.findViewById( R.id.price_text )).setText( flat.priceValue + "€" ); // TODO kommt im IS24 JSON immer EUR/MONTH ? 
 		
-		if ( selectIdx > -1 ) {
-			if ( flat == selectedFlat )
-				convertView.setBackgroundColor( 0xFFAAAAAA ); // TODO colors
-			else
-				convertView.setBackgroundColor( 0xFFCCCCCC ); 
-			convertView.findViewById( R.id.swipe_indicator ).setVisibility( View.VISIBLE );
-			convertView.findViewById( R.id.swipe_indicator ).setVisibility( View.GONE );
-			convertView.findViewById( R.id.swipe_finger ).setVisibility( View.GONE );
-			convertView.findViewById( R.id.swipe_left_img ).setVisibility( View.GONE );
-			convertView.findViewById( R.id.swipe_right_img ).setVisibility( View.GONE );
-			convertView.findViewById( R.id.swipe_counter ).setVisibility( View.VISIBLE );
-			((TextView) convertView.findViewById( R.id.swipe_counter )).setText(
-					(selectIdx+1)+"/"+ (clusterFlats == null ? 1 : clusterFlats.size()) );
+		if ( flat.owned && flat.takeoverTries > 0 ) {
+			((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setMaxLines( 2 );
+			((LinearLayout) convertView.findViewById( R.id.takeOverContainer )).setVisibility( View.VISIBLE ) ;
+			((TextView) convertView.findViewById( R.id.takeovers_text )).setText( "" + flat.takeoverTries );
 		} else {
-			convertView.setBackgroundColor( 0xFFFFFFFF );
-			convertView.findViewById( R.id.swipe_indicator ).setVisibility( View.GONE );
+			((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setMaxLines( 3 );
+			Log.i( Const.LOG_TAG, "Elippsized lines: " +((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).getLineCount() );
+			((LinearLayout) convertView.findViewById( R.id.takeOverContainer )).setVisibility( View.GONE ) ;
 		}
+		
+//		if ( selectIdx > -1 ) { // TODO this was used when testing list & map side-by-side in a tablet layout - unused for now
+//			if ( flat == selectedFlat )
+//				convertView.setBackgroundColor( 0xFFAAAAAA ); // TODO colors
+//			else
+//				convertView.setBackgroundColor( 0xFFCCCCCC ); 
+//			convertView.findViewById( R.id.swipe_indicator ).setVisibility( View.VISIBLE );
+//			convertView.findViewById( R.id.swipe_indicator ).setVisibility( View.GONE );
+//			convertView.findViewById( R.id.swipe_finger ).setVisibility( View.GONE );
+//			convertView.findViewById( R.id.swipe_left_img ).setVisibility( View.GONE );
+//			convertView.findViewById( R.id.swipe_right_img ).setVisibility( View.GONE );
+//			convertView.findViewById( R.id.swipe_counter ).setVisibility( View.VISIBLE );
+//			((TextView) convertView.findViewById( R.id.swipe_counter )).setText(
+//					(selectIdx+1)+"/"+ (clusterFlats == null ? 1 : clusterFlats.size()) );
+//		} else {
+//			convertView.setBackgroundColor( 0xFFFFFFFF );
+//			convertView.findViewById( R.id.swipe_indicator ).setVisibility( View.GONE );
+//		}
 		return convertView;
 	}
 

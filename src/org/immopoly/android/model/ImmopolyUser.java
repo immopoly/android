@@ -138,6 +138,7 @@ public class ImmopolyUser extends User {
 					item.lng = realEstate.getJSONObject("address")
 							.getJSONObject("wgs84Coordinate")
 							.optDouble("longitude");
+					item.takeoverTries = realEstate.optInt("overtakeTries");
 					item.owned = true;
 					flats.add(item);
 				}

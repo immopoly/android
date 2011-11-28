@@ -21,8 +21,6 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,25 +38,8 @@ import com.google.android.maps.MapView;
  */
 public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener  {
 
-	private static final String PROFILE_FRAGMENT_TAG = "PROFILE_FRAGMENT";
-	private static final String PORTFOLIO_MAP_FRAGMENT_TAG = "PORTFOLIO_MAP_FRAGMENT";
-	private static final String PORTFOLIO_LIST_FRAGMENT_TAG = "PORTFOLIO_LIST_FRAGMENT";
-	private static final String MAP_FRAGMENT_TAG = "MAP_FRAGMENT";
-	private static final String EXPOSE_FRAGMENT_TAG = "EXPOSE_FRAGMENT";
-
-	public static final int MAP_FRAGMENT = 1;
-	public static final int PROFILE_FRAGMENT = 2;
-	public static final int PORTFOLIO_MAP_FRAGMENT = 3;
-	public static final int PORTFOLIO_LIST_FRAGMENT = 4;
-	public static final int EXPOSE_FRAGMENT = 5;
-
-
-	// Fragments
-	private Fragment mLastFragment;
-	private boolean mIsVeryFirstFragment = true;
 	private MapView mMapView;
 	private Fragment mMapViewHolder;
-	private int mCurrentFragment;
 
 	TabHost mTabHost;
 	TabManager mTabManager;
@@ -84,6 +65,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 
 		mTabManager = new TabManager(this, mTabHost, R.id.fragment_container);
 
+		// TODO cleanup fragment management for fragments with an without tabs (currently in widget.TabManager)
 		addTab(R.drawable.btn_map, "map", MapFragment.class, false);
 		addTab(R.drawable.btn_portfolio, "portfolio", PortfolioListFragment.class, false);
 		addTab(R.drawable.btn_portfolio, "portfolio_map", PortfolioMapFragment.class, true);
@@ -135,69 +117,6 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		getIntent();
 
 		// showFragment(1, null);
-	}
-
-	public void showFragment(int which, Bundle bundle) {
-		if (mCurrentFragment == which)
-			return; // avoid "fragment already active" exception
-		mCurrentFragment = which;
-		FragmentManager fm = getSupportFragmentManager();
-		Fragment newFragment = null;
-		String newTag = "";
-		switch (which) {
-		case MAP_FRAGMENT:
-			newTag = MAP_FRAGMENT_TAG;
-			newFragment = fm.findFragmentByTag(MAP_FRAGMENT_TAG);
-			if (newFragment == null) {
-				newFragment = new MapFragment();
-			}
-			break;
-		case PORTFOLIO_MAP_FRAGMENT:
-			newTag = PORTFOLIO_MAP_FRAGMENT_TAG;
-			newFragment = fm.findFragmentByTag(PORTFOLIO_MAP_FRAGMENT_TAG);
-			if (newFragment == null) {
-				newFragment = new PortfolioMapFragment();
-			}
-			break;
-		case PORTFOLIO_LIST_FRAGMENT:
-			newTag = PORTFOLIO_LIST_FRAGMENT_TAG;
-			newFragment = fm.findFragmentByTag(PORTFOLIO_LIST_FRAGMENT_TAG);
-			if (newFragment == null) {
-				newFragment = new PortfolioListFragment();
-			}
-			break;
-		case PROFILE_FRAGMENT:
-			newTag = PROFILE_FRAGMENT_TAG;
-			newFragment = fm.findFragmentByTag(PROFILE_FRAGMENT_TAG);
-			if (newFragment == null) {
-				newFragment = new MapFragment();
-			}
-			break;
-		case EXPOSE_FRAGMENT:
-			newTag = EXPOSE_FRAGMENT_TAG;
-			newFragment = fm.findFragmentByTag(EXPOSE_FRAGMENT_TAG);
-			if (newFragment == null) {
-				newFragment = new ExposeFragment();
-			}
-			break;
-		}
-
-		if (newFragment != null) {
-			if (bundle != null)
-				newFragment.setArguments(bundle);
-			FragmentTransaction transaction = fm.beginTransaction();
-			if (mLastFragment != null)
-				transaction.remove(mLastFragment);
-			transaction.add(R.id.fragment_container, newFragment, newTag);
-			if (!mIsVeryFirstFragment) {
-				transaction = transaction.addToBackStack(null);
-			} else {
-				mIsVeryFirstFragment = false;
-			}
-			transaction.commit();
-			mLastFragment = newFragment;
-		}
-
 	}
 
 	@Override

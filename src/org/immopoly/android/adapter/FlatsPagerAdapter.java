@@ -33,6 +33,7 @@ import org.immopoly.android.widget.EllipsizingTextView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -42,6 +43,7 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.maps.MapActivity;
@@ -79,7 +81,7 @@ public class FlatsPagerAdapter extends PagerAdapter {
 		return flat;
 	}
 
-	// create a view inflated from map_marker_popup.xml for the given Flat
+	// create a view inflated from bubble_content.xml for the given Flat
 	private View getFlatView(final Flat flat, final int idx) {
 		LayoutInflater inflater = LayoutInflater.from( mContext.getActivity() );
 		View markerView = inflater.inflate( R.layout.bubble_content, null, false);
@@ -100,12 +102,20 @@ public class FlatsPagerAdapter extends PagerAdapter {
 				((ImageView) markerView.findViewById( R.id.swipe_right_img )).setImageResource( R.drawable.swipe_right_1 );
 			((TextView) markerView.findViewById( R.id.swipe_counter )).setText( (idx+1)+"/"+flats.size() );
 		}
-		((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setMaxLines( 3 );
 		((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setText( flat.name );
 		((TextView) markerView.findViewById( R.id.rooms_text )).setText( flat.numRooms );
 		((TextView) markerView.findViewById( R.id.qm_text )).setText( flat.livingSpace );
 		((TextView) markerView.findViewById( R.id.price_text )).setText( flat.priceValue + "€" ); // TODO kommt im IS24 JSON immer EUR/MONTH ? 
 
+		if ( flat.owned && flat.takeoverTries > 0 ) {
+			((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setMaxLines( 2 );
+			((TextView) markerView.findViewById( R.id.takeovers_text )).setText( "" + flat.takeoverTries );
+		} else {
+			((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setMaxLines( 3 );
+			((LinearLayout) markerView.findViewById( R.id.takeOverContainer )).setVisibility( View.GONE ) ;
+		}
+			
+		
 		markerView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

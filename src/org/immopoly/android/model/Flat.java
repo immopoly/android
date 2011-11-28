@@ -74,6 +74,7 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 	public String numRooms;
 	public long creationDate=0;
 	public int age;
+	public int takeoverTries;
 	
 	public int describeContents() {
 		// TODO Auto-generated method stub

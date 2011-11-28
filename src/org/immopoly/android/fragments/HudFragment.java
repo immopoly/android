@@ -33,11 +33,15 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 				HudPopupHelper.TYPE_FINANCE_POPUP);
 		UserDataManager.instance.addUserDataListener( this );
 		// update HUD asap. but not now, because there is no view yet
-		new Handler().post( new Runnable() {  
+		Runnable updateRunnable = new Runnable() {  
 			public void run() {
-				updateHud();
+				if ( getView() != null )
+					updateHud();
+				else  // this sometimes happens, try again
+					new Handler().postDelayed( this, 100 );
 			}
-		} );
+		};
+		new Handler().post( updateRunnable );
 		return view;
 	}
 

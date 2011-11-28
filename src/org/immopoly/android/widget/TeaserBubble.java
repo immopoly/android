@@ -30,9 +30,9 @@ public class TeaserBubble extends FrameLayout {
 	// finals
 	private static final float MIN_WIDTH_DP 		 = 260;
 	private static final float MAX_WIDTH_DP 		 = 320;
-	private static final float HEIGHT_DP		 	 = 160;
+	private static final float HEIGHT_DP		 	 = 120;
 	private static final float SIDE_PADDING_DP 	 	 =  30;
-	private static final float TOP_PADDING_DP 	 	 =   6;
+	private static final float TOP_PADDING_DP 	 	 =  10;
 	private static final float RECT_ROUNDNESS_DP 	 =   6;
 	private static final float SHADOW_OFFSET_DP		 =   6;
 	private static final float NOSE_SIZE_DP		 	 =  15;
