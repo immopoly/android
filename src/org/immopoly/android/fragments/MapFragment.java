@@ -280,6 +280,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			// Toast.makeText(this, "Finished", Toast.LENGTH_SHORT).show();
 			ArrayList<Flat> a = resultData.getParcelableArrayList("flats");
 			mFlats = (Flats) a;
+			syncFlats();
 			updateMap(true);
 			// do something interesting
 			// hide progress
@@ -288,6 +289,20 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			// Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
 			// handle the error;
 			break;
+		}
+	}
+
+	// sets immopoly specific attributes on owned Flats that were loaded from IS24 json 
+	private void syncFlats() {
+		for ( Flat iscoutFlat : mFlats ) {
+			int uid = iscoutFlat.uid;
+			for ( Flat userFlat : ImmopolyUser.getInstance().getPortfolio() ) {
+				if ( userFlat.uid == uid ) {
+					iscoutFlat.takeoverDate  = userFlat.takeoverDate;
+					iscoutFlat.takeoverTries = userFlat.takeoverTries;
+					break;
+				}
+			}
 		}
 	}
 

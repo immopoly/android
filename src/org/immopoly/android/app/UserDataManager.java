@@ -179,9 +179,9 @@ public class UserDataManager
 				super.onPostExecute( result );
 				if ( result.success ) {
 					flat.owned = true;
+					flat.takeoverDate = System.currentTimeMillis();
 					ImmopolyUser.getInstance().getPortfolio().add( flat );
 				}
-					
 				fireUsedDataChanged();
 				actionPending = false;
 			};

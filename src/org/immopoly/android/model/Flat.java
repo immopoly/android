@@ -70,11 +70,12 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 	public String priceValue;
 	public String priceIntervaleType;
 	public String currency;
-	public String livingSpace;
-	public String numRooms;
-	public long creationDate=0;
-	public int age;
-	public int takeoverTries;
+	public double livingSpace;
+	public int    numRooms;
+	public long   creationDate=0;
+	public int    age;
+	public int    takeoverTries;
+	public long   takeoverDate;
 	
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -135,8 +136,8 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 		name = objRealEstate.optString("title");
 		description = objRealEstate.optString("descriptionNote");
 		locationNote = objRealEstate.optString("locationNote");
-		livingSpace = objRealEstate.optString("livingSpace", "?");
-		numRooms = objRealEstate.optString("numberOfRooms", "?");
+		livingSpace = objRealEstate.optDouble("livingSpace");
+		numRooms = objRealEstate.optInt("numberOfRooms");
 		// OWN OBJECT
 
 		/**

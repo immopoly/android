@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:background="#FFF"
     android:clipChildren="false"
-    android:padding="2dp" android:layout_height="wrap_content">
+    android:layout_height="wrap_content" android:padding="1dp">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
         android:paddingLeft="10dp" android:layout_height="fill_parent">
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content" android:layout_weight="1">
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
@@ -87,13 +87,11 @@
             </TextView>
             <TextView
                 android:id="@+id/qm_text"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="45dp"
                 android:text="97"
                 android:textColor="#000"
                 android:textSize="15dp"
-                android:textStyle="bold">
+                android:textStyle="bold" android:paddingLeft="3dp" android:layout_width="match_parent" android:layout_weight="1" android:gravity="right">
             </TextView>
             <TextView
                 android:id="@+id/textView3"
@@ -117,9 +115,13 @@
         </org.immopoly.android.widget.EllipsizingTextView>
         <!-- </LinearLayout> -->
 <!--         <TextView android:id="@+id/textView4" android:layout_width="wrap_content" android:layout_height="0dp" android:layout_weight="1"></TextView> -->
-        <LinearLayout android:id="@+id/takeOverContainer" android:layout_width="wrap_content" android:layout_height="wrap_content">
-        	<TextView android:text="Übernahmeversuche:" android:id="@+id/textView2" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingLeft="5dp" android:textColor="#500"></TextView>
-            <TextView android:text="3" android:id="@+id/takeovers_text" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingLeft="3dp" android:textColor="#500"></TextView>
+        <LinearLayout android:layout_height="wrap_content" android:id="@+id/takeover_daterow" android:layout_width="match_parent">
+            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textColor="#500" android:paddingLeft="5dp" android:layout_weight="1" android:text="Übernommen am:"></TextView>
+            <TextView android:layout_height="wrap_content" android:id="@+id/takeover_date" android:layout_width="wrap_content" android:gravity="right" android:textColor="#500" android:paddingLeft="3dp" android:paddingRight="2dp" android:text="23.08.2011"></TextView>
+        </LinearLayout>
+        <LinearLayout android:layout_height="wrap_content" android:id="@+id/takeover_numrow" android:layout_width="match_parent">
+            <TextView android:id="@+id/textView2" android:textColor="#500" android:layout_height="wrap_content" android:paddingLeft="5dp" android:text="Übernahmeversuche:" android:layout_width="wrap_content" android:layout_weight="1"></TextView>
+            <TextView android:id="@+id/takeovers_text" android:gravity="right" android:textColor="#300" android:layout_height="wrap_content" android:paddingLeft="3dp" android:paddingRight="2dp" android:layout_width="wrap_content" android:text="3"></TextView>
         </LinearLayout>
         <LinearLayout
             android:layout_width="fill_parent"

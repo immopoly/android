@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.immopoly.android.constants.Const;
 import org.immopoly.common.History;
 import org.immopoly.common.User;
 import org.json.JSONArray;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class ImmopolyUser extends User {
 
@@ -138,13 +140,25 @@ public class ImmopolyUser extends User {
 					item.lng = realEstate.getJSONObject("address")
 							.getJSONObject("wgs84Coordinate")
 							.optDouble("longitude");
+					item.takeoverDate  = realEstate.optLong("overtakeDate");
 					item.takeoverTries = realEstate.optInt("overtakeTries");
-					item.owned = true;
+					item.numRooms      = realEstate.optInt("numberOfRooms");
+					item.livingSpace   = realEstate.optInt("livingSpace");
+					
+					if (realEstate.has("titlePicture")) {
+						Log.i(Const.LOG_TAG, "REAL_ESTATE: " + realEstate.toString() );
+						JSONObject objPicture = realEstate.getJSONObject("titlePicture");
+						if (objPicture.has("urls") && objPicture.getJSONArray("urls").length() > 0) {
+							JSONObject urls = objPicture.getJSONArray("urls").getJSONObject(0).getJSONObject("url");
+							if ( urls != null )
+							item.titlePictureSmall = urls.optString("@href");
+						}
+					}
+					item.owned         = true;
 					flats.add(item);
 				}
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e( Const.LOG_TAG, "Exception while parsing portfolio: ", e );
 			}
 		}
 	}

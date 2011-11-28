@@ -19,7 +19,10 @@
 
 package org.immopoly.android.adapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import org.immopoly.android.R;
 import org.immopoly.android.app.ImmopolyActivity;
@@ -60,6 +63,8 @@ public class FlatsPagerAdapter extends PagerAdapter {
 	private ArrayList<Flat>  flats;	// list of flats presented in the ViewPager
 	private View[] 			 views;	// storing views for each flat for use in destroyItem() & isViewFromObject()
 	private Fragment		 mContext;
+
+	private static final SimpleDateFormat dateSDF = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY);
 
 	public FlatsPagerAdapter(ArrayList<Flat> flats, Fragment context) {
 		this.mContext = context;
@@ -103,19 +108,28 @@ public class FlatsPagerAdapter extends PagerAdapter {
 			((TextView) markerView.findViewById( R.id.swipe_counter )).setText( (idx+1)+"/"+flats.size() );
 		}
 		((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setText( flat.name );
-		((TextView) markerView.findViewById( R.id.rooms_text )).setText( flat.numRooms );
-		((TextView) markerView.findViewById( R.id.qm_text )).setText( flat.livingSpace );
+		((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setMaxLines( 3 );
+		((TextView) markerView.findViewById( R.id.rooms_text )).setText( flat.numRooms > 0 ? Integer.toString(flat.numRooms) : "?" );
+		((TextView) markerView.findViewById( R.id.qm_text )).setText( flat.livingSpace > 0 ? 
+				Integer.toString( (int) Math.round(flat.livingSpace) ) : "?" );
 		((TextView) markerView.findViewById( R.id.price_text )).setText( flat.priceValue + "€" ); // TODO kommt im IS24 JSON immer EUR/MONTH ? 
 
-		if ( flat.owned && flat.takeoverTries > 0 ) {
-			((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setMaxLines( 2 );
-			((TextView) markerView.findViewById( R.id.takeovers_text )).setText( "" + flat.takeoverTries );
+		if ( flat.owned ) {
+			((LinearLayout) markerView.findViewById( R.id.takeover_daterow )).setVisibility( View.VISIBLE ) ;
+			String takeoverDate = flat.takeoverDate > 0 ? dateSDF.format( new Date(flat.takeoverDate) ) : "?";
+			((TextView) markerView.findViewById( R.id.takeover_date )).setText( takeoverDate ); 
+			if ( flat.owned && flat.takeoverTries > 0 ) {
+				((LinearLayout) markerView.findViewById( R.id.takeover_numrow )).setVisibility( View.VISIBLE ) ;
+				((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setMaxLines( 2 );
+				((TextView) markerView.findViewById( R.id.takeovers_text )).setText( "" + flat.takeoverTries );
+			} else {
+				((LinearLayout) markerView.findViewById( R.id.takeover_numrow )).setVisibility( View.GONE ) ;
+			}
 		} else {
-			((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setMaxLines( 3 );
-			((LinearLayout) markerView.findViewById( R.id.takeOverContainer )).setVisibility( View.GONE ) ;
+			((LinearLayout) markerView.findViewById( R.id.takeover_daterow )).setVisibility( View.GONE ) ;
+			((LinearLayout) markerView.findViewById( R.id.takeover_numrow )).setVisibility( View.GONE ) ;
 		}
-			
-		
+
 		markerView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

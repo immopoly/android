@@ -19,6 +19,10 @@
 
 package org.immopoly.android.adapter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.model.Flat;
@@ -44,6 +48,8 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 	private Flats clusterFlats;
 	private Flat  selectedFlat;
 
+	private static final SimpleDateFormat dateSDF = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY);
+	
 	public PortfolioFlatsAdapter(Activity context, Flats flats) {
 		mFlats = flats;
 		inflater = context.getLayoutInflater();
@@ -86,18 +92,22 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 		else if ( flat.age == Flat.AGE_NEW )
 			iconView.setImageResource( R.drawable.house_new );
 		((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setText( flat.name );
-		((TextView) convertView.findViewById( R.id.rooms_text )).setText( flat.numRooms );
-		((TextView) convertView.findViewById( R.id.qm_text )).setText( flat.livingSpace );
-		((TextView) convertView.findViewById( R.id.price_text )).setText( flat.priceValue + "€" ); // TODO kommt im IS24 JSON immer EUR/MONTH ? 
 		
-		if ( flat.owned && flat.takeoverTries > 0 ) {
+		((TextView) convertView.findViewById( R.id.rooms_text )).setText( flat.numRooms > 0 ? Integer.toString(flat.numRooms) : "?" );
+		((TextView) convertView.findViewById( R.id.qm_text )).setText( flat.livingSpace > 0 ? 
+							Integer.toString( (int) Math.round(flat.livingSpace) ) : "?" );
+		((TextView) convertView.findViewById( R.id.price_text )).setText( flat.priceValue + "€" ); // TODO kommt im IS24 JSON immer EUR/MONTH ?
+		
+		String takeoverDate = flat.takeoverDate > 0 ? dateSDF.format( new Date(flat.takeoverDate) ) : "?";
+		((TextView) convertView.findViewById( R.id.takeover_date )).setText( takeoverDate ); 
+		
+		if ( flat.takeoverTries > 0 ) {
 			((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setMaxLines( 2 );
-			((LinearLayout) convertView.findViewById( R.id.takeOverContainer )).setVisibility( View.VISIBLE ) ;
+			((LinearLayout) convertView.findViewById( R.id.takeover_row )).setVisibility( View.VISIBLE ) ;
 			((TextView) convertView.findViewById( R.id.takeovers_text )).setText( "" + flat.takeoverTries );
 		} else {
 			((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setMaxLines( 3 );
-			Log.i( Const.LOG_TAG, "Elippsized lines: " +((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).getLineCount() );
-			((LinearLayout) convertView.findViewById( R.id.takeOverContainer )).setVisibility( View.GONE ) ;
+			((LinearLayout) convertView.findViewById( R.id.takeover_row )).setVisibility( View.GONE ) ;
 		}
 		
 //		if ( selectIdx > -1 ) { // TODO this was used when testing list & map side-by-side in a tablet layout - unused for now
