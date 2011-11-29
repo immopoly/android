@@ -68,58 +68,11 @@ public abstract class GetUserInfoTask extends
 			// fill user objects from server's UserInfo data
 			ImmopolyUser.getInstance().fromJSON(obj);
 			user = ImmopolyUser.getInstance();
-
-			// synchronize local flats DB
-			ArrayList<Flat>    toBeAdded   = new ArrayList<Flat>( user.flats );
-			ArrayList<Integer> toBeDeleted = new ArrayList<Integer>();
-			Cursor cur = mContext.getContentResolver().query( 
-					FlatsProvider.CONTENT_URI, null, null, null, null);
-			if (cur.getCount() > 0) {
-				boolean isIn;
-				cur.moveToFirst();
-				do {
-					isIn = false;
-					int id = cur.getInt(cur.getColumnIndex(FlatsProvider.FLAT_ID));
-					for (int i = 0; i < user.flats.size(); i++) {
-						if (user.flats.get(i).uid == id) {
-							isIn = true;
-							toBeAdded.remove( user.flats.get(i) );
-							break;
-						}
-					}
-					if ( ! isIn ) {
-						toBeDeleted.add( id );
-					}
-				} while (cur.moveToNext());
-			}
-			for ( Integer id : toBeDeleted ) {
-				deleteFlat( id );
-			}
-			for ( Flat f : toBeAdded ) {
-				addFlat(f);
-			}
 		}
 		return user;
 	}
 
 	@Override
 	protected void onPostExecute(ImmopolyUser user) {
-	}
-
-	private void deleteFlat(int id) {
-		mContext.getContentResolver().delete(FlatsProvider.CONTENT_URI,
-				FlatsProvider.FLAT_ID + "=" + id, null);
-	}
-
-	private void addFlat(Flat f) {
-		ContentValues values;
-		values = new ContentValues();
-		values.put(FlatsProvider.FLAT_ID, f.uid);
-		values.put(FlatsProvider.FLAT_NAME, f.name);
-		values.put(FlatsProvider.FLAT_DESCRIPTION, "-");
-		values.put(FlatsProvider.FLAT_LATITUDE, f.lat);
-		values.put(FlatsProvider.FLAT_LONGITUDE, f.lng);
-		values.put(FlatsProvider.FLAT_CREATIONDATE, f.creationDate);
-		mContext.getContentResolver().insert(FlatsProvider.CONTENT_URI, values);
 	}
 }

@@ -58,12 +58,7 @@ public class AddToPortfolioTask extends AsyncTask<Flat, Void, AddToPortfolioTask
 				history.fromJSON(obj);
 				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_TOOK_EXPOSE,
 						TrackingManager.LABEL_TRY, 0);
-				if (history.getType() == 1) {
-					addFlatToDB(flat);
-					result.success = true;
-				} else {
-					result.success = false;
-				}
+				result.success = history.getType() == 1;
 			} else if (obj != null) {
 				history = new ImmopolyHistory();
 				switch (obj.getJSONObject("org.immopoly.common.ImmopolyException").getInt("errorCode")) {
@@ -109,18 +104,6 @@ public class AddToPortfolioTask extends AsyncTask<Flat, Void, AddToPortfolioTask
 		} else {
 			Toast.makeText(this.mActivity, R.string.no_internet_connection, Toast.LENGTH_LONG).show();
 		}
-	}
-
-	private void addFlatToDB( Flat f ) {
-		ContentValues values;
-		values = new ContentValues();
-		values.put(FlatsProvider.FLAT_ID, f.uid);
-		values.put(FlatsProvider.FLAT_NAME, f.name);
-		values.put(FlatsProvider.FLAT_DESCRIPTION, "-");
-		values.put(FlatsProvider.FLAT_LATITUDE, f.lat);
-		values.put(FlatsProvider.FLAT_LONGITUDE, f.lng);
-		values.put(FlatsProvider.FLAT_CREATIONDATE, f.creationDate);
-		mActivity.getContentResolver().insert(FlatsProvider.CONTENT_URI, values);
 	}
 	
 }

@@ -53,7 +53,6 @@ public class ReleaseFromPortfolioTask extends AsyncTask<String, Void, ReleaseFro
 				history.fromJSON(obj);
 				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_RELEASED_EXPOSE, 
 									TrackingManager.LABEL_TRY, 0);
-				deleteFlatFromDB( Integer.parseInt(params[0]) );
 				result.success = true;
 			} else if (obj != null) {
 				history = new ImmopolyHistory();
@@ -63,7 +62,6 @@ public class ReleaseFromPortfolioTask extends AsyncTask<String, Void, ReleaseFro
 					break;
 				case 301:
 					history.mText = mActivity.getString(R.string.flat_does_not_exist_anymore);
-
 					break;
 				case 302:
 					history.mText = mActivity.getString(R.string.flat_has_no_raw_rent);
