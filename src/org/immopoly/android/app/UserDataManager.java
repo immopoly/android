@@ -97,7 +97,20 @@ public class UserDataManager
 		mActivity.startActivityForResult( intent, Const.USER_SIGNUP );
 	}
 
-
+	public boolean logout(){
+		Log.i( Const.LOG_TAG, "UserDataManager.logout() state = " + state );
+		if ( actionPending ) {
+			Log.w( Const.LOG_TAG, "Refusing to log out while another server request is running" );
+			return false;
+		}
+		if ( state != LOGGED_IN ) {
+			Log.e( Const.LOG_TAG, "Already logged in. Log out first." );
+			return false;
+		}
+		state=USER_UNKNOWN;
+		ImmopolyUser.getInstance().resetInstance();
+		return true;
+	}
 	/**
 	 * Receives results from Actitvies (UserSignupActivity for now)
 	 * 

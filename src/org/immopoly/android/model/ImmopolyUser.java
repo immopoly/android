@@ -59,7 +59,6 @@ public class ImmopolyUser extends User {
 
 	@Override
 	public double getBalance() {
-		// TODO Auto-generated method stub
 		return mBalance;
 	}
 
@@ -80,7 +79,6 @@ public class ImmopolyUser extends User {
 
 	@Override
 	public String getUserName() {
-		// TODO Auto-generated method stub
 		return mUserName;
 	}
 
@@ -96,7 +94,6 @@ public class ImmopolyUser extends User {
 
 	@Override
 	public void setUsername(String username) {
-		// TODO Auto-generated method stub
 		mUserName = username;
 	}
 
@@ -110,6 +107,10 @@ public class ImmopolyUser extends User {
 			sInstance = new ImmopolyUser();
 		}
 		return sInstance;
+	}
+	
+	public static void resetInstance(){
+		sInstance=null;
 	}
 
 	@Override
@@ -193,7 +194,6 @@ public class ImmopolyUser extends User {
 
 	@Override
 	public void setLastRent(double lastRent) {
-		// TODO Auto-generated method stub
 		sLastRent = lastRent;
 	}
 

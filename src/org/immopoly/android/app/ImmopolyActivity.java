@@ -13,6 +13,7 @@ import org.immopoly.android.fragments.PortfolioListFragment;
 import org.immopoly.android.fragments.PortfolioMapFragment;
 import org.immopoly.android.fragments.ProfileFragment;
 import org.immopoly.android.model.Flat;
+import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.widget.TabManager;
 
 import android.content.Intent;
@@ -205,6 +206,9 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 			intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "immopolyteam@gmail.com" });
 			intent.putExtra(Intent.EXTRA_SUBJECT, "immopoly Feedback");
 			startActivity(Intent.createChooser(intent, "Feedback:"));
+			break;
+		case R.id.menu_logout:
+			UserDataManager.instance.logout();
 			break;
 		default:
 			break;
