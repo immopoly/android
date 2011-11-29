@@ -177,13 +177,31 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jarsigner-plugin</artifactId> 
-				<version>1.2</version> <executions> <execution> <id>signing</id> <goals> 
-				<goal>sign</goal> </goals> <phase>package</phase> <inherited>true</inherited> 
-				<configuration> <archiveDirectory></archiveDirectory> <includes> <include>target/*.apk</include> 
-				</includes> <keystore>debug.keystore</keystore> <storepass>immopoly</storepass> 
-				<keypass>keypass_here</keypass> <alias>immopoly_android</alias> </configuration> 
-				</execution> </executions> </plugin> -->
+			<plugin> 
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jarsigner-plugin</artifactId> 
+				<version>1.2</version>
+				<executions> 
+					<execution>
+						<id>signing</id>
+						<goals>
+							<goal>sign</goal> 
+						</goals>
+						<phase>package</phase>
+						<inherited>true</inherited> 
+						<configuration>
+							<archiveDirectory></archiveDirectory>
+							<includes>
+								<include>target/*.apk</include>
+							</includes>
+							<keystore>debug.keystore</keystore>
+							<storepass>android</storepass> 
+							<keypass>android</keypass> 
+							<alias>androiddebugkey</alias>
+						</configuration> 
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<repositories>
