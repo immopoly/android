@@ -11,28 +11,25 @@ import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
 import org.immopoly.android.app.ImmopolyActivity;
+import org.immopoly.android.app.UserDataListener;
+import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
-import org.immopoly.android.helper.WebHelper;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyUser;
-import org.immopoly.android.provider.FlatsProvider;
 import org.immopoly.android.tasks.GetUserInfoTask;
 import org.immopoly.android.widget.ImmoscoutPlacesOverlay;
 import org.immopoly.android.widget.MyPositionOverlay;
 import org.immopoly.android.widget.PlaceOverlayItem;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -46,8 +43,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -59,7 +54,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
-public class MapFragment extends Fragment implements Receiver, OnMapItemClickedListener {
+public class MapFragment extends Fragment implements Receiver, OnMapItemClickedListener, UserDataListener {
 
 	public static final String TAG = "Immopoly";
 
@@ -149,6 +144,9 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			mState = new ReceiverState();
 			mState.mReceiver.setReceiver(this);
 		}
+
+		UserDataManager.instance.addUserDataListener( this );
+
 		return mMapView;
 	}
 
@@ -222,6 +220,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 
 	public void onDestroyView() {
+		UserDataManager.instance.removeUserDataListener( this );
 		((ImmopolyActivity) getActivity()).releaseMapView(this);
 		Log.i("IMPO", "MapFragment.onDestroyView");
 		mMapView = null;
@@ -294,12 +293,16 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 	// sets immopoly specific attributes on owned Flats that were loaded from IS24 json 
 	private void syncFlats() {
+		if ( mFlats == null )
+			return;
 		for ( Flat iscoutFlat : mFlats ) {
 			int uid = iscoutFlat.uid;
+			iscoutFlat.owned = false;
 			for ( Flat userFlat : ImmopolyUser.getInstance().getPortfolio() ) {
 				if ( userFlat.uid == uid ) {
 					iscoutFlat.takeoverDate  = userFlat.takeoverDate;
 					iscoutFlat.takeoverTries = userFlat.takeoverTries;
+					iscoutFlat.owned = true;
 					break;
 				}
 			}
@@ -319,18 +322,10 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.house_icon));
 
 			myLocationOverlays.addOverlay(myLocationOverlayItem);
-
 			mMapOverlays.add(myLocationOverlays);
 
-			Cursor cur;
-			Log.d(this.getClass().getName(), "Flats :" + mFlats.size());
 			for (Flat f : mFlats) {
 				if (f.lat != 0.0 || f.lng != 0.0) {
-					cur = getActivity().getContentResolver().query(FlatsProvider.CONTENT_URI, null,
-							FlatsProvider.FLAT_ID + "=" + f.uid, null, null);
-					f.owned = cur.getCount() == 1;
-					cur.close();
-
 					if (f.lng < minX) {
 						minX = f.lng;
 					}
@@ -496,6 +491,14 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	@Override
 	public void onFlatClicked(Flat flat) {
 		mOnMapItemClickedListener.onFlatClicked(flat);
+	}
+
+	@Override
+	public void onUserDataUpdated() {
+		if ( UserDataManager.instance.getState() == UserDataManager.LOGGED_IN ) {
+			syncFlats();
+			updateMap( false );
+		}
 	}
 
 }
