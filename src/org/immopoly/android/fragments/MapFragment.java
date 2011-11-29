@@ -305,14 +305,15 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		for ( Flat iscoutFlat : mFlats ) {
 			int uid = iscoutFlat.uid;
 			iscoutFlat.owned = false;
-			for ( Flat userFlat : ImmopolyUser.getInstance().getPortfolio() ) {
-				if ( userFlat.uid == uid ) {
-					iscoutFlat.takeoverDate  = userFlat.takeoverDate;
-					iscoutFlat.takeoverTries = userFlat.takeoverTries;
-					iscoutFlat.owned = true;
-					break;
+			if ( UserDataManager.instance.getState() == UserDataManager.LOGGED_IN )
+				for ( Flat userFlat : ImmopolyUser.getInstance().getPortfolio() ) {
+					if ( userFlat.uid == uid ) {
+						iscoutFlat.takeoverDate  = userFlat.takeoverDate;
+						iscoutFlat.takeoverTries = userFlat.takeoverTries;
+						iscoutFlat.owned = true;
+						break;
+					}
 				}
-			}
 		}
 	}
 
@@ -502,10 +503,8 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 	@Override
 	public void onUserDataUpdated() {
-		if ( UserDataManager.instance.getState() == UserDataManager.LOGGED_IN ) {
-			syncFlats();
-			updateMap( false );
-		}
+		syncFlats();
+		updateMap( false );
 	}
 
 }
