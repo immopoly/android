@@ -39,7 +39,7 @@ public class UserDataManager
 	private boolean actionPending;
 	
 	private int state = USER_UNKNOWN;
-	private Activity mActivity;
+	private Activity activity;
 	private GoogleAnalyticsTracker mTracker;
 
 	private Vector<UserDataListener> listeners = new Vector<UserDataListener>();
@@ -52,10 +52,10 @@ public class UserDataManager
 	}
 
 	public void setActivity( Activity activity ) {
-		this.mActivity = activity;
+		this.activity = activity;
 
 		// try to get user info on first activity start if we have a token
-		String token = ImmopolyUser.getInstance().readToken( mActivity );
+		String token = ImmopolyUser.getInstance().readToken( activity );
 		if ( state == USER_UNKNOWN &&  token != null && token.length() > 0 ) {
 			getUserInfo();
 		}
@@ -96,8 +96,8 @@ public class UserDataManager
 		
 		actionPending = true;
 		state = LOGIN_PENDING;
-		Intent intent = new Intent( mActivity, UserSignupActivity.class );
-		mActivity.startActivityForResult( intent, Const.USER_SIGNUP );
+		Intent intent = new Intent( activity, UserSignupActivity.class );
+		activity.startActivityForResult( intent, Const.USER_SIGNUP );
 	}
 
 	public boolean logout(){
@@ -112,7 +112,8 @@ public class UserDataManager
 		}
 		state=USER_UNKNOWN;
 		ImmopolyUser.resetInstance();
-		//TODO schtief remove token from shared Preferences
+		if(null!=this.activity)
+			setToken(activity,null);
 		fireUsedDataChanged();
 		return true;
 	}
@@ -158,7 +159,7 @@ public class UserDataManager
 		actionPending = true;
 		state = LOGIN_PENDING;
 		Log.i( Const.LOG_TAG, "UserDataManager.getUserInfo() state3 = " + state );
-		GetUserInfoTask task = new GetUserInfoTask( mActivity ) {
+		GetUserInfoTask task = new GetUserInfoTask( activity ) {
 			@Override
 			protected void onPostExecute(ImmopolyUser user) {
 				actionPending = false;
@@ -192,7 +193,7 @@ public class UserDataManager
 		if ( ! checkState() )
 			return;
 		actionPending = true;
-		new AddToPortfolioTask( mActivity, mTracker ) {
+		new AddToPortfolioTask( activity, mTracker ) {
 			protected void onPostExecute( AddToPortfolioTask.Result result) {
 				super.onPostExecute( result );
 				if ( result.success ) {
@@ -217,7 +218,7 @@ public class UserDataManager
 		if ( ! checkState() )
 			return;
 		actionPending = true;
-		new ReleaseFromPortfolioTask( mActivity, mTracker ) {
+		new ReleaseFromPortfolioTask( activity, mTracker ) {
 			@Override
 			protected void onPostExecute( ReleaseFromPortfolioTask.Result result) {
 				super.onPostExecute( result );
@@ -265,8 +266,8 @@ public class UserDataManager
 		SharedPreferences shared = context.getSharedPreferences(
 				ImmopolyUser.sPREF_USER, 0);
 		SharedPreferences.Editor editor = shared.edit();
-		if(token==null)
-			editor.remove(ImmopolyUser.sPREF_TOKEN);
+		if(token==null) 
+			editor.remove(ImmopolyUser.sPREF_TOKEN); //TODO schtief remove does not work
 		else
 			editor.putString(ImmopolyUser.sPREF_TOKEN, token);			
 		editor.commit();
