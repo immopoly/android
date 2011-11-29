@@ -13,7 +13,10 @@ import org.immopoly.android.tasks.ReleaseFromPortfolioTask;
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 /**
@@ -108,7 +111,9 @@ public class UserDataManager
 			return false;
 		}
 		state=USER_UNKNOWN;
-		ImmopolyUser.getInstance().resetInstance();
+		ImmopolyUser.resetInstance();
+		//TODO schtief remove token from shared Preferences
+		fireUsedDataChanged();
 		return true;
 	}
 	/**
@@ -255,5 +260,16 @@ public class UserDataManager
 		return true;
 	}
 
+	//handle the token only here set null to remove
+	public static void setToken(ContextWrapper context, String token) {
+		SharedPreferences shared = context.getSharedPreferences(
+				ImmopolyUser.sPREF_USER, 0);
+		SharedPreferences.Editor editor = shared.edit();
+		if(token==null)
+			editor.remove(ImmopolyUser.sPREF_TOKEN);
+		else
+			editor.putString(ImmopolyUser.sPREF_TOKEN, token);			
+		editor.commit();
+	}
 }
 

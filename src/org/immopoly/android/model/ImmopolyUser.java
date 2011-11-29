@@ -62,6 +62,12 @@ public class ImmopolyUser extends User {
 		return mBalance;
 	}
 
+	/**
+	 * 
+	 * @param context
+	 * @return
+	 * @deprecated was soll der schmarn hier? fragt den USerDataManager nach dem status
+	 */
 	public String readToken(Context context) {
 		if (mUserToken == null || mUserToken.length() == 0) {
 			SharedPreferences shared = context.getSharedPreferences(sPREF_USER,

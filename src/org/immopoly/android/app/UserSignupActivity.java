@@ -44,11 +44,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -63,7 +60,6 @@ public class UserSignupActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 
 		tracker = GoogleAnalyticsTracker.getInstance();
@@ -232,11 +228,8 @@ public class UserSignupActivity extends Activity {
 		@Override
 		protected void onPostExecute(ImmopolyUser user) {
 			if (user != null) {
-				SharedPreferences shared = getSharedPreferences(
-						ImmopolyUser.sPREF_USER, 0);
-				SharedPreferences.Editor editor = shared.edit();
-				editor.putString(ImmopolyUser.sPREF_TOKEN, user.getToken());
-				editor.commit();
+				UserDataManager.setToken(UserSignupActivity.this,user.getToken());
+				C2DMessaging.register(UserSignupActivity.this, Const.IMMOPOLY_EMAIL);
 				startGame();
 			} else if (Settings.isOnline(UserSignupActivity.this)) {
 				Toast.makeText(UserSignupActivity.this,
@@ -288,12 +281,8 @@ public class UserSignupActivity extends Activity {
 		@Override
 		protected void onPostExecute(ImmopolyUser user) {
 			if (user != null && user.getToken().length() > 0) {
-				SharedPreferences shared = getSharedPreferences(
-						ImmopolyUser.sPREF_USER, 0);
-				SharedPreferences.Editor editor = shared.edit();
-				editor.putString(ImmopolyUser.sPREF_TOKEN, user.getToken());
-
-				editor.commit();
+				UserDataManager.setToken(UserSignupActivity.this,user.getToken());
+				C2DMessaging.register(UserSignupActivity.this, Const.IMMOPOLY_EMAIL);
 				startGame();
 			} else if (Settings.isOnline(UserSignupActivity.this)) {
 				Toast.makeText(UserSignupActivity.this,
@@ -345,7 +334,6 @@ public class UserSignupActivity extends Activity {
 		// start game
 		//Intent i = new Intent(this, PlacesMapActivity.class);
 		//startActivity(i);
-		C2DMessaging.register(this, Const.IMMOPOLY_EMAIL);
 		// login success, trigger action requested before login
 		setResult(Activity.RESULT_OK);
 		finish();
@@ -387,4 +375,6 @@ public class UserSignupActivity extends Activity {
 	public void closeLogin(View v){
 		finish();
 	}
+	
+
 }

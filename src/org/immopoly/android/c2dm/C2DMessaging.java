@@ -16,6 +16,8 @@ package org.immopoly.android.c2dm;
  * limitations under the License.
  */
 
+import org.immopoly.android.constants.Const;
+
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -49,7 +51,7 @@ public class C2DMessaging {
 		registrationIntent.setPackage(GSF_PACKAGE);
 		registrationIntent.putExtra(EXTRA_APPLICATION_PENDING_INTENT,
 				PendingIntent.getBroadcast(context, 0, new Intent(), 0));
-		registrationIntent.putExtra(EXTRA_SENDER, senderId);
+		registrationIntent.putExtra(EXTRA_SENDER, Const.IMMOPOLY_EMAIL);
 		context.startService(registrationIntent);
 		// TODO: if intent not found, notification on need to have GSF
 	}

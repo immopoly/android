@@ -44,7 +44,9 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
@@ -147,7 +149,12 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 		UserDataManager.instance.addUserDataListener( this );
 
-		return mMapView;
+		//wrap map in relative layout for windrose icon rechts oben
+		//https://github.com/immopoly/android/issues/12
+		View layout = getActivity().getLayoutInflater().inflate( R.layout.map_fragment, null, false );
+		RelativeLayout relativeLayout = (RelativeLayout) layout.findViewById( R.id.map_relative_layout );
+		relativeLayout.addView(mMapView);
+		return layout;
 	}
 
 	@Override
