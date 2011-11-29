@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/map_relative_layout" xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/map_relative_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:gravity="right" android:layout_gravity="right" >
 
-    <ImageButton
-        android:id="@+id/MapReloadImageButton"
+    
+     <ImageView
+        android:id="@+id/map_reload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="5px"
         android:src="@android:drawable/ic_menu_compass" >
-    </ImageButton>
+    </ImageView>
+
+    <ProgressBar
+        android:id="@+id/map_progress"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right" android:visibility="gone"/>
 
 </RelativeLayout>

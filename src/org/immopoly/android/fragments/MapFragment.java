@@ -38,6 +38,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,6 +47,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ZoomControls;
@@ -81,6 +84,9 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 	private OnMapItemClickedListener mOnMapItemClickedListener;
 
+	private ProgressBar progress;
+	private ImageView compass;
+	
 	public OnMapItemClickedListener getOnMapItemClickedListener() {
 		return mOnMapItemClickedListener;
 	}
@@ -153,7 +159,23 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		//https://github.com/immopoly/android/issues/12
 		View layout = getActivity().getLayoutInflater().inflate( R.layout.map_fragment, null, false );
 		RelativeLayout relativeLayout = (RelativeLayout) layout.findViewById( R.id.map_relative_layout );
-		relativeLayout.addView(mMapView);
+		relativeLayout.setGravity(Gravity.RIGHT);
+		relativeLayout.addView(mMapView,0);
+//		ImageView compass = new ImageView(getActivity());
+//		compass.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_compass));
+//		relativeLayout.addView(compass,1);
+		progress = (ProgressBar) layout.findViewById( R.id.map_progress);
+		compass = (ImageView) layout.findViewById( R.id.map_reload);
+		compass.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				//done in onReceiveResult
+//				progress.setVisibility(View.VISIBLE);
+//				compass.setVisibility(View.GONE);
+				LocationHelper.getLastLocation(getActivity(), new MapLocationCallback());
+			}
+		});
 		return layout;
 	}
 
@@ -277,10 +299,15 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 	@Override
 	public void onReceiveResult(int resultCode, Bundle resultData) {
+		Log.i(Const.LOG_TAG, "onReceiveResult "+resultCode);
 		switch (resultCode) {
 		case IS24ApiService.STATUS_RUNNING:
 			// show progress
 			// Toast.makeText(this, "Running", Toast.LENGTH_SHORT).show();
+			if(null!=progress)
+				progress.setVisibility(View.VISIBLE);
+			if(null!=compass)
+				compass.setVisibility(View.GONE);
 			break;
 		case IS24ApiService.STATUS_FINISHED:
 			// Toast.makeText(this, "Finished", Toast.LENGTH_SHORT).show();
@@ -290,6 +317,10 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			updateMap(true);
 			// do something interesting
 			// hide progress
+			if(null!=progress)
+				progress.setVisibility(View.GONE);
+			if(null!=compass)
+				compass.setVisibility(View.VISIBLE);
 			break;
 		case IS24ApiService.STATUS_ERROR:
 			// Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
