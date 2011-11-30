@@ -19,9 +19,6 @@
 
 package org.immopoly.android.helper;
 
-import java.util.List;
-
-import android.app.AlarmManager;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
@@ -37,7 +34,7 @@ public class LocationHelper {
 	}
 
 	// teshhold when location is too old
-	private static final int TRESH = 150000;
+	// private static final int TRESH = 150000;
 
 	public static double sLat = 52.548932;
 	public static double sLng = 13.416416;
@@ -49,15 +46,15 @@ public class LocationHelper {
 	private static Criteria mCriteria = null;
 
 	// user can force location update
-	private static final int LOCATION_REFRESH_TRESH = 1;
+	// private static final int LOCATION_REFRESH_TRESH = 1;
 	private static int sCountRequest = 0;
 
 	// The default search radius when searching for places nearby.
-	public static int DEFAULT_RADIUS = 150;
+	// public static int DEFAULT_RADIUS = 150;
 	// The maximum distance the user should travel between location updates.
-	public static int MAX_DISTANCE = DEFAULT_RADIUS / 2;
+	// public static int MAX_DISTANCE = DEFAULT_RADIUS / 2;
 	// The maximum time that should pass before the user gets a location update.
-	public static long MAX_TIME = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+	// public static long MAX_TIME = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 
 	public static void getLastLocation(Context context, final LocationCallback callback) {
 //		double tmpLat = sLat;
@@ -78,26 +75,28 @@ public class LocationHelper {
 		}
 
 		// /getLastLocationFromProvider(mContext);
-		long minTime = System.currentTimeMillis() + TRESH;
-		List<String> matchingProviders = mLocationManager.getProviders(false);
-		for (String provider : matchingProviders) {
-			Location location = mLocationManager.getLastKnownLocation(provider);
-			if (location != null) {
-				float accuracy = location.getAccuracy();
-				long time = location.getTime();
-
-				if ((time > minTime && accuracy < sAccuracy)) {
-					sLat = location.getLatitude();
-					sLng = location.getLongitude();
-					sAccuracy = accuracy;
-					sTime = time;
-				} else if (time < minTime && sAccuracy == Float.MAX_VALUE && time > sTime) {
-					sLat = location.getLatitude();
-					sLng = location.getLongitude();
-					sTime = time;
-				}
-			}
-		}
+		// long minTime = System.currentTimeMillis() ;//+ TRESH;
+		// List<String> matchingProviders =
+		// mLocationManager.getProviders(false);
+		// for (String provider : matchingProviders) {
+		// Location location = mLocationManager.getLastKnownLocation(provider);
+		// if (location != null) {
+		// float accuracy = location.getAccuracy();
+		// long time = location.getTime();
+		//
+		// if ((time > minTime && accuracy < sAccuracy)) {
+		// sLat = location.getLatitude();
+		// sLng = location.getLongitude();
+		// sAccuracy = accuracy;
+		// sTime = time;
+		// } else if (time < minTime && sAccuracy == Float.MAX_VALUE && time >
+		// sTime) {
+		// sLat = location.getLatitude();
+		// sLng = location.getLongitude();
+		// sTime = time;
+		// }
+		// }
+		// }
 
 //		if (sTime < MAX_TIME || sAccuracy > MAX_DISTANCE || sCountRequest > LOCATION_REFRESH_TRESH) {
 			sCountRequest = 0;
@@ -107,7 +106,7 @@ public class LocationHelper {
 					@Override
 					public void onLocationChanged(Location loc) {
 						boolean newLoc = false;
-						if (sAccuracy >= loc.getAccuracy()) {
+					// if (sAccuracy >= loc.getAccuracy()) {
 							sLat = loc.getLatitude();
 
 							sLng = loc.getLongitude();
@@ -115,7 +114,7 @@ public class LocationHelper {
 							sAccuracy = loc.getAccuracy();
 							sTime = loc.getTime();
 							newLoc = true;
-						}
+					// }
 						if (callback != null) {
 							callback.onLocationChanged(newLoc);
 						}
