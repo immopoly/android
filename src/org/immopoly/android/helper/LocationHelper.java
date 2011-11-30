@@ -60,8 +60,8 @@ public class LocationHelper {
 	public static long MAX_TIME = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 
 	public static void getLastLocation(Context context, final LocationCallback callback) {
-		double tmpLat = sLat;
-		double tmpLng = sLng;
+//		double tmpLat = sLat;
+//		double tmpLng = sLng;
 		sCountRequest++;
 
 		if (mCriteria == null) {
@@ -99,7 +99,7 @@ public class LocationHelper {
 			}
 		}
 
-		if (sTime < MAX_TIME || sAccuracy > MAX_DISTANCE || sCountRequest > LOCATION_REFRESH_TRESH) {
+//		if (sTime < MAX_TIME || sAccuracy > MAX_DISTANCE || sCountRequest > LOCATION_REFRESH_TRESH) {
 			sCountRequest = 0;
 			if (mlocListener == null) {
 				mlocListener = new LocationListener() {
@@ -143,26 +143,27 @@ public class LocationHelper {
 						if (mlocListener != null)
 							mLocationManager.removeUpdates(mlocListener);
 						mlocListener = null;
-						if (callback != null) {
-							callback.onLocationChanged(true);
-						}
+//						if (callback != null) {
+//							callback.onLocationChanged(true);
+//						}
 					}
 				};
+				String bestProvider = getBestProvider(context);
+				if (bestProvider != null) {
+					mLocationManager.requestLocationUpdates(bestProvider, 0, 0, mlocListener);
+				} else {
+					Toast.makeText(context, "Lokalisierung ist deaktiviert, bitte unter Einstellungen aktivieren.",
+							Toast.LENGTH_LONG);
+				}
 			}
-			String bestProvider = getBestProvider(context);
-			if (bestProvider != null) {
-				mLocationManager.requestLocationUpdates(bestProvider, 0, 0, mlocListener);
-			} else {
-				Toast.makeText(context, "Lokalisierung ist deaktiviert, bitte unter Einstellungen aktivieren.",
-						Toast.LENGTH_LONG);
-			}
-		} else if (sLat != tmpLat && sLng != tmpLng) {
-			if (callback != null) {
-				callback.onLocationChanged(true);
-			}
-		} else if (callback != null) {
-			callback.onLocationChanged(false);
-		}
+//		}
+//		else if (sLat != tmpLat && sLng != tmpLng) {
+//			if (callback != null) {
+//				callback.onLocationChanged(true);
+//			}
+//		} else if (callback != null) {
+//			callback.onLocationChanged(false);
+//		}
 	}
 
 	public static void getLastLocationFromProvider(Context context) {

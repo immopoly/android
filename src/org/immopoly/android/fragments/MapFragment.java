@@ -282,11 +282,12 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 	
 	private void requestFlatUpdate(boolean newLoc) {
-		if (newLoc || LocationHelper.mAddress == null) {
-			new GeoCodeLocationTask().execute(LocationHelper.sLat, LocationHelper.sLng);
-		} else {
-			setAddress(LocationHelper.mAddress);
-		}
+		//TODO schtief we dont need this right now
+		//		if (newLoc || LocationHelper.mAddress == null) {
+//			new GeoCodeLocationTask().execute(LocationHelper.sLat, LocationHelper.sLng);
+//		} else {
+//			setAddress(LocationHelper.mAddress);
+//		}
 		Intent i = new Intent(getActivity(), IS24ApiService.class);
 		i.putExtra(IS24ApiService.COMMAND, IS24ApiService.CMD_SEARCH);
 		i.putExtra(IS24ApiService.LAT, LocationHelper.sLat);
@@ -441,35 +442,37 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 		@Override
 		protected void onPostExecute(String result) {
-			setAddress(result);
+			//TODO schtief we dont need geocoding right now
+			//			setAddress(result);
 		}
 	}
 
-	private void setAddress(String address) {
-		if (address != null && address.length() > 0) {
-			mNumberGeoCodeTry = 0;
-			// ((TextView) findViewById(R.id.header_location)).setText(address);
-		} else if (LocationHelper.sAccuracy >= 0) {
-			mNumberGeoCodeTry++;
-			if (mNumberGeoCodeTry < 3) {
-				new GeoCodeLocationTask().execute(LocationHelper.sLat, LocationHelper.sLng);
-			} else {
-				NumberFormat nFormat = NumberFormat.getInstance(Locale.GERMANY);
-				nFormat.setMinimumIntegerDigits(2);
-				nFormat.setMaximumFractionDigits(2);
-				/*
-				 * ((TextView)
-				 * findViewById(R.id.header_location)).setText("lat:" +
-				 * nFormat.format(LocationHelper.sLat) + " - lng:" +
-				 * nFormat.format(LocationHelper.sLng) + " ~" +
-				 * nFormat.format(LocationHelper.sAccuracy));
-				 */
-			}
-		} else {
-			// ((TextView) findViewById(R.id.header_location))
-			// .setText(R.string.no_location_value);
-		}
-	}
+	//TODO schtief we dont need geocoding right now
+//	private void setAddress(String address) {
+//		if (address != null && address.length() > 0) {
+//			mNumberGeoCodeTry = 0;
+//			// ((TextView) findViewById(R.id.header_location)).setText(address);
+//		} else if (LocationHelper.sAccuracy >= 0) {
+//			mNumberGeoCodeTry++;
+//			if (mNumberGeoCodeTry < 3) {
+//				new GeoCodeLocationTask().execute(LocationHelper.sLat, LocationHelper.sLng);
+//			} else {
+//				NumberFormat nFormat = NumberFormat.getInstance(Locale.GERMANY);
+//				nFormat.setMinimumIntegerDigits(2);
+//				nFormat.setMaximumFractionDigits(2);
+//				/*
+//				 * ((TextView)
+//				 * findViewById(R.id.header_location)).setText("lat:" +
+//				 * nFormat.format(LocationHelper.sLat) + " - lng:" +
+//				 * nFormat.format(LocationHelper.sLng) + " ~" +
+//				 * nFormat.format(LocationHelper.sAccuracy));
+//				 */
+//			}
+//		} else {
+//			// ((TextView) findViewById(R.id.header_location))
+//			// .setText(R.string.no_location_value);
+//		}
+//	}
 
 	class MyDetector extends SimpleOnGestureListener {
 		@Override

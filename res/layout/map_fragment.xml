@@ -9,14 +9,16 @@
         android:id="@+id/map_reload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:src="@android:drawable/ic_menu_compass" >
     </ImageView>
 
     <ProgressBar
         android:id="@+id/map_progress"
-        style="@android:style/Widget.ProgressBar.Small"
+        style="@android:style/Widget.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:gravity="right" android:visibility="gone"/>
 
 </RelativeLayout>
