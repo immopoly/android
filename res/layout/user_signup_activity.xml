@@ -9,7 +9,7 @@
 	ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY or FITNESS 
 	FOR A PARTICULAR PURPOSE. See the ~ GNU Affero General Public License for 
 	more details. ~ ~ You should have received a copy of the GNU Affero General 
-	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/.
+	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dialog"
@@ -19,11 +19,13 @@
     android:paddingLeft="6dp"
     android:paddingRight="6dp"
     android:paddingTop="6dp" >
+
     <!--
          <ProgressBar android:layout_centerVertical="true" android:layout_centerHorizontal="true" 
 		android:layout_height="wrap_content" style="?android:attr/progressBarStyleLarge" 
-		android:layout_width="wrap_content" android:id="@+id/progressBar1"></ProgressBar>
+		android:layout_width="wrap_content" android:id="@+id/progressBar1"></ProgressBar>
     -->
+
     <TextView
         android:id="@+id/login_header"
         style="@style/headerText"
@@ -32,6 +34,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="@string/header_login" />
+
     <ImageButton
         android:id="@+id/closeButton"
         android:layout_width="wrap_content"
@@ -41,6 +44,7 @@
         android:background="@drawable/btn_close"
         android:onClick="closeLogin" >
     </ImageButton>
+
     <LinearLayout
         android:id="@+id/loginview"
         android:layout_width="fill_parent"
@@ -48,6 +52,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/closeButton"
         android:orientation="vertical" >
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -55,15 +60,18 @@
             android:layout_weight="1"
             android:text="@string/welcome_message" >
         </TextView>
+
         <EditText
             android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/username_hint" >
+
             <requestFocus >
             </requestFocus>
         </EditText>
+
         <EditText
             android:id="@+id/user_password"
             android:layout_width="match_parent"
@@ -72,6 +80,7 @@
             android:hint="@string/password_hint"
             android:inputType="textPassword" >
         </EditText>
+
         <EditText
             android:id="@+id/user_password_confirm"
             android:layout_width="match_parent"
@@ -81,11 +90,13 @@
             android:inputType="textPassword"
             android:visibility="gone" >
         </EditText>
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal" >
+
             <Button
                 android:id="@+id/register"
                 android:layout_width="0dip"
@@ -94,6 +105,7 @@
                 android:onClick="registerUser"
                 android:text="@string/register" >
             </Button>
+
             <Button
                 android:id="@+id/login"
                 android:layout_width="0dip"
@@ -102,6 +114,14 @@
                 android:onClick="loginUser"
                 android:text="@string/login" >
             </Button>
+
+            <ProgressBar
+                android:id="@+id/login_register_progress"
+                style="@android:style/Widget.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
         </LinearLayout>
     </LinearLayout>
+
 </RelativeLayout>

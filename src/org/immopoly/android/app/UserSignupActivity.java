@@ -44,6 +44,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -57,7 +58,7 @@ public class UserSignupActivity extends Activity {
 	private static final int MIN_USERNAME_LENGTH = 1;
 
 	private GoogleAnalyticsTracker tracker;
-
+	Handler toggleProgressHandler = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,7 +70,9 @@ public class UserSignupActivity extends Activity {
 		tracker.trackPageView(TrackingManager.VIEW_LOGIN);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
+		
 		// init login
+		toggleProgressHandler=new Handler();
 		setContentView(R.layout.user_signup_activity);
 		// check if user as token and is already logedin
 		ImmopolyUser.getInstance().readToken(this);
@@ -133,6 +136,9 @@ public class UserSignupActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Called by res/layout/user_signup_activity.xml loginbutton onclick
+	 */
 	public void registerUser(View v) {
 		EditText userPasswordConfirm = (EditText) findViewById(R.id.user_password_confirm);
 		if (userPasswordConfirm.getVisibility() != View.VISIBLE) {
@@ -170,6 +176,9 @@ public class UserSignupActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Called by res/layout/user_signup_activity.xml loginbutton onclick
+	 */
 	public void loginUser(View v) {
 		EditText username = (EditText) findViewById(R.id.user_name);
 		if (username.getText().toString().length() >= MIN_USERNAME_LENGTH) {
@@ -203,6 +212,7 @@ public class UserSignupActivity extends Activity {
 			JSONObject obj = null;
 			ImmopolyUser user;
 			try {
+				toggleProgress();
 				obj = WebHelper.getHttpsData(
 						new URL(WebHelper.SERVER_HTTPS_URL_PREFIX
 								+ "/user/register?username="
@@ -222,6 +232,7 @@ public class UserSignupActivity extends Activity {
 				user = ImmopolyUser.getInstance();
 				user.fromJSON(obj);
 			}
+			toggleProgress();
 			return user;
 		}
 
@@ -245,6 +256,24 @@ public class UserSignupActivity extends Activity {
 			}
 		}
 	}
+	
+	private void toggleProgress(){
+		toggleProgressHandler.post(new Runnable() {  
+			public void run() {
+				View progress = findViewById(R.id.login_register_progress);
+				if(progress.getVisibility()==View.GONE)
+				{
+					progress.setVisibility(View.VISIBLE);
+					findViewById(R.id.login).setVisibility(View.GONE);
+					findViewById(R.id.register).setVisibility(View.GONE);
+				}else{
+					progress.setVisibility(View.GONE);
+					findViewById(R.id.login).setVisibility(View.VISIBLE);
+					findViewById(R.id.register).setVisibility(View.VISIBLE);
+				}
+			}
+		});			
+	}
 
 	private class LoginUserTask extends AsyncTask<String, Void, ImmopolyUser> {
 
@@ -255,6 +284,7 @@ public class UserSignupActivity extends Activity {
 			JSONObject obj = null;
 			ImmopolyUser user;
 			try {
+				toggleProgress();
 				obj = WebHelper.getHttpsData(
 						new URL(WebHelper.SERVER_HTTPS_URL_PREFIX
 								+ "/user/login?username="
@@ -263,10 +293,8 @@ public class UserSignupActivity extends Activity {
 						UserSignupActivity.this);
 
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (obj == null || obj.has(Const.MESSAGE_IMMOPOLY_EXCEPTION)) {
@@ -275,6 +303,7 @@ public class UserSignupActivity extends Activity {
 				user = ImmopolyUser.getInstance();
 				user.fromJSON(obj);
 			}
+			toggleProgress();
 			return user;
 		}
 

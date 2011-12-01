@@ -30,7 +30,7 @@ public class ExposeFragment extends DialogFragment {
 	private Flat flat;
 
 	private final static String sInjectJString;
-	Handler buttonDelayFinishedHandler = null;
+//	Handler buttonDelayFinishedHandler = null;
 	static {
 		StringBuilder jsInjectString;
 		jsInjectString = new StringBuilder("var headID = document.getElementsByTagName('head')[0];");
