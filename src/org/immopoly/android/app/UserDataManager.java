@@ -36,7 +36,7 @@ public class UserDataManager {
 	public static final int LOGIN_PENDING = 1; // TODO unused (yet)
 	public static final int LOGGED_IN = 2;
 
-	private boolean actionPending;
+//	private boolean actionPending;
 
 	private int state = USER_UNKNOWN;
 	private Activity activity;
@@ -86,17 +86,17 @@ public class UserDataManager {
 	 */
 	public void login() {
 		Log.i(Const.LOG_TAG, "UserDataManager.login() state = " + state);
-		if (actionPending) {
-			Log.w(Const.LOG_TAG,
-					"Refusing to log in while another server request is running");
-			return;
-		}
+//		if (actionPending) {
+//			Log.w(Const.LOG_TAG,
+//					"Refusing to log in while another server request is running");
+//			return;
+//		}
 		if (state != USER_UNKNOWN) {
 			Log.e(Const.LOG_TAG, "Already logged in. Log out first.");
 			return;
 		}
 
-		actionPending = true;
+//		actionPending = true;
 		state = LOGIN_PENDING;
 		Intent intent = new Intent(activity, UserSignupActivity.class);
 		activity.startActivityForResult(intent, Const.USER_SIGNUP);
@@ -104,11 +104,11 @@ public class UserDataManager {
 
 	public boolean logout() {
 		Log.i(Const.LOG_TAG, "UserDataManager.logout() state = " + state);
-		if (actionPending) {
-			Log.w(Const.LOG_TAG,
-					"Refusing to log out while another server request is running");
-			return false;
-		}
+//		if (actionPending) {
+//			Log.w(Const.LOG_TAG,
+//					"Refusing to log out while another server request is running");
+//			return false;
+//		}
 		if (state != LOGGED_IN) {
 			Log.e(Const.LOG_TAG, "Already logged in. Log out first.");
 			return false;
@@ -132,7 +132,7 @@ public class UserDataManager {
 	void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i(Const.LOG_TAG, "UserDataManager.onActivityResult() state = "
 				+ state);
-		actionPending = false;
+//		actionPending = false;
 		if (requestCode == Const.USER_SIGNUP) {
 			if (resultCode == Activity.RESULT_OK) {
 				state = LOGGED_IN;
@@ -159,19 +159,19 @@ public class UserDataManager {
 	 */
 	public void getUserInfo() {
 		Log.i(Const.LOG_TAG, "UserDataManager.getUserInfo() state = " + state);
-		if (actionPending) {
-			Log.w(Const.LOG_TAG,
-					"Refusing to get user info while another server request is running");
-			return;
-		}
+//		if (actionPending) {
+//			Log.w(Const.LOG_TAG,
+//					"Refusing to get user info while another server request is running");
+//			return;
+//		}
 		Log.i(Const.LOG_TAG, "UserDataManager.getUserInfo() state2 = " + state);
-		actionPending = true;
+//		actionPending = true;
 		state = LOGIN_PENDING;
 		Log.i(Const.LOG_TAG, "UserDataManager.getUserInfo() state3 = " + state);
 		GetUserInfoTask task = new GetUserInfoTask(activity) {
 			@Override
 			protected void onPostExecute(ImmopolyUser user) {
-				actionPending = false;
+//				actionPending = false;
 				if (user != null) {
 					state = LOGGED_IN;
 				} else {
@@ -204,7 +204,7 @@ public class UserDataManager {
 
 		if (!checkState())
 			return;
-		actionPending = true;
+//		actionPending = true;
 		new AddToPortfolioTask(activity, mTracker) {
 			protected void onPostExecute(final AddToPortfolioTask.Result result) {
 				super.onPostExecute(result);
@@ -218,7 +218,7 @@ public class UserDataManager {
 					showExposeDialog(flat, result);
 				}
 				fireUsedDataChanged();
-				actionPending = false;
+//				actionPending = false;
 			}
 
 			private void showExposeDialog(final Flat flat,
@@ -276,7 +276,7 @@ public class UserDataManager {
 		Log.i(Const.LOG_TAG, "UserDataManager.releaseFromPortfolio()");
 		if (!checkState())
 			return;
-		actionPending = true;
+//		actionPending = true;
 		new ReleaseFromPortfolioTask(activity, mTracker) {
 			@Override
 			protected void onPostExecute(ReleaseFromPortfolioTask.Result result) {
@@ -305,7 +305,7 @@ public class UserDataManager {
 										+ flat.name);
 					}
 					fireUsedDataChanged();
-					actionPending = false;
+//					actionPending = false;
 				}
 			};
 		}.execute(String.valueOf(flat.uid));
@@ -318,11 +318,11 @@ public class UserDataManager {
 	}
 
 	private boolean checkState() {
-		if (actionPending) {
-			Log.w(Const.LOG_TAG,
-					"Refusing to send request while another server request is running");
-			return false;
-		}
+//		if (actionPending) {
+//			Log.w(Const.LOG_TAG,
+//					"Refusing to send request while another server request is running");
+//			return false;
+//		}
 		if (state != LOGGED_IN) {
 			Log.e(Const.LOG_TAG, "Not logged in.");
 			return false;
@@ -336,8 +336,7 @@ public class UserDataManager {
 				ImmopolyUser.sPREF_USER, 0);
 		SharedPreferences.Editor editor = shared.edit();
 		if (token == null)
-			editor.remove(ImmopolyUser.sPREF_TOKEN); // TODO schtief remove does
-														// not work
+			editor.remove(ImmopolyUser.sPREF_TOKEN);
 		else
 			editor.putString(ImmopolyUser.sPREF_TOKEN, token);
 		editor.commit();
