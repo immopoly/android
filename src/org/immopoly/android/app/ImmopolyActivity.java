@@ -122,7 +122,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 
 	@Override
 	public void onFlatClicked( Flat flat ) {
-		Toast.makeText(this, "onFlatClicked", Toast.LENGTH_LONG).show();
+//		Toast.makeText(this, "onFlatClicked", Toast.LENGTH_LONG).show();
 		DialogFragment newFragment = ExposeFragment.newInstance(flat);
 		// newFragment.setArguments(tmp);
 		newFragment.show(getSupportFragmentManager(), "dialog");

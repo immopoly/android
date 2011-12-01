@@ -96,7 +96,7 @@ public class AddToPortfolioTask extends AsyncTask<Flat, Void, AddToPortfolioTask
 		if (result.historyEvent != null && result.historyEvent.mText != null 
 				&& result.historyEvent.mText.length() > 0) 
 		{
-			Toast.makeText(this.mActivity, result.historyEvent.mText, Toast.LENGTH_LONG).show();
+//			Toast.makeText(this.mActivity, result.historyEvent.mText, Toast.LENGTH_LONG).show();
 			// add history entry to users list
 			ImmopolyUser.getInstance().getHistory().add(0, result.historyEvent);
 		} else if (Settings.isOnline(this.mActivity)) {

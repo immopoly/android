@@ -84,7 +84,7 @@ public class ReleaseFromPortfolioTask extends AsyncTask<String, Void, ReleaseFro
 	@Override
 	protected void onPostExecute(Result result) {
 		if (result.historyEvent != null && result.historyEvent.mText != null && result.historyEvent.mText.length() > 0) {
-			Toast.makeText(mActivity, result.historyEvent.mText, Toast.LENGTH_LONG).show();
+//			Toast.makeText(mActivity, result.historyEvent.mText, Toast.LENGTH_LONG).show();
 			// add history entry to users list
 			ImmopolyUser.getInstance().getHistory().add(0, result.historyEvent);
 		} else if (Settings.isOnline(mActivity)) {
