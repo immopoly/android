@@ -22,9 +22,9 @@ public class UserNotification {
 		case 1:
 			icon = R.drawable.house;        // icon from resources
 			break;
-		case 2:
-			icon = R.drawable.house_drawn;        // icon from resources
-			break;
+		// case 2:
+		// icon = R.drawable.house_drawn; // icon from resources
+		// break;
 		default:
 			icon = R.drawable.ic_map_button;
 			break;

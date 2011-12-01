@@ -191,9 +191,9 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 		myLocationOverlayItem = new PlaceOverlayItem(point, "my city", "This is wher you are");
 		overlays = new ImmoscoutPlacesOverlay(this, mMapView, getActivity().getLayoutInflater());
-		myLocationOverlays = new MyPositionOverlay(getResources().getDrawable(R.drawable.house_icon), getActivity(),
+		myLocationOverlays = new MyPositionOverlay(getResources().getDrawable(R.drawable.mylocation), getActivity(),
 				mMapView, getActivity().getLayoutInflater());
-		myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.house_icon));
+		myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.mylocation));
 
 		myLocationOverlays.addOverlay(myLocationOverlayItem);
 		mMapOverlays.add(myLocationOverlays);
@@ -371,7 +371,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			GeoPoint point = new GeoPoint((int) (LocationHelper.sLat * 1E6), (int) (LocationHelper.sLng * 1E6));
 
 			myLocationOverlayItem = new PlaceOverlayItem(point, "my city", "THis is wher you are");
-			myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.house_icon));
+			myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.mylocation));
 
 			myLocationOverlays.addOverlay(myLocationOverlayItem);
 			mMapOverlays.add(myLocationOverlays);

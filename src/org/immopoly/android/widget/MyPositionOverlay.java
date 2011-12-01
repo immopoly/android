@@ -22,10 +22,6 @@ package org.immopoly.android.widget;
 import java.util.ArrayList;
 
 import org.immopoly.android.R;
-import org.immopoly.android.R.anim;
-import org.immopoly.android.R.drawable;
-import org.immopoly.android.R.id;
-import org.immopoly.android.R.layout;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.ImageListDownloader;
 
@@ -111,7 +107,7 @@ public class MyPositionOverlay extends ItemizedOverlay<PlaceOverlayItem> {
 			} else {
 				((ImageView) mMarkerView.findViewById(R.id.imagePreview))
 						.setImageDrawable(mContext.getResources().getDrawable(
-                                R.drawable.house_drawn));
+						R.drawable.mylocation));
 			}
 			if (item.flat.priceValue.length() > 0) {
 				((TextView) mMarkerView.findViewById(R.id.priceInfo))
