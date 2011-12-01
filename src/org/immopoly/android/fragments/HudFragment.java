@@ -60,7 +60,8 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 	}
 
 	public void updateHud() {
-		Log.i(Const.LOG_TAG, "updateHud " + UserDataManager.instance.getState());
+		// Log.i(Const.LOG_TAG, "updateHud " +
+		// UserDataManager.instance.getState());
 		Button hudButton = (Button) getView().findViewById(R.id.hud_text);
 		View spacer = (View) getView().findViewById(R.id.hud_progress_spacer);
 		View progress = (View) getView().findViewById(R.id.hud_progress);
@@ -75,8 +76,7 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 				nFormat.setMaximumFractionDigits(0);
 				hudButton.setText(nFormat.format(ImmopolyUser.getInstance()
 						.getBalance()));
-			}
-			if (UserDataManager.instance.getState() == UserDataManager.USER_UNKNOWN) {
+			} else if (UserDataManager.instance.getState() == UserDataManager.USER_UNKNOWN) {
 				progress.setVisibility(View.GONE);
 				spacer.setVisibility(View.GONE);
 				hudButton.setVisibility(View.VISIBLE);

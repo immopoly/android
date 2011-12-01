@@ -193,8 +193,7 @@ public class UserDataManager {
 	 *            the flat to add
 	 */
 	public void addToPortfolio(final Flat flat) {
-		Log.i(Const.LOG_TAG, "UserDataManager.addToPortfolio() tracker: "
-				+ mTracker);
+		Log.i(Const.LOG_TAG, "UserDataManager.addToPortfolio " + flat.uid);
 		// login first if not yet
 		if (state == USER_UNKNOWN) {
 			flatToAddAfterLogin = flat;
@@ -212,11 +211,12 @@ public class UserDataManager {
 					flat.owned = true;
 					flat.takeoverDate = System.currentTimeMillis();
 					ImmopolyUser.getInstance().getPortfolio().add(flat);
-					/**
-					 * show the feedback in a dialog, from there the user can either share the result or 
-					 */
-					showExposeDialog(flat, result);
 				}
+				/**
+				 * show the feedback in a dialog, from there the user can either
+				 * share the result or
+				 */
+				showExposeDialog(flat, result);
 				fireUsedDataChanged();
 //				actionPending = false;
 			}
@@ -248,7 +248,7 @@ public class UserDataManager {
 							}
 
 						});
-				builder.setPositiveButton(R.string.button_ok,
+				builder.setPositiveButton(result.success ? R.string.button_ok : R.string.button_mist,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog,
@@ -273,7 +273,7 @@ public class UserDataManager {
 	 *            the flat to add
 	 */
 	public void releaseFromPortfolio(final Flat flat) {
-		Log.i(Const.LOG_TAG, "UserDataManager.releaseFromPortfolio()");
+		Log.i(Const.LOG_TAG, "UserDataManager.releaseFromPortfolio " + flat.uid);
 		if (!checkState())
 			return;
 //		actionPending = true;

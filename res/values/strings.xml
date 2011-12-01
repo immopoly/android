@@ -34,6 +34,7 @@
     <string name="register">Registrieren</string>
     <string name="login">Anmelden</string>
     <string name="button_ok">OK</string>
+    <string name="button_mist">Mist!</string>
     <string name="button_cancel">Abbrechen</string>
     <string name="no_history_entries">History (Keine Einträge)</string>
     <string name="history_title">History</string>
