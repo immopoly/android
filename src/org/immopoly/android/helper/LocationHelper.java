@@ -31,6 +31,8 @@ public class LocationHelper {
 
 	public interface LocationCallback {
 		void onLocationChanged(boolean center);
+
+		void failed();
 	}
 
 	// teshhold when location is too old
@@ -57,8 +59,8 @@ public class LocationHelper {
 	// public static long MAX_TIME = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 
 	public static void getLastLocation(Context context, final LocationCallback callback) {
-//		double tmpLat = sLat;
-//		double tmpLng = sLng;
+		// double tmpLat = sLat;
+		// double tmpLng = sLng;
 		sCountRequest++;
 
 		if (mCriteria == null) {
@@ -70,8 +72,7 @@ public class LocationHelper {
 		mCriteria.setCostAllowed(true);
 		mCriteria.setPowerRequirement(Criteria.POWER_LOW);
 		if (mLocationManager == null) {
-			mLocationManager = (LocationManager) context.getApplicationContext().getSystemService(
-					Context.LOCATION_SERVICE);
+			mLocationManager = (LocationManager) context.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 		}
 
 		// /getLastLocationFromProvider(mContext);
@@ -98,71 +99,73 @@ public class LocationHelper {
 		// }
 		// }
 
-//		if (sTime < MAX_TIME || sAccuracy > MAX_DISTANCE || sCountRequest > LOCATION_REFRESH_TRESH) {
-			sCountRequest = 0;
-			if (mlocListener == null) {
-				mlocListener = new LocationListener() {
+		// if (sTime < MAX_TIME || sAccuracy > MAX_DISTANCE || sCountRequest >
+		// LOCATION_REFRESH_TRESH) {
+		sCountRequest = 0;
+		if (mlocListener == null) {
+			mlocListener = new LocationListener() {
 
-					@Override
-					public void onLocationChanged(Location loc) {
-						boolean newLoc = false;
+				@Override
+				public void onLocationChanged(Location loc) {
+					boolean newLoc = false;
 					// if (sAccuracy >= loc.getAccuracy()) {
-							sLat = loc.getLatitude();
+					sLat = loc.getLatitude();
 
-							sLng = loc.getLongitude();
+					sLng = loc.getLongitude();
 
-							sAccuracy = loc.getAccuracy();
-							sTime = loc.getTime();
-							newLoc = true;
+					sAccuracy = loc.getAccuracy();
+					sTime = loc.getTime();
+					newLoc = true;
 					// }
-						if (callback != null) {
-							callback.onLocationChanged(newLoc);
-						}
-						if (mlocListener != null)
-							mLocationManager.removeUpdates(mlocListener);
-
-						mlocListener = null;
+					if (callback != null) {
+						callback.onLocationChanged(newLoc);
 					}
+					if (mlocListener != null)
+						mLocationManager.removeUpdates(mlocListener);
 
-					@Override
-					public void onProviderDisabled(String provider) {
-						if (mlocListener != null)
-							mLocationManager.removeUpdates(mlocListener);
-
-						mlocListener = null;
-					}
-
-					@Override
-					public void onProviderEnabled(String provider) {
-
-					}
-
-					@Override
-					public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-						if (mlocListener != null)
-							mLocationManager.removeUpdates(mlocListener);
-						mlocListener = null;
-//						if (callback != null) {
-//							callback.onLocationChanged(true);
-//						}
-					}
-				};
-				String bestProvider = getBestProvider(context);
-				if (bestProvider != null) {
-					mLocationManager.requestLocationUpdates(bestProvider, 0, 0, mlocListener);
-				} else {
-					Toast.makeText(context, "Lokalisierung ist deaktiviert, bitte unter Einstellungen aktivieren.",
-							Toast.LENGTH_LONG);
+					mlocListener = null;
 				}
+
+				@Override
+				public void onProviderDisabled(String provider) {
+					if (mlocListener != null)
+						mLocationManager.removeUpdates(mlocListener);
+					if (callback != null) {
+						callback.failed();
+					}
+					mlocListener = null;
+				}
+
+				@Override
+				public void onProviderEnabled(String provider) {
+
+				}
+
+				@Override
+				public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+					if (mlocListener != null)
+						mLocationManager.removeUpdates(mlocListener);
+					mlocListener = null;
+					// if (callback != null) {
+					// callback.onLocationChanged(true);
+					// }
+				}
+			};
+			String bestProvider = getBestProvider(context);
+			if (bestProvider != null) {
+				mLocationManager.requestLocationUpdates(bestProvider, 0, 0, mlocListener);
+			} else {
+				Toast.makeText(context, "Lokalisierung ist deaktiviert, bitte unter Einstellungen aktivieren.", Toast.LENGTH_LONG);
 			}
-//		}
-//		else if (sLat != tmpLat && sLng != tmpLng) {
-//			if (callback != null) {
-//				callback.onLocationChanged(true);
-//			}
-//		} else if (callback != null) {
-//			callback.onLocationChanged(false);
-//		}
+		}
+		// }
+		// else if (sLat != tmpLat && sLng != tmpLng) {
+		// if (callback != null) {
+		// callback.onLocationChanged(true);
+		// }
+		// } else if (callback != null) {
+		// callback.onLocationChanged(false);
+		// }
 	}
 
 	public static void getLastLocationFromProvider(Context context) {
@@ -184,8 +187,7 @@ public class LocationHelper {
 
 	public static String getBestProvider(Context context) {
 		if (mLocationManager == null) {
-			mLocationManager = (LocationManager) context.getApplicationContext().getSystemService(
-					Context.LOCATION_SERVICE);
+			mLocationManager = (LocationManager) context.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 		}
 		return mLocationManager.getBestProvider(mCriteria, true);
 	}

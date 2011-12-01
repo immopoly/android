@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Locale;
 
 import org.immopoly.android.R;
-import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
+import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
@@ -37,15 +37,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -170,9 +169,10 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			
 			@Override
 			public void onClick(View v) {
-				//done in onReceiveResult
-//				progress.setVisibility(View.VISIBLE);
-//				compass.setVisibility(View.GONE);
+				if (null != progress)
+					progress.setVisibility(View.VISIBLE);
+				if (null != compass)
+					compass.setVisibility(View.GONE);
 				LocationHelper.getLastLocation(getActivity(), new MapLocationCallback());
 			}
 		});
@@ -224,6 +224,14 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			if (getActivity() != null) {
 				requestFlatUpdate(center);
 			}
+		}
+
+		@Override
+		public void failed() {
+			if (null != progress)
+				progress.setVisibility(View.GONE);
+			if (null != compass)
+				compass.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -326,6 +334,10 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		case IS24ApiService.STATUS_ERROR:
 			// Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
 			// handle the error;
+			if (null != progress)
+				progress.setVisibility(View.GONE);
+			if (null != compass)
+				compass.setVisibility(View.VISIBLE);
 			break;
 		}
 	}
