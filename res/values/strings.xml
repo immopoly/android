@@ -82,7 +82,7 @@
     <string name="current_ballance_text">Verfügbares Bargeld: %s</string>
     <string name="login_button">Anmelden</string>
     <string name="please_wait">10 Sekunden warten &amp; lesen ;)</string>
-    <string name="notification_setting_detail">Benachrichtigungen einschalten</string>
+    <string name="notification_setting_detail">Benachrichtigungen erhalten</string>
     <string name="notification_setting">Benachrichtigungen</string>
     <string name="menu_settings">Einstellungen</string>
     <string name="menu_logout">Abmelden</string>

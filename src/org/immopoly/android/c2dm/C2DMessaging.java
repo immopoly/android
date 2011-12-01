@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 
 /**
  * Utilities for device registration.
@@ -47,13 +48,17 @@ public class C2DMessaging {
 	 * Initiate c2d messaging registration for the current application
 	 */
 	public static void register(Context context, String senderId) {
+		// only if wanted
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean notification = sharedPreferences.getBoolean("notification", true);
+		if (!notification)
+			return;
 		Intent registrationIntent = new Intent(REQUEST_REGISTRATION_INTENT);
 		registrationIntent.setPackage(GSF_PACKAGE);
 		registrationIntent.putExtra(EXTRA_APPLICATION_PENDING_INTENT,
 				PendingIntent.getBroadcast(context, 0, new Intent(), 0));
 		registrationIntent.putExtra(EXTRA_SENDER, Const.IMMOPOLY_EMAIL);
 		context.startService(registrationIntent);
-		// TODO: if intent not found, notification on need to have GSF
 	}
 
 	/**

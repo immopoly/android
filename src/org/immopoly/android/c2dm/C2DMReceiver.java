@@ -11,8 +11,9 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.audiofx.BassBoost.Settings;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class C2DMReceiver extends C2DMBaseReceiver {
@@ -50,6 +51,12 @@ public class C2DMReceiver extends C2DMBaseReceiver {
 	@Override
 	protected void onMessage(Context context, Intent intent) {
 		Log.e("C2DM", "Message: Fantastic!!!");
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean notification = sharedPreferences.getBoolean("notification", true);
+		if (!notification) {
+			Log.e("C2DM", "BUT WE DONT WANT IT ;///!!!");
+			return;
+		}
 		// Extract the payload from the message
 		Bundle extras = intent.getExtras();
 		if (extras != null) {
