@@ -75,7 +75,8 @@
     <string name="time">Zeit</string>
     <string name="expose_location_spoofing">Nicht schneller reisen als die Polizei erlaubt :).</string>
     <string name="header_login">Jetzt Anmelden</string>
-    <string name="current_cost_text">Laufende Kosten: %s \/ Tag </string>
+    <string name="current_cost_text">Miete gestern: %s</string>
+    <string name="last_provision_text">Provision gestern: %s</string>
     <string name="calculated_cost_text">Voraussichtliche kosten 30 Tage: %s</string>
     <string name="current_ballance_text">Verfügbares Bargeld: %s</string>
     <string name="login_button">Anmelden</string>

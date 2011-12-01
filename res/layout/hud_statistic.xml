@@ -28,6 +28,12 @@
                 android:layout_height="wrap_content" >
             </TextView>
             <TextView
+                android:id="@+id/last_provision"
+                style="@style/hudElement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+            </TextView>
+            <TextView
                 android:id="@+id/calculated_cost"
                 style="@style/hudElementSub"
                 android:layout_width="wrap_content"

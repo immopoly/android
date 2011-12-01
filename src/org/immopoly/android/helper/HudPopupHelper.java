@@ -19,6 +19,7 @@ import android.widget.TextView;
 public class HudPopupHelper {
 
 	public static final int TYPE_FINANCE_POPUP = 0x1;
+	private final static NumberFormat nFormat = NumberFormat.getCurrencyInstance(Locale.GERMANY);
 
 	private LinearLayout mLayoutView = null;
 	private PopupWindow mPopupView = null;
@@ -26,29 +27,26 @@ public class HudPopupHelper {
 	public HudPopupHelper(Activity activity, int type) {
 		switch (type) {
 		case TYPE_FINANCE_POPUP:
-			mLayoutView = (LinearLayout) activity.getLayoutInflater().inflate(
-					R.layout.hud_statistic, null);
+			mLayoutView = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.hud_statistic, null);
 			break;
 
 		default:
-			mLayoutView = (LinearLayout) activity.getLayoutInflater().inflate(
-					R.layout.hud_statistic, null);
+			mLayoutView = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.hud_statistic, null);
 			break;
 		}
 		if (mLayoutView != null) {
-			mPopupView = new PopupWindow(mLayoutView,
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,false);
+			mPopupView = new PopupWindow(mLayoutView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, false);
 			mPopupView.setOutsideTouchable(true);
 			mPopupView.setBackgroundDrawable(new BitmapDrawable());
 			mPopupView.setTouchable(true);
 			mPopupView.setTouchInterceptor(new View.OnTouchListener() {
-				
+
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
 					// if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
 
-						mPopupView.dismiss();
-						return true;
+					mPopupView.dismiss();
+					return true;
 					// }
 					// return false;
 				}
@@ -60,37 +58,37 @@ public class HudPopupHelper {
 		if (mPopupView != null) {
 			if (!mPopupView.isShowing()) {
 				ImmopolyUser user = ImmopolyUser.getInstance();
-				TextView currentCostTextView = (TextView) mLayoutView
-						.findViewById(R.id.current_cost);
+
+				TextView currentCostTextView = (TextView) mLayoutView.findViewById(R.id.current_cost);
 				if (currentCostTextView != null) {
-					NumberFormat nFormat = NumberFormat
-							.getCurrencyInstance(Locale.GERMANY);
 					nFormat.setMinimumIntegerDigits(1);
 					nFormat.setMaximumFractionDigits(2);
 					nFormat.setCurrency(Currency.getInstance(Locale.GERMANY));
 
-					currentCostTextView.setText(mLayoutView.getResources()
-							.getString(R.string.current_cost_text,
-									nFormat.format(user.getLastRent())));
-					String calculatedCosts = nFormat.format((int) (user
-							.getLastRent() * 30));
-					TextView calculatedCostTextView = (TextView) mLayoutView
-							.findViewById(R.id.calculated_cost);
-					if (calculatedCostTextView != null) {
-						calculatedCostTextView.setText(mLayoutView
-								.getResources().getString(
-										R.string.calculated_cost_text,
-										calculatedCosts));
-					}
-					TextView balanceCostTextView = (TextView) mLayoutView
-							.findViewById(R.id.current_balance);
-					if (balanceCostTextView != null) {
-						balanceCostTextView.setText(balanceCostTextView
-								.getResources().getString(
-										R.string.current_ballance_text,
-										nFormat.format(user.getBalance())));
-					}
+					currentCostTextView.setText(mLayoutView.getResources().getString(R.string.current_cost_text,
+							nFormat.format(user.getLastRent())));
 				}
+				
+				String calculatedCosts = nFormat.format((int) (user.getLastRent() * 30));
+				TextView calculatedCostTextView = (TextView) mLayoutView.findViewById(R.id.calculated_cost);
+				if (calculatedCostTextView != null) {
+					calculatedCostTextView
+							.setText(mLayoutView.getResources().getString(R.string.calculated_cost_text, calculatedCosts));
+				}
+
+				String lastProvision = nFormat.format((int) (user.getLastProvision()));
+				TextView lastProvisionTextView = (TextView) mLayoutView.findViewById(R.id.last_provision);
+				if (lastProvisionTextView != null) {
+					lastProvisionTextView
+							.setText(mLayoutView.getResources().getString(R.string.last_provision_text, lastProvision));
+				}
+				
+				TextView balanceCostTextView = (TextView) mLayoutView.findViewById(R.id.current_balance);
+				if (balanceCostTextView != null) {
+					balanceCostTextView.setText(balanceCostTextView.getResources().getString(R.string.current_ballance_text,
+							nFormat.format(user.getBalance())));
+				}
+
 				mPopupView.showAsDropDown(view/* , xOffset, xOffset */);
 			} else {
 				mPopupView.dismiss();
