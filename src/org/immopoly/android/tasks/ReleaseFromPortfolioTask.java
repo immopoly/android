@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.immopoly.android.R;
+import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
@@ -84,9 +85,7 @@ public class ReleaseFromPortfolioTask extends AsyncTask<String, Void, ReleaseFro
 	@Override
 	protected void onPostExecute(Result result) {
 		if (result.historyEvent != null && result.historyEvent.mText != null && result.historyEvent.mText.length() > 0) {
-//			Toast.makeText(mActivity, result.historyEvent.mText, Toast.LENGTH_LONG).show();
-			// add history entry to users list
-			ImmopolyUser.getInstance().getHistory().add(0, result.historyEvent);
+			UserDataManager.instance.update(result.historyEvent);
 		} else if (Settings.isOnline(mActivity)) {
 			Toast.makeText(mActivity, R.string.expose_couldnt_release, Toast.LENGTH_LONG).show();
 		} else {

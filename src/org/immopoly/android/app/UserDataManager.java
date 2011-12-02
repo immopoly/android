@@ -7,6 +7,7 @@ import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
+import org.immopoly.android.model.ImmopolyHistory;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.tasks.AddToPortfolioTask;
 import org.immopoly.android.tasks.GetUserInfoTask;
@@ -207,6 +208,8 @@ public class UserDataManager {
 		new AddToPortfolioTask(activity, mTracker) {
 			protected void onPostExecute(final AddToPortfolioTask.Result result) {
 				super.onPostExecute(result);
+				
+				//TODO schtief der Rotz hier kommt nach super da gibs jetzt nen UserDataManager.update 
 				if (result.success) {
 					flat.owned = true;
 					flat.takeoverDate = System.currentTimeMillis();
@@ -217,6 +220,7 @@ public class UserDataManager {
 				 * share the result or
 				 */
 				showExposeDialog(flat, result);
+				//TODO schtief wird schon in super gemacht
 				fireUsedDataChanged();
 //				actionPending = false;
 			}
@@ -340,5 +344,18 @@ public class UserDataManager {
 		else
 			editor.putString(ImmopolyUser.sPREF_TOKEN, token);
 		editor.commit();
+	}
+
+	public void update(ImmopolyHistory history) {
+		ImmopolyUser u =ImmopolyUser.getInstance();
+		if(null==u)
+			return;
+		
+		u.getHistory().add(0, history);
+		
+		if(null!=history.getAmount())
+			u.setBalance(u.getBalance()+history.getAmount());
+
+		fireUsedDataChanged();
 	}
 }

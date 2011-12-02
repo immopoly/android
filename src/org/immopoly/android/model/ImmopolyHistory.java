@@ -69,4 +69,8 @@ public class ImmopolyHistory extends History{
 	public int getType() {
 		return mtype;
 	}
+
+	public Double getAmount() {
+		return mAmount;
+	}
 }

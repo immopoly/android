@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.immopoly.android.R;
+import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.helper.WebHelper;
@@ -61,6 +62,7 @@ public class AddToPortfolioTask extends AsyncTask<Flat, Void, AddToPortfolioTask
 				result.success = history.getType() == 1;
 			} else if (obj != null) {
 				history = new ImmopolyHistory();
+				//TODO schtief das wegkapseln
 				switch (obj.getJSONObject("org.immopoly.common.ImmopolyException").getInt("errorCode")) {
 				case 201:
 					history.mText = this.mActivity.getString(R.string.flat_already_in_portifolio);
@@ -96,9 +98,7 @@ public class AddToPortfolioTask extends AsyncTask<Flat, Void, AddToPortfolioTask
 		if (result.historyEvent != null && result.historyEvent.mText != null 
 				&& result.historyEvent.mText.length() > 0) 
 		{
-//			Toast.makeText(this.mActivity, result.historyEvent.mText, Toast.LENGTH_LONG).show();
-			// add history entry to users list
-			ImmopolyUser.getInstance().getHistory().add(0, result.historyEvent);
+			UserDataManager.instance.update(result.historyEvent);
 		} else if (Settings.isOnline(this.mActivity)) {
 			Toast.makeText(this.mActivity, R.string.expose_couldnt_add, Toast.LENGTH_LONG).show();
 		} else {
