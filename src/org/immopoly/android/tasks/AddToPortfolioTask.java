@@ -11,28 +11,21 @@ import org.immopoly.android.helper.WebHelper;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.ImmopolyHistory;
 import org.immopoly.android.model.ImmopolyUser;
-import org.immopoly.android.provider.FlatsProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
-public class AddToPortfolioTask extends AsyncTask<Flat, Void, AddToPortfolioTask.Result> {
+public class AddToPortfolioTask extends AsyncTask<Flat, Void, Result> {
 
 
 	private final Activity mActivity;
 	private GoogleAnalyticsTracker mTracker;
 
-	public static class Result {
-		public boolean 		   success;
-		public ImmopolyHistory historyEvent;
-	}
-	
 	/**
 	 * @param activity Activity to get sringns from
 	 * @param tracker GoogleAnalyticsTracker to track events

@@ -12,6 +12,7 @@ import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.tasks.AddToPortfolioTask;
 import org.immopoly.android.tasks.GetUserInfoTask;
 import org.immopoly.android.tasks.ReleaseFromPortfolioTask;
+import org.immopoly.android.tasks.Result;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -206,7 +207,7 @@ public class UserDataManager {
 			return;
 //		actionPending = true;
 		new AddToPortfolioTask(activity, mTracker) {
-			protected void onPostExecute(final AddToPortfolioTask.Result result) {
+			protected void onPostExecute(final Result result) {
 				super.onPostExecute(result);
 				
 				//TODO schtief der Rotz hier kommt nach super da gibs jetzt nen UserDataManager.update 
@@ -224,50 +225,49 @@ public class UserDataManager {
 				fireUsedDataChanged();
 //				actionPending = false;
 			}
-
-			private void showExposeDialog(final Flat flat,
-					final AddToPortfolioTask.Result result) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						activity);
-				builder.setTitle(activity.getString(R.string.take_over_try));
-				builder.setMessage(result.historyEvent.mText);
-				//builder.setContentView(R.layout.maindialog);
-				builder.setCancelable(true).setNegativeButton(
-						activity.getString(R.string.share_item),
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int id) {
-								Settings.getFlatLink(flat.uid.toString(),
-										false);
-								Settings.shareMessage(activity, activity
-										.getString(R.string.take_over_try),
-										result.historyEvent.mText,
-										Settings.getFlatLink(
-												flat.uid.toString(), false) /* LINk */);
-								mTracker.trackEvent(
-										TrackingManager.CATEGORY_ALERT,
-										TrackingManager.ACTION_SHARE,
-										TrackingManager.LABEL_POSITIVE, 0);
-							}
-
-						});
-				builder.setPositiveButton(result.success ? R.string.button_ok : R.string.button_mist,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int id) {
-								mTracker.trackEvent(
-										TrackingManager.CATEGORY_ALERT,
-										TrackingManager.ACTION_SHARE,
-										TrackingManager.LABEL_NEGATIVE, 0);
-							}
-						});
-				AlertDialog alert = builder.create();
-				alert.show();
-			};
 		}.execute(flat);
 	}
+
+	protected void showExposeDialog(final Flat flat, final Result result) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					activity);
+			builder.setTitle(activity.getString(R.string.take_over_try));
+			builder.setMessage(result.historyEvent.mText);
+			//builder.setContentView(R.layout.maindialog);
+			builder.setCancelable(true).setNegativeButton(
+					activity.getString(R.string.share_item),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+								int id) {
+							Settings.getFlatLink(flat.uid.toString(),
+									false);
+							Settings.shareMessage(activity, activity
+									.getString(R.string.take_over_try),
+									result.historyEvent.mText,
+									Settings.getFlatLink(
+											flat.uid.toString(), false) /* LINk */);
+							mTracker.trackEvent(
+									TrackingManager.CATEGORY_ALERT,
+									TrackingManager.ACTION_SHARE,
+									TrackingManager.LABEL_POSITIVE, 0);
+						}
+
+					});
+			builder.setPositiveButton(result.success ? R.string.button_ok : R.string.button_mist,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+								int id) {
+							mTracker.trackEvent(
+									TrackingManager.CATEGORY_ALERT,
+									TrackingManager.ACTION_SHARE,
+									TrackingManager.LABEL_NEGATIVE, 0);
+						}
+					});
+			AlertDialog alert = builder.create();
+			alert.show();
+		}
 
 	/**
 	 * Tries to release a flat from the users portfolio using
@@ -283,7 +283,7 @@ public class UserDataManager {
 //		actionPending = true;
 		new ReleaseFromPortfolioTask(activity, mTracker) {
 			@Override
-			protected void onPostExecute(ReleaseFromPortfolioTask.Result result) {
+			protected void onPostExecute(Result result) {
 				super.onPostExecute(result);
 				if (result.success) { // remove the flat from users portfolio
 										// list
@@ -308,6 +308,13 @@ public class UserDataManager {
 								"UserDataManager.releaseFromPortfolio() Flat NOT removed: "
 										+ flat.name);
 					}
+					
+					/**
+					 * show the feedback in a dialog, from there the user can either
+					 * share the result or
+					 */
+					showExposeDialog(flat, result);
+					
 					fireUsedDataChanged();
 //					actionPending = false;
 				}

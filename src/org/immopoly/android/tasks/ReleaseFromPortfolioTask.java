@@ -15,22 +15,17 @@ import org.immopoly.android.provider.FlatsProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
-
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class ReleaseFromPortfolioTask extends AsyncTask<String, Void, ReleaseFromPortfolioTask.Result> {
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+
+public class ReleaseFromPortfolioTask extends AsyncTask<String, Void, Result> {
 
 	private final Activity mActivity;
 	private GoogleAnalyticsTracker mTracker;
-
-	public static class Result {
-		public boolean 		   success;
-		public ImmopolyHistory historyEvent;
-	}
 	
 	/**
 	 * @param activity
