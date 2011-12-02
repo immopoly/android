@@ -24,13 +24,13 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.immopoly.android.R;
-import org.immopoly.android.constants.Const;
+import org.immopoly.android.helper.ImageListDownloader;
+import org.immopoly.android.helper.Settings;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.widget.EllipsizingTextView;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +39,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
+/**
+ * ListAdapter for the portfolio list fragment
+ * 
+ * @author bjoern
+ *
+ */
 public class PortfolioFlatsAdapter extends BaseAdapter {
 
 	private LayoutInflater inflater;
@@ -48,11 +53,15 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 	private Flats clusterFlats;
 	private Flat  selectedFlat;
 
+	private ImageListDownloader imageDownloader;
+
 	private static final SimpleDateFormat dateSDF = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY);
+	
 	
 	public PortfolioFlatsAdapter(Activity context, Flats flats) {
 		mFlats = flats;
 		inflater = context.getLayoutInflater();
+		imageDownloader = Settings.getExposeImageDownloader(context);
 	}
 
 	public int getCount() {
@@ -108,6 +117,14 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 		} else {
 			((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setMaxLines( 3 );
 			((LinearLayout) convertView.findViewById( R.id.takeover_row )).setVisibility( View.GONE ) ;
+		}
+
+		if ( flat.titlePictureSmall.trim().length() > 0) {
+			imageDownloader.download(flat.titlePictureSmall, iconView );
+		} else {
+			iconView.clearAnimation();
+			iconView.setAnimation( null );
+			iconView.setImageDrawable( inflater.getContext().getResources().getDrawable( R.drawable.portfolio_fallback));
 		}
 		
 //		if ( selectIdx > -1 ) { // TODO this was used when testing list & map side-by-side in a tablet layout - unused for now

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:background="#FFF"
     android:clipChildren="false"
-    android:padding="2dp" android:layout_height="wrap_content">
-    <ImageView android:layout_width="wrap_content" android:id="@+id/teaser_icon" android:layout_height="wrap_content" android:src="@drawable/house"></ImageView>
+    android:padding="2dp" android:layout_height="wrap_content" android:gravity="center" android:orientation="horizontal" android:background="#fff">
+    <ImageView android:id="@+id/teaser_icon" 
+    	android:layout_height="wrap_content" 
+    	android:paddingRight="5dp" 
+    	android:scaleType="fitCenter" android:src="@drawable/loading" android:layout_width="80dp"></ImageView>
     <LinearLayout
         android:id="@+id/LinearLayout1"
         android:layout_width="fill_parent"
-        android:orientation="vertical"
-        android:paddingLeft="10dp" android:layout_height="wrap_content">
+        android:orientation="vertical" android:layout_height="wrap_content" android:layout_gravity="fill_vertical">
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
-            <TextView android:textStyle="bold" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Preis:" android:textColor="#000" android:id="@+id/textView8" android:textSize="15dp" android:paddingLeft="5dp"></TextView>
+            <TextView android:textStyle="bold" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Preis:" android:textColor="#000" android:id="@+id/textView8" android:textSize="15dp"></TextView>
             <TextView android:textStyle="bold" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="1399 €" android:textColor="#000" android:id="@+id/price_text" android:textSize="15dp" android:paddingLeft="3dp"></TextView>
             <TextView android:id="@+id/textView4" android:layout_height="wrap_content" android:layout_width="0dp" android:layout_weight="1"></TextView>
             <TextView
@@ -59,7 +60,6 @@
             android:id="@+id/flat_desc_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
             android:text="Beschreibung: Schöne Altbauwohnung im Herzen Berlins. Geniale Verkehrsanbindung und unüberschaubares Freizeitangebot"
             android:textColor="#000"
             android:textSize="13dp" android:ellipsize="none" android:duplicateParentState="true" android:paddingTop="1dp" android:maxLines="2">
@@ -67,11 +67,11 @@
         <!-- </LinearLayout> -->
         <TableLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/tableLayout1" android:paddingTop="2dp">
             <TableRow android:id="@+id/tableRow1" android:layout_width="wrap_content" android:layout_height="wrap_content">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Übernommen am:" android:paddingLeft="5dp" android:textColor="#500" android:layout_weight="2"></TextView>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Übernommen am:" android:textColor="#500" android:layout_weight="2"></TextView>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="3dp" android:textColor="#500" android:text="23.08.2011" android:id="@+id/takeover_date" android:layout_weight="1" android:gravity="right" android:paddingRight="2dp"></TextView>
             </TableRow>
             <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/takeover_row">
-                <TextView android:layout_width="wrap_content" android:text="Übernahmeversuche:" android:textColor="#500" android:id="@+id/textView2" android:layout_height="wrap_content" android:paddingLeft="5dp" android:layout_weight="2"></TextView>
+                <TextView android:layout_width="wrap_content" android:text="Übernahmeversuche:" android:textColor="#500" android:id="@+id/textView2" android:layout_height="wrap_content" android:layout_weight="2"></TextView>
                 <TextView android:layout_width="wrap_content" android:text="3" android:textColor="#300" android:id="@+id/takeovers_text" android:layout_height="wrap_content" android:paddingLeft="3dp" android:layout_weight="1" android:gravity="right" android:paddingRight="2dp"></TextView>
             </TableRow>
         </TableLayout>

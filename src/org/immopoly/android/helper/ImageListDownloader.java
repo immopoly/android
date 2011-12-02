@@ -34,13 +34,13 @@ import org.apache.http.client.methods.HttpGet;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 
 /**
@@ -60,6 +60,10 @@ public class ImageListDownloader {
 
 	private static final int HARD_CACHE_CAPACITY = 40;
 	private static final int DELAY_BEFORE_PURGE = 30 * 1000; // in milliseconds
+
+	private Bitmap    loadingBitmap;
+	private Bitmap    fallbackBitmap;
+	private Animation loadingAnimation;
 
 	// Hard cache, with a fixed maximum capacity and a life duration
 	private final HashMap<String, Bitmap> sHardBitmapCache = new LinkedHashMap<String, Bitmap>(
@@ -88,6 +92,13 @@ public class ImageListDownloader {
 			clearCache();
 		}
 	};
+
+
+	public ImageListDownloader(Bitmap loadingBitmap, Animation loadingAnimation, Bitmap fallbackBitmap ) {
+		this.loadingBitmap    = loadingBitmap;
+		this.loadingAnimation = loadingAnimation;
+		this.fallbackBitmap   = fallbackBitmap;
+	}
 
 	/**
 	 * Download the specified image from the Internet and binds it to the
@@ -124,7 +135,7 @@ public class ImageListDownloader {
 			forceDownload(url, imageView, cookie);
 		} else {
 			// stop animation
-			imageView.setAnimation(null);
+ 			imageView.setAnimation(null);
 			cancelPotentialDownload(url, imageView);
 			imageView.setImageBitmap(bitmap);
 		}
@@ -145,7 +156,7 @@ public class ImageListDownloader {
 		// State sanity: url is guaranteed to never be null in
 		// DownloadedDrawable and cache keys.
 		if (url == null) {
-			imageView.setImageDrawable(null);
+			imageView.setImageDrawable( new BitmapDrawable(fallbackBitmap) );
 			// stop animation
 			imageView.setAnimation(null);
 			return;
@@ -155,7 +166,7 @@ public class ImageListDownloader {
 			BitmapDownloaderTask task = new BitmapDownloaderTask(imageView);
 			DownloadedDrawable downloadedDrawable = new DownloadedDrawable(task);
 			// stop animation
-			imageView.setAnimation(null);
+			imageView.setAnimation( loadingAnimation );
 			imageView.setImageDrawable(downloadedDrawable);
 			task.execute(url, cookie);
 		}
@@ -354,11 +365,13 @@ public class ImageListDownloader {
 
 			if (imageViewReference != null) {
 				ImageView imageView = imageViewReference.get();
+				// yeah lets stop the animation
+				imageView.setAnimation(null);
 				BitmapDownloaderTask bitmapDownloaderTask = getBitmapDownloaderTask(imageView);
 				// Change bitmap only if this process is still associated with
 				// it
 				if (this == bitmapDownloaderTask) {
-					imageView.setImageBitmap(bitmap);
+					imageView.setImageBitmap(bitmap==null ? fallbackBitmap : bitmap);
 				}
 			}
 		}
@@ -383,11 +396,11 @@ public class ImageListDownloader {
 	 * download finish order.
 	 * </p>
 	 */
-	static class DownloadedDrawable extends ColorDrawable {
+	class DownloadedDrawable extends BitmapDrawable {
 		private final WeakReference<BitmapDownloaderTask> bitmapDownloaderTaskReference;
 
 		public DownloadedDrawable(BitmapDownloaderTask bitmapDownloaderTask) {
-			super(Color.BLACK);
+			super( loadingBitmap );
 			bitmapDownloaderTaskReference = new WeakReference<BitmapDownloaderTask>(
 					bitmapDownloaderTask);
 		}

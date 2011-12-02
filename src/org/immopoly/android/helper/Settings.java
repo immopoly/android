@@ -19,13 +19,21 @@
 
 package org.immopoly.android.helper;
 
+import org.immopoly.android.R;
 import org.immopoly.android.model.OAuthData;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 public class Settings {
+
+	private static ImageListDownloader exposeImageDownloader;
 
 	public static void shareMessage(Context context, String title,
 			String message, String link) {
@@ -64,5 +72,15 @@ public class Settings {
 			return OAuthData.sExposeUrl + exposeID;
 		else
 			return OAuthData.sExposeUrlWeb + exposeID;
+	}
+	
+	public static ImageListDownloader getExposeImageDownloader( Context ctx ) {
+		if ( exposeImageDownloader == null ) {
+			Bitmap loadingBmp = ((BitmapDrawable) ctx.getResources().getDrawable( R.drawable.loading )).getBitmap();
+			Bitmap fallbackBmp = ((BitmapDrawable) ctx.getResources().getDrawable( R.drawable.portfolio_fallback )).getBitmap();
+			Animation loadingAni = AnimationUtils.loadAnimation( ctx,R.anim.loading_animation );
+			exposeImageDownloader = new ImageListDownloader( loadingBmp, loadingAni, fallbackBmp );
+		}
+		return exposeImageDownloader;
 	}
 }
