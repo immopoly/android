@@ -34,7 +34,6 @@ public class PlaceOverlayItem extends OverlayItem {
 	public PlaceOverlayItem(GeoPoint point, Flat f) {
 		super(point, f.name, f.locationNote);
 		flat = f;
-		// TODO Auto-generated constructor stub
 	}
 
 	public PlaceOverlayItem(GeoPoint point, String string, String string2) {

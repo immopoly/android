@@ -195,7 +195,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 				mMapView, getActivity().getLayoutInflater());
 		myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.mylocation));
 
-		myLocationOverlays.addOverlay(myLocationOverlayItem);
+		myLocationOverlays.setPlaceOverlayItem(myLocationOverlayItem);
 		mMapOverlays.add(myLocationOverlays);
 		// setMapViewWithZoom(R.id.mapview, R.id.map_zoom_controls);
 		mMapView.setBuiltInZoomControls(true);
@@ -373,7 +373,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			myLocationOverlayItem = new PlaceOverlayItem(point, "my city", "THis is wher you are");
 			myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.mylocation));
 
-			myLocationOverlays.addOverlay(myLocationOverlayItem);
+			myLocationOverlays.setPlaceOverlayItem(myLocationOverlayItem);
 			mMapOverlays.add(myLocationOverlays);
 
 			for (Flat f : mFlats) {
@@ -413,9 +413,8 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			}
 			if (count > 0) {
 				mMapOverlays.add(overlays);
-				// TODO etwas weiter rauszoomen
-				int spanLon = (int) Math.round(((maxX - minX) / 2.0) * 1000000);
-				int spanLat = (int) Math.round(((maxY - minY) / 2.0) * 1000000);
+				int spanLon = (int) Math.round(((maxX - minX) / 1.0) * 1000000);
+				int spanLat = (int) Math.round(((maxY - minY) / 1.0) * 1000000);
 				mMapController.zoomToSpan(spanLat, spanLon);
 
 			}
