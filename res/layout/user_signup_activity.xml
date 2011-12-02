@@ -9,7 +9,7 @@
 	ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY or FITNESS 
 	FOR A PARTICULAR PURPOSE. See the ~ GNU Affero General Public License for 
 	more details. ~ ~ You should have received a copy of the GNU Affero General 
-	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/.
+	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dialog"
@@ -23,7 +23,7 @@
     <!--
          <ProgressBar android:layout_centerVertical="true" android:layout_centerHorizontal="true" 
 		android:layout_height="wrap_content" style="?android:attr/progressBarStyleLarge" 
-		android:layout_width="wrap_content" android:id="@+id/progressBar1"></ProgressBar>
+		android:layout_width="wrap_content" android:id="@+id/progressBar1"></ProgressBar>
     -->
 
     <TextView
@@ -34,9 +34,20 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="@string/header_login" />
+
+    <TextView
+        android:id="@+id/login_intro"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/closeButton"
+        android:layout_below="@+id/closeButton"
+        android:layout_margin="15dip"
+        android:text="@string/welcome_message" />
 
     <ImageButton
         android:id="@+id/closeButton"
+        android:layout_margin="0dip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -50,16 +61,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/closeButton"
+        android:layout_below="@+id/login_intro"
         android:orientation="vertical" >
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dip"
-            android:layout_weight="1"
-            android:text="@string/welcome_message" >
-        </TextView>
+        
 
         <EditText
             android:id="@+id/user_name"
@@ -68,7 +73,7 @@
             android:layout_weight="1"
             android:hint="@string/username_hint" >
 
-            <requestFocus >
+            <requestFocus>
             </requestFocus>
         </EditText>
 
@@ -90,6 +95,24 @@
             android:inputType="textPassword"
             android:visibility="gone" >
         </EditText>
+        <EditText
+            android:id="@+id/user_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/user_email_hint"
+            android:inputType="textEmailAddress"
+            android:visibility="gone" >
+        </EditText>
+        <EditText
+            android:id="@+id/user_twitter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/user_twitter_hint"
+            android:inputType="textEmailAddress"
+            android:visibility="gone" >
+        </EditText>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -103,7 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="registerUser"
-                android:text="@string/register" >
+                android:text="@string/register"
+                android:textSize="20dip" >
             </Button>
 
             <Button
@@ -112,7 +136,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="loginUser"
-                android:text="@string/login" >
+                android:text="@string/login"
+                android:textSize="20dip" >
             </Button>
 
             <ProgressBar
@@ -120,8 +145,10 @@
                 style="@android:style/Widget.ProgressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
+
+    
 
 </RelativeLayout>
