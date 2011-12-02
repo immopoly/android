@@ -3,53 +3,30 @@
     android:layout_width="fill_parent"
     android:background="#FFF"
     android:clipChildren="false"
-    android:layout_height="wrap_content" android:padding="1dp">
+    android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-        <ImageView
-            android:id="@+id/teaser_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/house" >
-        </ImageView>
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        android:orientation="vertical" android:layout_height="fill_parent">
+        <FrameLayout android:id="@+id/frameLayout1" android:layout_width="wrap_content" android:layout_height="0dp" android:layout_weight="1">
+            <ImageView android:layout_width="86dp" android:src="@drawable/loading" android:layout_gravity="center" android:id="@+id/teaser_icon" android:scaleType="fitCenter" android:layout_height="86dp"></ImageView>
+        </FrameLayout>
         <LinearLayout
             android:id="@+id/swipe_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
-            <ImageView
-                android:id="@+id/swipe_right_img"
-                android:layout_width="30dp"
-                android:layout_height="9.3dp"
-                android:gravity="center"
-                android:src="@drawable/swipe_right_0" >
-            </ImageView>
-            <ImageView
-                android:id="@+id/swipe_left_img"
-                android:layout_width="30dp"
-                android:layout_height="9.3dp"
-                android:gravity="center"
-                android:src="@drawable/swipe_left_0" >
-            </ImageView>
-            <ImageView
-                android:id="@+id/swipe_finger"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:src="@drawable/swipefinger" >
-            </ImageView>
+            android:orientation="vertical" android:layout_gravity="center">
+            <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout2" android:layout_marginTop="2dp">
+                <ImageView android:layout_height="20dp" android:layout_gravity="center" android:layout_width="20dp" android:src="@drawable/swipefinger" android:id="@+id/swipe_finger"></ImageView>
+                <LinearLayout android:layout_height="match_parent" android:layout_width="wrap_content" android:id="@+id/linearLayout4" android:orientation="vertical">
+                    <ImageView android:layout_height="7dp" android:layout_width="30dp" android:src="@drawable/swipe_right_0" android:layout_marginTop="2dp" android:id="@+id/swipe_right_img"></ImageView>
+                    <ImageView android:layout_height="7dp" android:layout_width="30dp" android:src="@drawable/swipe_left_0" android:id="@+id/swipe_left_img"></ImageView>
+                </LinearLayout>
+            </LinearLayout>
             <TextView
                 android:id="@+id/swipe_counter"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingTop="3dp"
                 android:text="1/3"
                 android:textColor="#888"
                 android:textSize="11dp"
@@ -61,7 +38,7 @@
         android:id="@+id/LinearLayout1"
         android:layout_width="fill_parent"
         android:orientation="vertical"
-        android:paddingLeft="10dp" android:layout_height="fill_parent">
+        android:layout_height="fill_parent" android:paddingLeft="5dp">
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" android:layout_weight="1">
@@ -69,7 +46,6 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
                 android:text="Zimmer:"
                 android:textColor="#000"
                 android:textSize="15dp"
@@ -108,7 +84,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingLeft="5dp"
             android:text="Beschreibung: Schöne Altbauwohnung im Herzen Berlins. Geniale Verkehrsanbindung und unüberschaubares Freizeitangebot"
             android:textColor="#000"
             android:textSize="13dp" android:ellipsize="none" android:duplicateParentState="true" android:paddingTop="1dp" android:maxLines="2">
@@ -116,18 +91,18 @@
         <!-- </LinearLayout> -->
 <!--         <TextView android:id="@+id/textView4" android:layout_width="wrap_content" android:layout_height="0dp" android:layout_weight="1"></TextView> -->
         <LinearLayout android:layout_height="wrap_content" android:id="@+id/takeover_daterow" android:layout_width="match_parent">
-            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textColor="#500" android:paddingLeft="5dp" android:layout_weight="1" android:text="Übernommen am:"></TextView>
-            <TextView android:layout_height="wrap_content" android:id="@+id/takeover_date" android:layout_width="wrap_content" android:gravity="right" android:textColor="#500" android:paddingLeft="3dp" android:paddingRight="2dp" android:text="23.08.2011"></TextView>
+            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textColor="#500" android:layout_weight="1" android:text="Übernommen am:" android:textSize="13dp"></TextView>
+            <TextView android:layout_height="wrap_content" android:id="@+id/takeover_date" android:layout_width="wrap_content" android:gravity="right" android:textColor="#500" android:paddingLeft="3dp" android:paddingRight="2dp" android:text="23.08.2011" android:textSize="13dp"></TextView>
         </LinearLayout>
         <LinearLayout android:layout_height="wrap_content" android:id="@+id/takeover_numrow" android:layout_width="match_parent">
-            <TextView android:id="@+id/textView2" android:textColor="#500" android:layout_height="wrap_content" android:paddingLeft="5dp" android:text="Übernahmeversuche:" android:layout_width="wrap_content" android:layout_weight="1"></TextView>
-            <TextView android:id="@+id/takeovers_text" android:gravity="right" android:textColor="#300" android:layout_height="wrap_content" android:paddingLeft="3dp" android:paddingRight="2dp" android:layout_width="wrap_content" android:text="3"></TextView>
+            <TextView android:id="@+id/textView2" android:textColor="#500" android:layout_height="wrap_content" android:text="Übernahmeversuche:" android:layout_width="wrap_content" android:layout_weight="1" android:textSize="13dp"></TextView>
+            <TextView android:id="@+id/takeovers_text" android:gravity="right" android:textColor="#300" android:layout_height="wrap_content" android:paddingLeft="3dp" android:paddingRight="2dp" android:layout_width="wrap_content" android:text="3" android:textSize="13dp"></TextView>
         </LinearLayout>
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
             <LinearLayout android:id="@+id/linearLayout3" android:layout_width="wrap_content" android:layout_height="match_parent">
-                <TextView android:textSize="15dp" android:paddingTop="3dp" android:text="Preis:" android:id="@+id/textView8" android:layout_height="wrap_content" android:textStyle="bold" android:textColor="#000" android:layout_width="wrap_content" android:paddingLeft="5dp"></TextView>
+                <TextView android:textSize="15dp" android:paddingTop="3dp" android:text="Preis:" android:id="@+id/textView8" android:layout_height="wrap_content" android:textStyle="bold" android:textColor="#000" android:layout_width="wrap_content"></TextView>
                 <TextView android:textSize="15dp" android:paddingTop="3dp" android:text="1399 €" android:id="@+id/price_text" android:layout_height="wrap_content" android:textStyle="bold" android:textColor="#000" android:layout_width="wrap_content" android:paddingLeft="3dp"></TextView>
             </LinearLayout>
             <TextView

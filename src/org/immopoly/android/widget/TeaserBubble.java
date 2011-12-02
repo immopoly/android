@@ -27,10 +27,10 @@ import android.widget.FrameLayout;
 
 public class TeaserBubble extends FrameLayout {
 
-	// finals
-	private static final float MIN_WIDTH_DP 		 = 260;
+	// size configuration finals
+	private static final float MIN_WIDTH_DP 		 = 280;
 	private static final float MAX_WIDTH_DP 		 = 320;
-	private static final float HEIGHT_DP		 	 = 130;
+	private static final float HEIGHT_DP		 	 = 134;
 	private static final float SIDE_PADDING_DP 	 	 =  30;
 	private static final float TOP_PADDING_DP 	 	 =   6;
 	private static final float RECT_ROUNDNESS_DP 	 =   6;

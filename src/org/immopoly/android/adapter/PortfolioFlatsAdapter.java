@@ -92,14 +92,6 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 		if ( convertView == null )
 			convertView = inflater.inflate( R.layout.portfolio_list_item, parent, false);
 		
-		ImageView iconView = (ImageView) convertView.findViewById( R.id.teaser_icon );
-		if ( flat.owned )
-			iconView.setImageResource( 
-				selectIdx > -1 ? R.drawable.owned_property_big: R.drawable.map_marker_property_icon );
-		else if ( flat.age == Flat.AGE_OLD )
-			iconView.setImageResource( R.drawable.house_old );
-		else if ( flat.age == Flat.AGE_NEW )
-			iconView.setImageResource( R.drawable.house_new );
 		((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setText( flat.name );
 		
 		((TextView) convertView.findViewById( R.id.rooms_text )).setText( flat.numRooms > 0 ? Integer.toString(flat.numRooms) : "?" );
@@ -119,6 +111,7 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 			((LinearLayout) convertView.findViewById( R.id.takeover_row )).setVisibility( View.GONE ) ;
 		}
 
+		ImageView iconView = (ImageView) convertView.findViewById( R.id.teaser_icon );
 		if ( flat.titlePictureSmall.trim().length() > 0) {
 			imageDownloader.download(flat.titlePictureSmall, iconView );
 		} else {

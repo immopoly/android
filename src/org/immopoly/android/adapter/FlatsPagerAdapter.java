@@ -31,6 +31,7 @@ import org.immopoly.android.fragments.MapFragment;
 import org.immopoly.android.fragments.OnMapItemClickedListener;
 import org.immopoly.android.helper.ActivityHelper;
 import org.immopoly.android.helper.ImageListDownloader;
+import org.immopoly.android.helper.Settings;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.widget.EllipsizingTextView;
 
@@ -63,6 +64,7 @@ public class FlatsPagerAdapter extends PagerAdapter {
 	private ArrayList<Flat>  flats;	// list of flats presented in the ViewPager
 	private View[] 			 views;	// storing views for each flat for use in destroyItem() & isViewFromObject()
 	private Fragment		 mContext;
+	private ImageListDownloader imageDownloader;
 
 	private static final SimpleDateFormat dateSDF = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY);
 
@@ -70,6 +72,7 @@ public class FlatsPagerAdapter extends PagerAdapter {
 		this.mContext = context;
 		this.flats = flats;
 		this.views = new View[flats.size()];
+		this.imageDownloader = Settings.getExposeImageDownloader(context.getActivity());
 	}
 
 	@Override
@@ -90,14 +93,14 @@ public class FlatsPagerAdapter extends PagerAdapter {
 	private View getFlatView(final Flat flat, final int idx) {
 		LayoutInflater inflater = LayoutInflater.from( mContext.getActivity() );
 		View markerView = inflater.inflate( R.layout.bubble_content, null, false);
-		ImageView iconView = (ImageView) markerView.findViewById( R.id.teaser_icon );
 
-		if (flat.owned)
-			iconView.setImageResource( R.drawable.map_marker_property_icon );
-		else if (flat.age == Flat.AGE_OLD)
-			iconView.setImageResource( R.drawable.house_old );
-		else if (flat.age == Flat.AGE_NEW)
-			iconView.setImageResource( R.drawable.house_new );
+//		ImageView iconView = (ImageView) markerView.findViewById( R.id.teaser_icon );
+//		if (flat.owned)
+//			iconView.setImageResource( R.drawable.map_marker_property_icon );
+//		else if (flat.age == Flat.AGE_OLD)
+//			iconView.setImageResource( R.drawable.house_old );
+//		else if (flat.age == Flat.AGE_NEW)
+//			iconView.setImageResource( R.drawable.house_new );
 		if ( flats.size() == 1 )
 			markerView.findViewById( R.id.swipe_indicator ).setVisibility( View.GONE );
 		else {
@@ -108,7 +111,6 @@ public class FlatsPagerAdapter extends PagerAdapter {
 			((TextView) markerView.findViewById( R.id.swipe_counter )).setText( (idx+1)+"/"+flats.size() );
 		}
 		((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setText( flat.name );
-		((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setMaxLines( 3 );
 		((TextView) markerView.findViewById( R.id.rooms_text )).setText( flat.numRooms > 0 ? Integer.toString(flat.numRooms) : "?" );
 		((TextView) markerView.findViewById( R.id.qm_text )).setText( flat.livingSpace > 0 ? 
 				Integer.toString( (int) Math.round(flat.livingSpace) ) : "?" );
@@ -117,6 +119,7 @@ public class FlatsPagerAdapter extends PagerAdapter {
 		if ( flat.owned ) {
 			((LinearLayout) markerView.findViewById( R.id.takeover_daterow )).setVisibility( View.VISIBLE ) ;
 			String takeoverDate = flat.takeoverDate > 0 ? dateSDF.format( new Date(flat.takeoverDate) ) : "?";
+			((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setMaxLines( 3 );
 			((TextView) markerView.findViewById( R.id.takeover_date )).setText( takeoverDate ); 
 			if ( flat.owned && flat.takeoverTries > 0 ) {
 				((LinearLayout) markerView.findViewById( R.id.takeover_numrow )).setVisibility( View.VISIBLE ) ;
@@ -126,6 +129,7 @@ public class FlatsPagerAdapter extends PagerAdapter {
 				((LinearLayout) markerView.findViewById( R.id.takeover_numrow )).setVisibility( View.GONE ) ;
 			}
 		} else {
+			((EllipsizingTextView) markerView.findViewById( R.id.flat_desc_text )).setMaxLines( 4 );
 			((LinearLayout) markerView.findViewById( R.id.takeover_daterow )).setVisibility( View.GONE ) ;
 			((LinearLayout) markerView.findViewById( R.id.takeover_numrow )).setVisibility( View.GONE ) ;
 		}
@@ -137,6 +141,15 @@ public class FlatsPagerAdapter extends PagerAdapter {
 			}
 		});
 
+		ImageView iconView = (ImageView) markerView.findViewById( R.id.teaser_icon );
+		if ( flat.titlePictureSmall.trim().length() > 0) {
+			imageDownloader.download(flat.titlePictureSmall, iconView );
+		} else {
+			iconView.clearAnimation();
+			iconView.setAnimation( null );
+			iconView.setImageDrawable( inflater.getContext().getResources().getDrawable( R.drawable.portfolio_fallback));
+		}
+		
 		return markerView;
 	}
 

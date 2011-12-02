@@ -4,9 +4,8 @@
     android:clipChildren="false"
     android:padding="2dp" android:layout_height="wrap_content" android:gravity="center" android:orientation="horizontal" android:background="#fff">
     <ImageView android:id="@+id/teaser_icon" 
-    	android:layout_height="wrap_content" 
     	android:paddingRight="5dp" 
-    	android:scaleType="fitCenter" android:src="@drawable/loading" android:layout_width="80dp"></ImageView>
+    	android:scaleType="fitCenter" android:src="@drawable/loading" android:layout_width="86dp" android:layout_height="86dp"></ImageView>
     <LinearLayout
         android:id="@+id/LinearLayout1"
         android:layout_width="fill_parent"
@@ -62,17 +61,17 @@
             android:layout_height="wrap_content"
             android:text="Beschreibung: Schöne Altbauwohnung im Herzen Berlins. Geniale Verkehrsanbindung und unüberschaubares Freizeitangebot"
             android:textColor="#000"
-            android:textSize="13dp" android:ellipsize="none" android:duplicateParentState="true" android:paddingTop="1dp" android:maxLines="2">
+            android:textSize="13dp" android:ellipsize="none" android:duplicateParentState="true" android:paddingTop="1dp" android:maxLines="2" android:layout_weight="1" android:layout_gravity="fill_vertical">
         </org.immopoly.android.widget.EllipsizingTextView>
         <!-- </LinearLayout> -->
-        <TableLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/tableLayout1" android:paddingTop="2dp">
+        <TableLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/tableLayout1" android:paddingTop="2dp" android:layout_gravity="fill_vertical">
             <TableRow android:id="@+id/tableRow1" android:layout_width="wrap_content" android:layout_height="wrap_content">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Übernommen am:" android:textColor="#500" android:layout_weight="2"></TextView>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="3dp" android:textColor="#500" android:text="23.08.2011" android:id="@+id/takeover_date" android:layout_weight="1" android:gravity="right" android:paddingRight="2dp"></TextView>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Übernommen am:" android:textColor="#500" android:layout_weight="2" android:textSize="13dp"></TextView>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="3dp" android:textColor="#500" android:text="23.08.2011" android:id="@+id/takeover_date" android:layout_weight="1" android:gravity="right" android:paddingRight="2dp" android:textSize="13dp"></TextView>
             </TableRow>
             <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/takeover_row">
-                <TextView android:layout_width="wrap_content" android:text="Übernahmeversuche:" android:textColor="#500" android:id="@+id/textView2" android:layout_height="wrap_content" android:layout_weight="2"></TextView>
-                <TextView android:layout_width="wrap_content" android:text="3" android:textColor="#300" android:id="@+id/takeovers_text" android:layout_height="wrap_content" android:paddingLeft="3dp" android:layout_weight="1" android:gravity="right" android:paddingRight="2dp"></TextView>
+                <TextView android:layout_width="wrap_content" android:text="Übernahmeversuche:" android:textColor="#500" android:id="@+id/textView2" android:layout_height="wrap_content" android:layout_weight="2" android:textSize="13dp"></TextView>
+                <TextView android:layout_width="wrap_content" android:text="3" android:textColor="#300" android:id="@+id/takeovers_text" android:layout_height="wrap_content" android:paddingLeft="3dp" android:layout_weight="1" android:gravity="right" android:paddingRight="2dp" android:textSize="13dp"></TextView>
             </TableRow>
         </TableLayout>
     </LinearLayout>

@@ -31,6 +31,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
+import org.immopoly.android.constants.Const;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -363,7 +364,7 @@ public class ImageListDownloader {
 				}
 			}
 
-			if (imageViewReference != null) {
+			if (imageViewReference != null && imageViewReference.get() != null ) {
 				ImageView imageView = imageViewReference.get();
 				// yeah lets stop the animation
 				imageView.setAnimation(null);
