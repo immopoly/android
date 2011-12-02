@@ -9,12 +9,11 @@ import org.immopoly.android.model.Flat;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -27,7 +26,7 @@ public class ExposeFragment extends DialogFragment {
 	private WebView mWebView;
 
 	private GoogleAnalyticsTracker tracker;
-	private Flat flat;
+	private Flat flat=null;
 
 	private final static String sInjectJString;
 //	Handler buttonDelayFinishedHandler = null;
@@ -53,8 +52,9 @@ public class ExposeFragment extends DialogFragment {
 	 * sets the Flat to show the exposee for
 	 * @param flat the flat
 	 */
-	public void setFlat( Flat flat ) {
-		this.flat = flat;
+	public void setFlat( Flat flatp ) {
+		if(null!=flatp)
+			this.flat = flatp;
 	}
 	
 	@Override
@@ -108,7 +108,7 @@ public class ExposeFragment extends DialogFragment {
 				} else {
 					getView().findViewById(R.id.progress).setVisibility(View.GONE);
 					takeOrReleaseButton.setEnabled(true);
-					if (flat.owned)
+					if (null!=flat && flat.owned)
 						takeOrReleaseButton.setText(getString(R.string.release_expose));
 					else
 						takeOrReleaseButton.setText(getString(R.string.try_takeover));
@@ -124,7 +124,7 @@ public class ExposeFragment extends DialogFragment {
 		});
 		loadPage(getArguments());
 		
-		if ( flat.owned ) {
+		if ( null!=flat && flat.owned ) {
 			takeOrReleaseButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -164,11 +164,15 @@ public class ExposeFragment extends DialogFragment {
 	// }
 
 	void loadPage(Bundle intent) {
+		if(null==flat)
+			return;
 		String url = Settings.getFlatLink( String.valueOf( flat.uid ), true);
 		mWebView.loadUrl(url);
 	}
 
 	public void addCurrentExpose(View v) {
+		if(null==flat)
+			return;
 		if (! flat.owned) {
 			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE,
 					TrackingManager.LABEL_TRY, 0);
@@ -178,6 +182,8 @@ public class ExposeFragment extends DialogFragment {
 	}
 
 	public void releaseCurrentExpose(View v) {
+		if(null==flat)
+			return;
 		// assuming user is logged in - there shouldn't be any "release flat" button otherwise  
 		if (flat.owned) {  // TODO if that isn't true, why are we here anyway
 			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE, TrackingManager.LABEL_RELEASE, 0);
@@ -187,6 +193,8 @@ public class ExposeFragment extends DialogFragment {
 	}
 
 	public void shareExpose(View v) {
+		if(null==flat)
+			return;
 		Settings.shareMessage(getActivity(), getString(R.string.link_share_flat), flat.name,
 				Settings.getFlatLink( String.valueOf( flat.uid ), false));
 	}
