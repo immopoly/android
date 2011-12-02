@@ -47,6 +47,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -59,6 +61,7 @@ public class UserSignupActivity extends Activity {
 
 	private GoogleAnalyticsTracker tracker;
 	Handler toggleProgressHandler = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,17 +69,17 @@ public class UserSignupActivity extends Activity {
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
 
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getApplicationContext());
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getApplicationContext());
 		tracker.trackPageView(TrackingManager.VIEW_LOGIN);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
-		
+
 		// init login
-		toggleProgressHandler=new Handler();
+		toggleProgressHandler = new Handler();
 		setContentView(R.layout.user_signup_activity);
 		// check if user as token and is already logedin
 		ImmopolyUser.getInstance().readToken(this);
-//		LocationHelper.getLastLocation(this);
+		// LocationHelper.getLastLocation(this);
 		if (LocationHelper.getBestProvider(getApplicationContext()) == null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.allow_localization_title);
@@ -110,7 +113,7 @@ public class UserSignupActivity extends Activity {
 		} else {
 			init();
 		}
-		
+
 	}
 
 	@Override
@@ -118,11 +121,11 @@ public class UserSignupActivity extends Activity {
 		super.onStart();
 		tracker.trackPageView(TrackingManager.VIEW_LOGIN);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		init();
-//		LocationHelper.getLastLocation(this);
+		// LocationHelper.getLastLocation(this);
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
@@ -141,9 +144,20 @@ public class UserSignupActivity extends Activity {
 	 */
 	public void registerUser(View v) {
 		EditText userPasswordConfirm = (EditText) findViewById(R.id.user_password_confirm);
+		EditText userEmail = (EditText) findViewById(R.id.user_email);
+		EditText userTwitter = (EditText) findViewById(R.id.user_twitter);
+		
 		if (userPasswordConfirm.getVisibility() != View.VISIBLE) {
+			Animation slideInAnimation = AnimationUtils.loadAnimation(this,
+					R.anim.left_to_right);
 			userPasswordConfirm.setVisibility(View.VISIBLE);
+			userEmail.setVisibility(View.VISIBLE);
+			userTwitter.setVisibility(View.VISIBLE);
+			userPasswordConfirm.setAnimation(slideInAnimation);
+			userEmail.setAnimation(slideInAnimation);
+			userTwitter.setAnimation(slideInAnimation);
 			userPasswordConfirm.requestFocus();
+
 		} else {
 			EditText userPassword = (EditText) findViewById(R.id.user_password);
 			// check if passwords are the same
@@ -154,7 +168,8 @@ public class UserSignupActivity extends Activity {
 					if (username.getText().toString().length() >= MIN_USERNAME_LENGTH) {
 						// register
 						new RegisterUserTask().execute(username.getText()
-								.toString(), userPassword.getText().toString());
+								.toString(), userPassword.getText().toString(),
+								userEmail.getText().toString(),userTwitter.getText().toString());
 					} else {
 						Toast.makeText(
 								this,
@@ -209,15 +224,20 @@ public class UserSignupActivity extends Activity {
 		protected ImmopolyUser doInBackground(String... params) {
 			String username = params[0];
 			String password = params[1];
+			String email = params[2];
+			String twitter = params[3];
 			JSONObject obj = null;
 			ImmopolyUser user;
 			try {
 				toggleProgress();
-				obj = WebHelper.getHttpsData(
-						new URL(WebHelper.SERVER_HTTPS_URL_PREFIX
-								+ "/user/register?username="
-								+ URLEncoder.encode(username) + "&password="
-								+ URLEncoder.encode(password)), false,
+				StringBuilder sb = new StringBuilder(
+						WebHelper.SERVER_HTTPS_URL_PREFIX + "/user/register?");
+				sb.append("username=").append(URLEncoder.encode(username))
+						.append("&password=")
+						.append(URLEncoder.encode(password)).append("&email=")
+						.append(URLEncoder.encode(email)).append("&twitter=")
+						.append(URLEncoder.encode(twitter));
+				obj = WebHelper.getHttpsData(new URL(sb.toString()), false,
 						UserSignupActivity.this);
 
 			} catch (MalformedURLException e) {
@@ -239,8 +259,10 @@ public class UserSignupActivity extends Activity {
 		@Override
 		protected void onPostExecute(ImmopolyUser user) {
 			if (user != null) {
-				UserDataManager.setToken(UserSignupActivity.this,user.getToken());
-				C2DMessaging.register(UserSignupActivity.this, Const.IMMOPOLY_EMAIL);
+				UserDataManager.setToken(UserSignupActivity.this,
+						user.getToken());
+				C2DMessaging.register(UserSignupActivity.this,
+						Const.IMMOPOLY_EMAIL);
 				startGame();
 			} else if (Settings.isOnline(UserSignupActivity.this)) {
 				Toast.makeText(UserSignupActivity.this,
@@ -256,23 +278,22 @@ public class UserSignupActivity extends Activity {
 			}
 		}
 	}
-	
-	private void toggleProgress(){
-		toggleProgressHandler.post(new Runnable() {  
+
+	private void toggleProgress() {
+		toggleProgressHandler.post(new Runnable() {
 			public void run() {
 				View progress = findViewById(R.id.login_register_progress);
-				if(progress.getVisibility()==View.GONE)
-				{
+				if (progress.getVisibility() == View.GONE) {
 					progress.setVisibility(View.VISIBLE);
 					findViewById(R.id.login).setVisibility(View.GONE);
 					findViewById(R.id.register).setVisibility(View.GONE);
-				}else{
+				} else {
 					progress.setVisibility(View.GONE);
 					findViewById(R.id.login).setVisibility(View.VISIBLE);
 					findViewById(R.id.register).setVisibility(View.VISIBLE);
 				}
 			}
-		});			
+		});
 	}
 
 	private class LoginUserTask extends AsyncTask<String, Void, ImmopolyUser> {
@@ -310,8 +331,10 @@ public class UserSignupActivity extends Activity {
 		@Override
 		protected void onPostExecute(ImmopolyUser user) {
 			if (user != null && user.getToken().length() > 0) {
-				UserDataManager.setToken(UserSignupActivity.this,user.getToken());
-				C2DMessaging.register(UserSignupActivity.this, Const.IMMOPOLY_EMAIL);
+				UserDataManager.setToken(UserSignupActivity.this,
+						user.getToken());
+				C2DMessaging.register(UserSignupActivity.this,
+						Const.IMMOPOLY_EMAIL);
 				startGame();
 			} else if (Settings.isOnline(UserSignupActivity.this)) {
 				Toast.makeText(UserSignupActivity.this,
@@ -361,49 +384,48 @@ public class UserSignupActivity extends Activity {
 
 	public void startGame() {
 		// start game
-		//Intent i = new Intent(this, PlacesMapActivity.class);
-		//startActivity(i);
+		// Intent i = new Intent(this, PlacesMapActivity.class);
+		// startActivity(i);
 		// login success, trigger action requested before login
 		setResult(Activity.RESULT_OK);
 		finish();
 	}
 
-//	public void showInfo(View v) {
-//
-//		LayoutInflater inflater = LayoutInflater.from(UserSignupActivity.this);
-//
-//		View alertDialogView = inflater.inflate(R.layout.info_webview, null);
-//
-//		WebView myWebView = (WebView) alertDialogView
-//				.findViewById(R.id.DialogWebView);
-//		myWebView.setWebViewClient(new WebViewClient());
-//		myWebView.getSettings().setSupportZoom(true);
-//		myWebView.getSettings().setUseWideViewPort(true);
-//
-//		myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
-//		AlertDialog.Builder builder = new AlertDialog.Builder(
-//				UserSignupActivity.this);
-//		builder.setView(alertDialogView);
-//		builder.setPositiveButton(R.string.button_ok,
-//				new DialogInterface.OnClickListener() {
-//
-//					@Override
-//					public void onClick(DialogInterface dialog, int which) {
-//						dialog.cancel();
-//					}
-//				}).show();
-//
-//	}
+	// public void showInfo(View v) {
+	//
+	// LayoutInflater inflater = LayoutInflater.from(UserSignupActivity.this);
+	//
+	// View alertDialogView = inflater.inflate(R.layout.info_webview, null);
+	//
+	// WebView myWebView = (WebView) alertDialogView
+	// .findViewById(R.id.DialogWebView);
+	// myWebView.setWebViewClient(new WebViewClient());
+	// myWebView.getSettings().setSupportZoom(true);
+	// myWebView.getSettings().setUseWideViewPort(true);
+	//
+	// myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
+	// AlertDialog.Builder builder = new AlertDialog.Builder(
+	// UserSignupActivity.this);
+	// builder.setView(alertDialogView);
+	// builder.setPositiveButton(R.string.button_ok,
+	// new DialogInterface.OnClickListener() {
+	//
+	// @Override
+	// public void onClick(DialogInterface dialog, int which) {
+	// dialog.cancel();
+	// }
+	// }).show();
+	//
+	// }
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		tracker.stopSession();
 	}
-	
-	public void closeLogin(View v){
+
+	public void closeLogin(View v) {
 		finish();
 	}
-	
 
 }

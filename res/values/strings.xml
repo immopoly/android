@@ -88,4 +88,7 @@
     <string name="menu_logout">Abmelden</string>
     <string name="menu_website">Webseite</string>
     <string name="menu_contact">Kontakt</string>
+    <string name="user_signup_no_account_register">Wenn du noch keinen Account hast, kannst du dich hier registrieren.</string>
+    <string name="user_email_hint">Email, falls Passwort vergessen. (optional)</string>
+    <string name="user_twitter_hint">Twitter name (optional)</string>
 </resources>
