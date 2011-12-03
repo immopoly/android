@@ -94,13 +94,11 @@ public class FlatsPagerAdapter extends PagerAdapter {
 		LayoutInflater inflater = LayoutInflater.from( mContext.getActivity() );
 		View markerView = inflater.inflate( R.layout.bubble_content, null, false);
 
-//		ImageView iconView = (ImageView) markerView.findViewById( R.id.teaser_icon );
-//		if (flat.owned)
-//			iconView.setImageResource( R.drawable.map_marker_property_icon );
-//		else if (flat.age == Flat.AGE_OLD)
-//			iconView.setImageResource( R.drawable.house_old );
-//		else if (flat.age == Flat.AGE_NEW)
-//			iconView.setImageResource( R.drawable.house_new );
+		ImageView oldNewMarker = (ImageView) markerView.findViewById( R.id.old_new_marker );
+		if (flat.age == Flat.AGE_OLD)
+			oldNewMarker.setImageResource( R.drawable.goto_expo );
+		else if (flat.age == Flat.AGE_NEW)
+			oldNewMarker.setImageResource( R.drawable.goto_expo_green );
 		if ( flats.size() == 1 )
 			markerView.findViewById( R.id.swipe_indicator ).setVisibility( View.GONE );
 		else {
