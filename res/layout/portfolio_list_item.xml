@@ -17,7 +17,7 @@
     <LinearLayout
         android:id="@+id/LinearLayout1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="86dp"
         android:layout_gravity="fill_vertical"
         android:orientation="vertical" >
         <LinearLayout
@@ -27,6 +27,7 @@
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:includeFontPadding="false"
                 android:text="Preis:"
                 android:textColor="#000"
                 android:textSize="15dp"
@@ -36,6 +37,7 @@
                 android:id="@+id/price_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:includeFontPadding="false"
                 android:paddingLeft="3dp"
                 android:text="1399 €"
                 android:textColor="#000"
@@ -46,12 +48,14 @@
                 android:id="@+id/textView4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" >
+                android:layout_weight="1"
+                android:includeFontPadding="false" >
             </TextView>
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:includeFontPadding="false"
                 android:text="Zimmer:"
                 android:textColor="#000"
                 android:textSize="15dp"
@@ -61,6 +65,7 @@
                 android:id="@+id/rooms_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:includeFontPadding="false"
                 android:paddingLeft="3dp"
                 android:text="3"
                 android:textColor="#000"
@@ -71,12 +76,14 @@
                 android:id="@+id/textView5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" >
+                android:layout_weight="1"
+                android:includeFontPadding="false" >
             </TextView>
             <TextView
                 android:id="@+id/qm_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:includeFontPadding="false"
                 android:text="97"
                 android:textColor="#000"
                 android:textSize="15dp"
@@ -86,6 +93,7 @@
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:includeFontPadding="false"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:text="m²"
@@ -98,13 +106,12 @@
         <org.immopoly.android.widget.EllipsizingTextView
             android:id="@+id/flat_desc_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill_vertical"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:duplicateParentState="true"
             android:ellipsize="none"
+            android:gravity="center_vertical"
             android:maxLines="2"
-            android:paddingTop="1dp"
             android:text="Beschreibung: Schöne Altbauwohnung im Herzen Berlins. Geniale Verkehrsanbindung und unüberschaubares Freizeitangebot"
             android:textColor="#000"
             android:textSize="13dp" >
@@ -124,6 +131,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:includeFontPadding="false"
                     android:text="Übernommen am:"
                     android:textColor="#500"
                     android:textSize="13dp" >
@@ -134,6 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
+                    android:includeFontPadding="false"
                     android:paddingLeft="3dp"
                     android:paddingRight="2dp"
                     android:text="23.08.2011"
@@ -150,6 +159,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:includeFontPadding="false"
                     android:text="Übernahmeversuche:"
                     android:textColor="#500"
                     android:textSize="13dp" >
@@ -160,6 +170,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
+                    android:includeFontPadding="false"
                     android:paddingLeft="3dp"
                     android:paddingRight="2dp"
                     android:text="3"
