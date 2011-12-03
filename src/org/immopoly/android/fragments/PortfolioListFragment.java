@@ -12,84 +12,86 @@ import org.immopoly.android.model.ImmopolyUser;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
-public class PortfolioListFragment extends Fragment implements OnItemClickListener, UserDataListener {
+public class PortfolioListFragment extends ListFragment implements UserDataListener, OnClickListener {
 
-	private Flats flats;
-	private PortfolioFlatsAdapter mListAdapter;
+	private Flats mFlats;
 
 	@Override
-	public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-		View layout = getActivity().getLayoutInflater().inflate( R.layout.portfolio_list, null, false );
-		ListView listView = (ListView) layout.findViewById(R.id.pf_list_view);
-		
-		ImmopolyUser user = ImmopolyUser.getInstance();
-		flats = user.getPortfolio();
-		mListAdapter = new PortfolioFlatsAdapter( getActivity(), flats ); 
-		listView.setAdapter( mListAdapter );
-	
-		listView.setOnItemClickListener( this );
-		
-		layout.findViewById( R.id.pf_map_btn ).setOnClickListener( new View.OnClickListener() {
-			public void onClick(View v) {
-				Log.i(Const.LOG_TAG, "PortfolioMapFragment show listg");
-				((ImmopolyActivity) getActivity()).getTabManager().onTabChanged( "portfolio_map" );
-			}
-		});
-		UserDataManager.instance.addUserDataListener( this );
-		updateVisibility(layout);
-		return layout;
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		UserDataManager.instance.addUserDataListener(this);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		updateList();
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
 	}
 
 	@Override
 	public void onDestroyView() {
-		UserDataManager.instance.removeUserDataListener( this );
+		UserDataManager.instance.removeUserDataListener(this);
 		super.onDestroyView();
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Flat flat = flats.get( position );
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Flat flat = mFlats.get(position);
 		DialogFragment newFragment = ExposeFragment.newInstance(flat);
 		newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
 	}
 
 	@Override
 	public void onUserDataUpdated() {
-		Log.i( Const.LOG_TAG, "PortfolioMapFragment.onUserDataUpdated!!" );
-		ImmopolyUser user = ImmopolyUser.getInstance();
-		flats = user.getPortfolio();
-		updateVisibility(getView());
-		mListAdapter.setFlats( flats );
+		Log.i(Const.LOG_TAG, "PortfolioMapFragment.onUserDataUpdated!!");
+		updateList();
 	}
 
-	private void updateVisibility(View v) {
+	private void updateList() {
+
 		if (UserDataManager.instance.getState() == UserDataManager.LOGGED_IN) {
-			// helptext deaktiveren
-			v.findViewById(R.id.portfolio_notloggedin_view).setVisibility(View.GONE);
-			// liste und buttons aktivieren
-			if (flats.size() > 0) {
-				v.findViewById(R.id.portfolio_loggedin_view).setVisibility(View.VISIBLE);
-				v.findViewById(R.id.portfolio_loggedinempty_view).setVisibility(View.GONE);
+			ImmopolyUser user = ImmopolyUser.getInstance();
+			mFlats = user.getPortfolio();
+
+			if (mFlats != null && mFlats.size() > 0) {
+				setListAdapter(new PortfolioFlatsAdapter(getActivity(), mFlats));
+				setListShown(true);
+				addMapButton();
 			} else {
-				v.findViewById(R.id.portfolio_loggedin_view).setVisibility(View.GONE);
-				v.findViewById(R.id.portfolio_loggedinempty_view).setVisibility(View.VISIBLE);
+				setEmptyText("Keine Wohnungen");
+				setListAdapter(null);
 			}
 		} else {
-			// helptext aktiveren
-			v.findViewById(R.id.portfolio_notloggedin_view).setVisibility(View.VISIBLE);
-			// liste und buttons deaktivieren
-			v.findViewById(R.id.portfolio_loggedin_view).setVisibility(View.GONE);
-			v.findViewById(R.id.portfolio_loggedinempty_view).setVisibility(View.GONE);
+			setEmptyText("Nicht angemeldet");
+			setListAdapter(null);
 		}
 	}
 
+	private void addMapButton() {
+		if (getView().findViewById(R.id.portfolio_btn_map) == null) {
+			LayoutInflater inflater = LayoutInflater.from(getActivity());
+			ViewGroup viewGroup = (ViewGroup) getView();
+			inflater.inflate(R.layout.image_btn_map, viewGroup);
+			viewGroup.findViewById(R.id.portfolio_btn_map).setOnClickListener(this);
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		Log.i(Const.LOG_TAG, "PortfolioMapFragment show listg");
+		((ImmopolyActivity) getActivity()).getTabManager().onTabChanged("portfolio_map");
+	}
 }
