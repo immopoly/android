@@ -7,6 +7,8 @@ import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
@@ -26,15 +29,18 @@ public class ExposeFragment extends DialogFragment {
 	private WebView mWebView;
 
 	private GoogleAnalyticsTracker tracker;
-	private Flat flat=null;
+	private Flat flat = null;
 
 	private final static String sInjectJString;
-//	Handler buttonDelayFinishedHandler = null;
+	private Button takeOrReleaseButton;
+	// Handler buttonDelayFinishedHandler = null;
 	static {
 		StringBuilder jsInjectString;
-		jsInjectString = new StringBuilder("var headID = document.getElementsByTagName('head')[0];");
+		jsInjectString = new StringBuilder(
+				"var headID = document.getElementsByTagName('head')[0];");
 		jsInjectString.append("var cssNode = document.createElement('style');")
-				.append("cssNode.innerHTML = '#layer{display:none;}';").append("headID.appendChild(cssNode);");
+				.append("cssNode.innerHTML = '#layer{display:none;}';")
+				.append("headID.appendChild(cssNode);");
 		sInjectJString = "javascript:" + jsInjectString.toString() + ";";
 	}
 
@@ -42,21 +48,23 @@ public class ExposeFragment extends DialogFragment {
 	 * Create a new instance of MyFragment that will be initialized with the
 	 * given arguments.
 	 */
-	public static ExposeFragment newInstance( Flat flat ) {
+	public static ExposeFragment newInstance(Flat flat) {
 		ExposeFragment f = new ExposeFragment();
-		f.setFlat( flat );
+		f.setFlat(flat);
 		return f;
 	}
 
 	/**
 	 * sets the Flat to show the exposee for
-	 * @param flat the flat
+	 * 
+	 * @param flat
+	 *            the flat
 	 */
-	public void setFlat( Flat flatp ) {
-		if(null!=flatp)
+	public void setFlat(Flat flatp) {
+		if (null != flatp)
 			this.flat = flatp;
 	}
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,18 +73,21 @@ public class ExposeFragment extends DialogFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.expose_detail_web_view, container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.expose_detail_web_view,
+				container, false);
 		tracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getActivity()
-				.getApplicationContext());
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getActivity().getApplicationContext());
 
 		tracker.trackPageView(TrackingManager.VIEW_EXPOSE);
 
-		final Button takeOrReleaseButton = (Button) view.findViewById(R.id.TakeOrReleaseButton);
-		// wait for activating the button
-		// buttonWait(takeOrReleaseButton);
+		final ImageButton shareButton = (ImageButton) view
+				.findViewById(R.id.shareExpose);
+		takeOrReleaseButton = (Button) view
+				.findViewById(R.id.TakeOrReleaseButton);
 
 		mWebView = (WebView) view.findViewById(R.id.exposeWevView);
 		mWebView.getSettings().setJavaScriptEnabled(true);
@@ -95,36 +106,54 @@ public class ExposeFragment extends DialogFragment {
 				view.loadUrl(sInjectJString);
 				if (url.matches(".+?\\/bilder\\.htm$")) {
 					// match image details
-					tracker.trackPageView(TrackingManager.ACTION_EXPOSE + "/" + TrackingManager.LABEL_IMAGES);
+					tracker.trackPageView(TrackingManager.ACTION_EXPOSE + "/"
+							+ TrackingManager.LABEL_IMAGES);
 				}
 				if (url.matches(".+?\\/bilder\\.htm#bigpicture$")) {
 					// navigate in details images
-					tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_VIEW,
+					tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+							TrackingManager.ACTION_VIEW,
 							TrackingManager.LABEL_IMAGES_DETAILS, 0);
 				}
 				if (mLoadTwice) {
 					mWebView.loadUrl(url);
 					mLoadTwice = false;
 				} else {
-					getView().findViewById(R.id.progress).setVisibility(View.GONE);
+					getView().findViewById(R.id.progress).setVisibility(
+							View.GONE);
 					takeOrReleaseButton.setEnabled(true);
-					if (null!=flat && flat.owned)
-						takeOrReleaseButton.setText(getString(R.string.release_expose));
-					else
-						takeOrReleaseButton.setText(getString(R.string.try_takeover));
 				}
 			}
 
 			@Override
 			public void onLoadResource(WebView view, String url) {
 				super.onLoadResource(view, url);
-				getView().findViewById(R.id.progress).setVisibility(View.VISIBLE);
+				getView().findViewById(R.id.progress).setVisibility(
+						View.VISIBLE);
 			}
 
 		});
 		loadPage(getArguments());
-		
-		if ( null!=flat && flat.owned ) {
+
+		if (null != shareButton) {
+			shareButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+
+					Settings.getFlatLink(flat.uid.toString(), false);
+					Settings.shareMessage(getActivity(), getActivity()
+							.getString(R.string.share), flat.name, Settings
+							.getFlatLink(flat.uid.toString(), false) /* LINk */);
+					tracker.trackEvent(TrackingManager.CATEGORY_ALERT,
+							TrackingManager.ACTION_SHARE,
+							TrackingManager.LABEL_POSITIVE, 0);
+
+				}
+			});
+		}
+
+		if (null != flat && flat.owned) {
 			takeOrReleaseButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -139,8 +168,29 @@ public class ExposeFragment extends DialogFragment {
 				}
 			});
 		}
-		
+
 		return view;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (null != flat && flat.owned) {
+			takeOrReleaseButton.setCompoundDrawablesWithIntrinsicBounds(
+					getResources().getDrawable(R.drawable.btn_portfolio_red),
+					null, null, null);
+			takeOrReleaseButton.setTextColor(getResources().getColor(
+					R.color.soft_red));
+			takeOrReleaseButton.setText(getString(R.string.release_expose));
+		} else {
+			takeOrReleaseButton.setCompoundDrawablesWithIntrinsicBounds(
+					getResources().getDrawable(R.drawable.btn_portfolio_green),
+					null, null, null);
+			takeOrReleaseButton.setTextColor(getResources().getColor(
+					R.color.soft_green));
+			takeOrReleaseButton.setText(getString(R.string.try_takeover));
+
+		}
 	}
 
 	// @Override
@@ -164,39 +214,43 @@ public class ExposeFragment extends DialogFragment {
 	// }
 
 	void loadPage(Bundle intent) {
-		if(null==flat)
+		if (null == flat)
 			return;
-		String url = Settings.getFlatLink( String.valueOf( flat.uid ), true);
+		String url = Settings.getFlatLink(String.valueOf(flat.uid), true);
 		mWebView.loadUrl(url);
 	}
 
 	public void addCurrentExpose(View v) {
-		if(null==flat)
+		if (null == flat)
 			return;
-		if (! flat.owned) {
-			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE,
-					TrackingManager.LABEL_TRY, 0);
+		if (!flat.owned) {
+			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+					TrackingManager.ACTION_EXPOSE, TrackingManager.LABEL_TRY, 0);
 		}
-		UserDataManager.instance.addToPortfolio( flat );
+		UserDataManager.instance.addToPortfolio(flat);
 		dismiss();
 	}
 
 	public void releaseCurrentExpose(View v) {
-		if(null==flat)
+		if (null == flat)
 			return;
-		// assuming user is logged in - there shouldn't be any "release flat" button otherwise  
-		if (flat.owned) {  // TODO if that isn't true, why are we here anyway
-			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE, TrackingManager.LABEL_RELEASE, 0);
+		// assuming user is logged in - there shouldn't be any "release flat"
+		// button otherwise
+		if (flat.owned) { // TODO if that isn't true, why are we here anyway
+			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+					TrackingManager.ACTION_EXPOSE,
+					TrackingManager.LABEL_RELEASE, 0);
 		}
-		UserDataManager.instance.releaseFromPortfolio( flat );
+		UserDataManager.instance.releaseFromPortfolio(flat);
 		dismiss();
 	}
 
 	public void shareExpose(View v) {
-		if(null==flat)
+		if (null == flat)
 			return;
-		Settings.shareMessage(getActivity(), getString(R.string.link_share_flat), flat.name,
-				Settings.getFlatLink( String.valueOf( flat.uid ), false));
+		Settings.shareMessage(getActivity(),
+				getString(R.string.link_share_flat), flat.name,
+				Settings.getFlatLink(String.valueOf(flat.uid), false));
 	}
 
 	@Override
@@ -207,4 +261,3 @@ public class ExposeFragment extends DialogFragment {
 		tracker.stopSession();
 	}
 }
-
