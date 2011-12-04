@@ -552,4 +552,13 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		updateMap( false );
 	}
 
+	public void hideCompass() {
+		compass.setVisibility(View.GONE);
+	}
+
+	public void showCompass() {
+		if ( progress.getVisibility() != View.VISIBLE )
+			compass.setVisibility(View.VISIBLE);
+	}
+
 }
