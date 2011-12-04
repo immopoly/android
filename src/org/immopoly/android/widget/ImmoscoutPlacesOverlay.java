@@ -149,6 +149,8 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 			if ( Math.abs( ntp.x - p.x) > 20 || Math.abs( ntp.y - p.y) > 20 ) {
 				bubble.detach();
 				bubble = null;
+				if (mMapFragment instanceof MapFragment) // show wind rose (hack)
+					((MapFragment) mMapFragment).showCompass();
 			}
 		}
 		// test for map zoom. Evtly do clusterizing 
