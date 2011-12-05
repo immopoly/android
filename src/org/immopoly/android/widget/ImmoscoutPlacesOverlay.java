@@ -109,13 +109,18 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 	protected boolean onTap(int index) {
 		if ( bubble != null )
 			bubble.detach();
-		if ( tmpItems == null || index >= tmpItems.size())
+		if ( tmpItems == null || index >= tmpItems.size()) {
+			if (mMapFragment instanceof MapFragment) // show wind rose (hack)
+				((MapFragment) mMapFragment).showCompass();
 			return false;
+		}
 		final ClusterItem item = tmpItems.get(index);
 		final RelativeLayout.LayoutParams relLayoutParams = new RelativeLayout.LayoutParams(
 				LayoutParams.FILL_PARENT, 210 );
 		relLayoutParams.addRule( RelativeLayout.BELOW, R.id.header );
 		bubble = new TeaserBubble( mMapFragment, mMapView, item.flats );
+		if (mMapFragment instanceof MapFragment) // hide wind rose (hack)
+			((MapFragment) mMapFragment).hideCompass();
 		return true;
 	}
 
@@ -125,6 +130,8 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 			if ( bubble != null ) {
 				bubble.detach();
 				bubble = null;
+				if (mMapFragment instanceof MapFragment) // show wind rose (hack)
+					((MapFragment) mMapFragment).showCompass();
 			}
 			mMapView.setBuiltInZoomControls(true);
 			mMapView.getZoomButtonsController().setVisible(true);
@@ -142,6 +149,8 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 			if ( Math.abs( ntp.x - p.x) > 20 || Math.abs( ntp.y - p.y) > 20 ) {
 				bubble.detach();
 				bubble = null;
+				if (mMapFragment instanceof MapFragment) // show wind rose (hack)
+					((MapFragment) mMapFragment).showCompass();
 			}
 		}
 		// test for map zoom. Evtly do clusterizing 

@@ -176,8 +176,8 @@ public class ImmopolyUser extends User {
 	
 
 	@Override
-	public History instantiateHistory() {
-		return new ImmopolyHistory();
+	public History instantiateHistory(JSONObject o) {
+		return new ImmopolyHistory(o);
 	}
 
 	@Override
