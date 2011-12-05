@@ -31,7 +31,7 @@
 	</string>
     <string name="welcome_message">Willkommen zu Immopoly, vergrößere dein Portfolio
 		und somit deine Provision- und Mieteinamen!</string>
-    <string name="register">Registrieren</string>
+    <string name="register">Jetzt registrieren</string>
     <string name="login">Anmelden</string>
     <string name="button_ok">OK</string>
     <string name="button_mist">Mist!</string>
@@ -53,9 +53,9 @@
     <string name="allow_localization_title">Lokalisierung erlauben!</string>
     <string name="allow_localization_message">Für das Spiel die Lokalisierung notwendig</string>
     <!-- Toasty stuff -->
-    <string name="toast_min_lenght_username">Username muss mindestens $1%s Zeichen lang sein
+    <string name="toast_min_lenght_username">Username muss mindestens %s Zeichen lang sein
 	</string>
-    <string name="toast_min_lenght_password">Passwort muss mindestens $1%s Zeichen lang sein
+    <string name="toast_min_lenght_password">Passwort muss mindestens %s Zeichen lang sein
 	</string>
     <string name="toast_wrong_username_or_pasword">Benutzername oder Password falsch!</string>
     <string name="toast_no_connection">Keine Internet Verbindung, diese ist notwending um
@@ -89,6 +89,11 @@
     <string name="menu_website">Webseite</string>
     <string name="menu_contact">Kontakt</string>
     <string name="user_signup_no_account_register">Wenn du noch keinen Account hast, kannst du dich hier registrieren.</string>
-    <string name="user_email_hint">Email, falls Passwort vergessen. (optional)</string>
+    <string name="user_email_hint">Email, falls Passwort vergessen.</string>
     <string name="user_twitter_hint">Twitter name (optional)</string>
+    <string name="toast_email_verification">Gibt bitte deine Email Adresse an.</string>
+    <string name="register_short">Register</string>
+    <string name="user_signup_app_name">Immopoly</string>
+    <string name="signup_no_agent_yet">Noch kein Makler?</string>
+    <string name="user_signup_promote_text">Finde die besten Wohnungen und baue dein Portfolio aus, zeig das du deinen Kiez am besten kennst.</string>
 </resources>
