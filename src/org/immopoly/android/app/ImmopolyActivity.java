@@ -202,9 +202,9 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 			break;
 		case R.id.menu_contact:
 			intent = new Intent(Intent.ACTION_SEND);
-			intent.setType("text/plain");
+			intent.setType("message/rfc822");
 			intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "immopolyteam@gmail.com" });
-			intent.putExtra(Intent.EXTRA_SUBJECT, "immopoly Feedback");
+			intent.putExtra(Intent.EXTRA_SUBJECT, "Immopoly Feedback");
 			startActivity(Intent.createChooser(intent, "Feedback:"));
 			break;
 		case R.id.menu_logout:
