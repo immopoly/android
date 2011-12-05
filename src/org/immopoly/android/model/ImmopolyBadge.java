@@ -16,6 +16,10 @@ public class ImmopolyBadge extends Badge {
 	private Double amount;
 	private Long exposeId;
 
+	public ImmopolyBadge(JSONObject o) {
+		super(o);
+	}
+
 	@Override
 	public void setText(String text) {
 		this.text = text;
@@ -44,6 +48,30 @@ public class ImmopolyBadge extends Badge {
 	@Override
 	public void setExposeId(long exposeId) {
 		this.exposeId = exposeId;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public long getTime() {
+		return time;
+	}
+
+	public Double getAmount() {
+		return amount;
+	}
+
+	public Long getExposeId() {
+		return exposeId;
 	}
 
 	/**

@@ -20,10 +20,10 @@
 package org.immopoly.android.model;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.immopoly.android.constants.Const;
+import org.immopoly.common.Badge;
 import org.immopoly.common.History;
 import org.immopoly.common.User;
 import org.json.JSONArray;
@@ -50,10 +50,14 @@ public class ImmopolyUser extends User {
 	private double sLastRent;
 	private static ImmopolyUser sInstance = null;
 
-	private static long mTimeUpdated = -1;
+	private List<ImmopolyBadge> badges;
+
+	
+// private static long mTimeUpdated = -1;
 
 	private ImmopolyUser() {
 		mUserHistory = new ArrayList<ImmopolyHistory>();
+		badges = new ArrayList<ImmopolyBadge>();
 		flats = new Flats();
 	}
 
@@ -122,7 +126,7 @@ public class ImmopolyUser extends User {
 	@Override
 	public void setPortfolio(JSONObject portfolio) {
 		if (portfolio != null) {
-			this.mTimeUpdated = Calendar.getInstance().getTimeInMillis();
+			// this.mTimeUpdated = Calendar.getInstance().getTimeInMillis();
 			JSONArray results;
 			JSONArray resultEntries;
 			try {
@@ -211,27 +215,6 @@ public class ImmopolyUser extends User {
 		return sLastRent;
 	}
 
-	/**
-	 * checks if time difference between last update is bigger then 5 minutes
-	 * 
-	 * @return boolean true if isOld and needs to get updated
-	 */
-	public boolean isOld() {
-		return true;
-		/**
-		 * We need better caching logic, in case a transaction changes the
-		 * balance we need to set a dirty flag for refreshing the user
-		 */
-		/*
-		 * if (mTimeUpdated > 0) { long diff =
-		 * Calendar.getInstance().getTimeInMillis() - mTimeUpdated; // int
-		 * seconds = (int) (diff / 1000) % 60 ; int minutes = (int) ((diff /
-		 * (1000 * 60)) % 60); // int hours = (int) ((diff / (1000*60*60)) %
-		 * 24); if (minutes >= 5) { return true; } else { return false; } } else
-		 * { return true; }
-		 */
-	}
-
 	public String getEmail() {
 		return mEmail;
 	}
@@ -248,4 +231,31 @@ public class ImmopolyUser extends User {
 		mTwitter = twitter;
 	}
 
+	public List<ImmopolyBadge> getBadges() {
+		return badges;
+	}
+
+	@Override
+	public Badge instantiateBadge(JSONObject o) {
+		return new ImmopolyBadge(o);
+	}
+
+	@Override
+	public void setBadges(List<Badge> badges) {
+		this.badges.clear();
+		for (Badge badge: badges) {
+			this.badges.add((ImmopolyBadge) badge);
+		}
+
+	}
+
+	@Override
+	public void setMaxExposes(int maxExposes) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void setNumExposes(int numExposes) {
+		// TODO Auto-generated method stub
+	}
 }

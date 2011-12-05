@@ -3,6 +3,9 @@ package org.immopoly.android.fragments;
 import org.immopoly.android.R;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
+import org.immopoly.android.helper.ImageListDownloader;
+import org.immopoly.android.helper.Settings;
+import org.immopoly.android.model.ImmopolyBadge;
 import org.immopoly.android.model.ImmopolyUser;
 
 import android.os.Bundle;
@@ -16,10 +19,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ProfileFragment extends Fragment implements UserDataListener {
+
+	private ImageListDownloader imageDownloader;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View layout = inflater.inflate(R.layout.fragment_profile, container, false);
 		UserDataManager.instance.addUserDataListener(this);
+		imageDownloader = Settings.getExposeImageDownloader(getActivity());
 		updateVisibility(layout);
 		return layout;
 	}
@@ -36,11 +42,18 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 
 		@Override
 		public int getCount() {
-			return 5;
+			int count =ImmopolyUser.getInstance().getBadges().size();
+			if (count>5)
+				return count;
+			else
+				return 5;
 		}
 
 		@Override
-		public Object getItem(int arg0) {
+		public ImmopolyBadge getItem(int position) {
+			if (position < ImmopolyUser.getInstance().getBadges().size())
+				return ImmopolyUser.getInstance().getBadges().get(position);
+
 			return null;
 		}
 
@@ -60,11 +73,13 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 			} else {
 				imageView = (ImageView) convertView;
 			}
-
-			imageView.setImageResource(R.drawable.badge_empty);
+			ImmopolyBadge b = getItem(position);
+			if(null!=b)
+				imageDownloader.download(b.getUrl(), imageView);
+			else
+				imageView.setImageResource(R.drawable.badge_empty);
 			return imageView;
 		}
-
 	}
 
 	private void updateVisibility(View v) {
