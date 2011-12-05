@@ -229,45 +229,28 @@ public class UserDataManager {
 	}
 
 	protected void showExposeDialog(final Flat flat, final Result result) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					activity);
-			builder.setTitle(activity.getString(R.string.take_over_try));
-			builder.setMessage(result.historyEvent.mText);
-			//builder.setContentView(R.layout.maindialog);
-			builder.setCancelable(true).setNegativeButton(
-					activity.getString(R.string.share_item),
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog,
-								int id) {
-							Settings.getFlatLink(flat.uid.toString(),
-									false);
-							Settings.shareMessage(activity, activity
-									.getString(R.string.take_over_try),
-									result.historyEvent.mText,
-									Settings.getFlatLink(
-											flat.uid.toString(), false) /* LINk */);
-							mTracker.trackEvent(
-									TrackingManager.CATEGORY_ALERT,
-									TrackingManager.ACTION_SHARE,
-									TrackingManager.LABEL_POSITIVE, 0);
-						}
-
-					});
-			builder.setPositiveButton(result.success ? R.string.button_ok : R.string.button_mist,
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog,
-								int id) {
-							mTracker.trackEvent(
-									TrackingManager.CATEGORY_ALERT,
-									TrackingManager.ACTION_SHARE,
-									TrackingManager.LABEL_NEGATIVE, 0);
-						}
-					});
-			AlertDialog alert = builder.create();
-			alert.show();
-		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle(activity.getString(R.string.take_over_try));
+		builder.setMessage(result.history.getText());
+		// builder.setContentView(R.layout.maindialog);
+		builder.setCancelable(true).setNegativeButton(activity.getString(R.string.share_item), new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				Settings.getFlatLink(flat.uid.toString(), false);
+				Settings.shareMessage(activity, activity.getString(R.string.take_over_try), result.history.getText(), Settings.getFlatLink(
+						flat.uid.toString(), false) /* LINk */);
+				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_SHARE, TrackingManager.LABEL_POSITIVE, 0);
+			}
+		});
+		builder.setPositiveButton(result.success ? R.string.button_ok : R.string.button_mist, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_SHARE, TrackingManager.LABEL_NEGATIVE, 0);
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
 
 	/**
 	 * Tries to release a flat from the users portfolio using
@@ -285,14 +268,10 @@ public class UserDataManager {
 			@Override
 			protected void onPostExecute(Result result) {
 				super.onPostExecute(result);
-				if (result.success) { // remove the flat from users portfolio
-										// list
+				if (result.success) {
+					// remove the flat from users portfolio list
 					flat.owned = false;
-					Flat toBeRemoved = null; // flat in users list, which was
-												// eventually created from DB,
-												// while the parameter flat was
-												// probably created from is24
-												// data
+					Flat toBeRemoved = null;
 					for (Flat f : ImmopolyUser.getInstance().getPortfolio())
 						if (f.uid == flat.uid)
 							toBeRemoved = f;
@@ -319,7 +298,7 @@ public class UserDataManager {
 //					actionPending = false;
 				}
 			};
-		}.execute(String.valueOf(flat.uid));
+		}.execute(flat);
 	}
 
 	private void fireUsedDataChanged() {

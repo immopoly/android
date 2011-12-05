@@ -25,52 +25,67 @@ import org.json.JSONObject;
 
 public class ImmopolyHistory extends History{
 
-	public String mText;
-	public long mTime;
-	public int mtype;
-	public Double mAmount=null;
+	// mandatory
+	private String text;
+	private long time;
+	private int type;
+
+	// optional
+	private Double amount;
+	private Long exposeId;
+
+
+	public ImmopolyHistory(JSONObject obj) {
+		super(obj);
+	}
 
 	@Override
 	public void setText(String text) {
-		mText = text;
+		this.text = text;
 	}
 
 	@Override
 	public void setTime(long time) {
-		mTime = time;
+		this.time = time;
 	}
 
+	/**
+	 * Wird im Client nicht mehr serialisiert.
+	 */
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void setType(int type) {
-		mtype = type;
+		this.type = type;
 	}
 
 
 	@Override
 	public void setAmount(double amount) {
-		mAmount=amount;
+		this.amount = amount;
 	}
 
 	@Override
-	public void setType2(int type2) {
-		mtype = type2;
-	}
-
-	@Override
-	public void setExposeId(Long exposeId) {
+	public void setExposeId(long exposeId) {
 	}
 
 	public int getType() {
-		return mtype;
+		return type;
 	}
 
 	public Double getAmount() {
-		return mAmount;
+		return amount;
 	}
+
+	public String getText() {
+		return text;
+	}
+
+	public long getTime() {
+		return time;
+	}
+
 }
