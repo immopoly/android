@@ -56,7 +56,7 @@ public class UserSignupActivity extends Activity {
 
 		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
 				Const.ANALYTICS_INTERVAL, getApplicationContext());
-		tracker.trackPageView(TrackingManager.VIEW_LOGIN);
+		tracker.trackPageView(TrackingManager.VIEW_SIGNUP);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		// init login
@@ -108,11 +108,16 @@ public class UserSignupActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REGISTER_REQUEST
 				&& resultCode == UserRegisterActivity.RESULT_LOGIN) {
+			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+					TrackingManager.ACTION_VIEW,
+					TrackingManager.LABEL_CHANGE_TO_LOGIN_FROM_REGISTER, 0);
 			Intent login = new Intent(this, UserLoginActivity.class);
 			startActivityForResult(login, LOGIN_REQUEST);
-			
 		} else if (requestCode == LOGIN_REQUEST
 				&& resultCode == UserLoginActivity.RESULT_REGISTER) {
+			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+					TrackingManager.ACTION_VIEW,
+					TrackingManager.LABEL_CHANGE_TO_REGISTER_FROM_LOGIN, 0);
 			Intent login = new Intent(this, UserRegisterActivity.class);
 			startActivityForResult(login, REGISTER_REQUEST);
 		} else if (RESULT_OK == resultCode) {

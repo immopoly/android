@@ -6,6 +6,7 @@ import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyUser;
@@ -52,6 +53,11 @@ public class PortfolioListFragment extends ListFragment implements UserDataListe
 		Flat flat = mFlats.get(position);
 		DialogFragment newFragment = ExposeFragment.newInstance(flat);
 		newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
+		if(getActivity() instanceof ImmopolyActivity){
+			((ImmopolyActivity)getActivity()).tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+					TrackingManager.ACTION_EXPOSE,
+					TrackingManager.LABEL_EXPOSE_PORTFOLIO, 0);
+		}
 	}
 
 	@Override

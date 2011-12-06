@@ -95,8 +95,14 @@ public class ExposeFragment extends DialogFragment {
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
-				// check url
-
+				// String urlstring = view.getUrl();
+				if (url.matches(".+?\\/suche\\/$")) {
+					tracker.trackEvent(
+							TrackingManager.CATEGORY_CLICKS,
+							TrackingManager.ACTION_EXPOSE,
+							TrackingManager.LABEL_BACK_INSIDE_IMMOSCOUT_WEBSITE,
+							0);
+				}
 			}
 
 			@Override

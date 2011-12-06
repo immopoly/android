@@ -98,4 +98,5 @@
     <string name="signup_no_agent_yet">Noch kein Makler?</string>
     <string name="user_signup_promote_text">Finde die besten Wohnungen und baue dein Portfolio aus, zeig das du deinen Kiez am besten kennst.</string>
     <string name="badge_info">Badge info</string>
+    <string name="start_game_button">Zum Spiel</string>
 </resources>

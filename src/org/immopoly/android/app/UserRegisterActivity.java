@@ -41,7 +41,7 @@ public class UserRegisterActivity extends Activity {
 
 		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
 				Const.ANALYTICS_INTERVAL, getApplicationContext());
-		tracker.trackPageView(TrackingManager.VIEW_LOGIN);
+		tracker.trackPageView(TrackingManager.VIEW_REGISTER);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		// init login
 		toggleProgressHandler = new Handler();
