@@ -231,13 +231,15 @@ public class UserDataManager {
 	protected void showExposeDialog(final Flat flat, final Result result) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle(activity.getString(R.string.take_over_try));
-		builder.setMessage(result.history.getText());
+		final String text = null != result.history ? result.history.getText() : (null != result.exception ? result.exception.getMessage(): "Häää?");
+
+		builder.setMessage(text);
 		// builder.setContentView(R.layout.maindialog);
 		builder.setCancelable(true).setNegativeButton(activity.getString(R.string.share_item), new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				Settings.getFlatLink(flat.uid.toString(), false);
-				Settings.shareMessage(activity, activity.getString(R.string.take_over_try), result.history.getText(), Settings.getFlatLink(
+				Settings.shareMessage(activity, activity.getString(R.string.take_over_try), text, Settings.getFlatLink(
 						flat.uid.toString(), false) /* LINk */);
 				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_SHARE, TrackingManager.LABEL_POSITIVE, 0);
 			}
