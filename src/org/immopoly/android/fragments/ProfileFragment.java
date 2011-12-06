@@ -26,9 +26,12 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ProfileFragment extends Fragment implements UserDataListener {
 
 	private ImageListDownloader imageDownloader;
+
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View layout = inflater.inflate(R.layout.fragment_profile, container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View layout = inflater.inflate(R.layout.fragment_profile, container,
+				false);
 		UserDataManager.instance.addUserDataListener(this);
 		imageDownloader = Settings.getExposeImageDownloader(getActivity());
 		updateVisibility(layout);
@@ -44,32 +47,45 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
 				if (null != badgeAdapter.getItem(position)) {
-					Toast.makeText(getActivity(), badgeAdapter.getItem(position).getText(), Toast.LENGTH_LONG);
-					AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-					//builder.setTitle("<Badge name>");
-					builder.setIcon(((ImageView)arg1.findViewWithTag("badge_image")).getDrawable());
-					builder.setMessage(badgeAdapter.getItem(position).getText()).setCancelable(false).setPositiveButton("Tschüss",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int id) {
-									dialog.dismiss();
-								}
-							});
+					Toast.makeText(getActivity(), badgeAdapter
+							.getItem(position).getText(), Toast.LENGTH_LONG);
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							getActivity());
+					builder.setTitle(R.string.badge_info);
+					if (arg1 instanceof ImageView) {
+						ImageView imageView = (ImageView) arg1;
+						if (imageView != null) {
+							builder.setIcon(imageView.getDrawable());
+						}
+					}
+
+					builder.setMessage(badgeAdapter.getItem(position).getText())
+							.setCancelable(false)
+							.setPositiveButton("Tschüss",
+									new DialogInterface.OnClickListener() {
+										public void onClick(
+												DialogInterface dialog, int id) {
+											dialog.dismiss();
+										}
+									});
 					AlertDialog alert = builder.create();
 					alert.show();
 				}
 			}
 		});
-		((TextView) getView().findViewById(R.id.username)).setText(ImmopolyUser.getInstance().getUserName());
+		((TextView) getView().findViewById(R.id.username)).setText(ImmopolyUser
+				.getInstance().getUserName());
 	}
 
 	class BadgeAdapter extends BaseAdapter {
 
 		@Override
 		public int getCount() {
-			int count =ImmopolyUser.getInstance().getBadges().size();
-			if (count>5)
+			int count = ImmopolyUser.getInstance().getBadges().size();
+			if (count > 5)
 				return count;
 			else
 				return 5;
@@ -101,9 +117,9 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 				imageView = (ImageView) convertView;
 			}
 			final ImmopolyBadge b = getItem(position);
-			if(null!=b){
+			if (null != b) {
 				imageDownloader.download(b.getUrl(), imageView);
-			}else
+			} else
 				imageView.setImageResource(R.drawable.badge_empty);
 			return imageView;
 		}
@@ -116,7 +132,8 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 			// helptext deaktiveren
 			v.findViewById(R.id.profile_notloggedin).setVisibility(View.GONE);
 		} else {
-			v.findViewById(R.id.profile_notloggedin).setVisibility(View.VISIBLE);
+			v.findViewById(R.id.profile_notloggedin)
+					.setVisibility(View.VISIBLE);
 		}
 	}
 
