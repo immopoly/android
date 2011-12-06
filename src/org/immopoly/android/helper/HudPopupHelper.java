@@ -64,34 +64,34 @@ public class HudPopupHelper {
 				TextView currentCostTextView = (TextView) mLayoutView.findViewById(R.id.current_cost);
 				if (currentCostTextView != null) {
 					nFormat.setMinimumIntegerDigits(1);
-					nFormat.setMaximumFractionDigits(2);
+					nFormat.setMaximumFractionDigits(0);
 					nFormat.setCurrency(Currency.getInstance(Locale.GERMANY));
 
-					currentCostTextView.setText(mLayoutView.getResources().getString(R.string.current_cost_text,
-							nFormat.format(user.getLastRent())));
+					currentCostTextView.setText(nFormat.format(user.getLastRent()));
 				}
 				
 				String calculatedCosts = nFormat.format((int) (user.getLastRent() * 30));
 				TextView calculatedCostTextView = (TextView) mLayoutView.findViewById(R.id.calculated_cost);
 				if (calculatedCostTextView != null) {
-					calculatedCostTextView
-							.setText(mLayoutView.getResources().getString(R.string.calculated_cost_text, calculatedCosts));
+					calculatedCostTextView.setText(calculatedCosts);
 				}
 
 				String lastProvision = nFormat.format((int) (user.getLastProvision()));
 				TextView lastProvisionTextView = (TextView) mLayoutView.findViewById(R.id.last_provision);
 				if (lastProvisionTextView != null) {
 					lastProvisionTextView
-							.setText(mLayoutView.getResources().getString(R.string.last_provision_text, lastProvision));
+							.setText(lastProvision);
 				}
 				
 				TextView balanceCostTextView = (TextView) mLayoutView.findViewById(R.id.current_balance);
 				if (balanceCostTextView != null) {
-					balanceCostTextView.setText(balanceCostTextView.getResources().getString(R.string.current_ballance_text,
-							nFormat.format(user.getBalance())));
+					balanceCostTextView.setText(nFormat.format(user.getBalance()));
 				}
+				
+				TextView numFlatsView = (TextView) mLayoutView.findViewById( R.id.num_flats );
+				numFlatsView.setText( user.getPortfolio().size() +" / 30" );
 
-				mPopupView.showAsDropDown(view/* , xOffset, xOffset */);
+				mPopupView.showAsDropDown(view, view.getWidth(), 0 );
 			} else {
 				mPopupView.dismiss();
 			}
