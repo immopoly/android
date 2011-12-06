@@ -71,7 +71,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		addTab(R.drawable.btn_portfolio, "portfolio", PortfolioListFragment.class, false);
 		addTab(R.drawable.btn_portfolio, "portfolio_map", PortfolioMapFragment.class, true);
 		addTab(R.drawable.btn_profile, "profile", ProfileFragment.class, false);
-		addTab(R.drawable.btn_notify, "history", HistoryFragment.class, false);
+		addTab(R.drawable.btn_history, "history", HistoryFragment.class, false);
 
 		if (savedInstanceState != null) {
 			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
