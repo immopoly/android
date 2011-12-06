@@ -48,10 +48,12 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 				if (null != badgeAdapter.getItem(position)) {
 					Toast.makeText(getActivity(), badgeAdapter.getItem(position).getText(), Toast.LENGTH_LONG);
 					AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+					//builder.setTitle("<Badge name>");
+					builder.setIcon(((ImageView)arg1.findViewWithTag("badge_image")).getDrawable());
 					builder.setMessage(badgeAdapter.getItem(position).getText()).setCancelable(false).setPositiveButton("Tschüss",
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int id) {
-									getActivity().finish();
+									dialog.dismiss();
 								}
 							});
 					AlertDialog alert = builder.create();
@@ -91,6 +93,7 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 			if (convertView == null) { // if it's not recycled, initialize some
 										// attributes
 				imageView = new ImageView(getActivity());
+				imageView.setTag("badge_image");
 				imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
 				imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 				imageView.setPadding(8, 8, 8, 8);
