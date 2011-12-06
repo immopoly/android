@@ -8,15 +8,20 @@ import org.immopoly.android.helper.Settings;
 import org.immopoly.android.model.ImmopolyBadge;
 import org.immopoly.android.model.ImmopolyUser;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class ProfileFragment extends Fragment implements UserDataListener {
 
@@ -34,7 +39,26 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		GridView gridView = (GridView) getView().findViewById(R.id.gridview);
-		gridView.setAdapter(new BadgeAdapter());
+		final BadgeAdapter badgeAdapter = new BadgeAdapter();
+		gridView.setAdapter(badgeAdapter);
+		gridView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+				if (null != badgeAdapter.getItem(position)) {
+					Toast.makeText(getActivity(), badgeAdapter.getItem(position).getText(), Toast.LENGTH_LONG);
+					AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+					builder.setMessage(badgeAdapter.getItem(position).getText()).setCancelable(false).setPositiveButton("Tschüss",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									getActivity().finish();
+								}
+							});
+					AlertDialog alert = builder.create();
+					alert.show();
+				}
+			}
+		});
 		((TextView) getView().findViewById(R.id.username)).setText(ImmopolyUser.getInstance().getUserName());
 	}
 
@@ -73,10 +97,10 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 			} else {
 				imageView = (ImageView) convertView;
 			}
-			ImmopolyBadge b = getItem(position);
-			if(null!=b)
+			final ImmopolyBadge b = getItem(position);
+			if(null!=b){
 				imageDownloader.download(b.getUrl(), imageView);
-			else
+			}else
 				imageView.setImageResource(R.drawable.badge_empty);
 			return imageView;
 		}
