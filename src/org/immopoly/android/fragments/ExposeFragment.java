@@ -50,24 +50,16 @@ public class ExposeFragment extends DialogFragment {
 	 */
 	public static ExposeFragment newInstance(Flat flat) {
 		ExposeFragment f = new ExposeFragment();
-		f.setFlat(flat);
+		Bundle b = new Bundle();
+		b.putParcelable( "flat", flat );
+		f.setArguments( b );
 		return f;
-	}
-
-	/**
-	 * sets the Flat to show the exposee for
-	 * 
-	 * @param flat
-	 *            the flat
-	 */
-	public void setFlat(Flat flatp) {
-		if (null != flatp)
-			this.flat = flatp;
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		flat = getArguments().getParcelable( "flat" );
 		// fullscreen dialog with no title
 		setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme);
 	}
