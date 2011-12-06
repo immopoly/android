@@ -9,6 +9,7 @@ import org.immopoly.android.model.ImmopolyUser;
 
 import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -43,12 +44,13 @@ public class HudPopupHelper {
 
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
-					// if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
-
-					mPopupView.dismiss();
+					// do this later - otherwise HudFragment would pup me up again imidiately (better ideas welcome) 
+					new Handler().postDelayed(new Runnable() {
+						public void run() {
+							mPopupView.dismiss();
+						}
+					}, 200 );
 					return true;
-					// }
-					// return false;
 				}
 			});
 		}
