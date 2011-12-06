@@ -4,10 +4,12 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import org.immopoly.android.R;
+import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.HudPopupHelper;
+import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.ImmopolyUser;
 
 import android.os.Bundle;
@@ -98,7 +100,13 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 	public void onClick(View arg0) {
 		if (mHudPopup != null) {
 			if (UserDataManager.instance.getState() == UserDataManager.LOGGED_IN && !mHudPopup.isShowing()) {
+				if(getActivity() instanceof ImmopolyActivity){
+					((ImmopolyActivity)getActivity()).tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+							TrackingManager.ACTION_VIEW,
+							TrackingManager.LABEL_HUD_POPUP, 0);
+				}
 				mHudPopup.show(getView().findViewById(R.id.hud_text), -200, -60);
+				
 			} else {
 				UserDataManager.instance.login();
 			}

@@ -3,8 +3,8 @@
  */
 package org.immopoly.android.app;
 
-
 import org.immopoly.android.R;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.ExposeFragment;
 import org.immopoly.android.fragments.HistoryFragment;
 import org.immopoly.android.fragments.MapFragment;
@@ -12,6 +12,7 @@ import org.immopoly.android.fragments.OnMapItemClickedListener;
 import org.immopoly.android.fragments.PortfolioListFragment;
 import org.immopoly.android.fragments.PortfolioMapFragment;
 import org.immopoly.android.fragments.ProfileFragment;
+import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.widget.TabManager;
@@ -32,18 +33,21 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.MapView;
 
 /**
  * @author tosa,sebastia,björn Example implementation of fragments communication
  */
-public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener  {
+public class ImmopolyActivity extends FragmentActivity implements
+		OnMapItemClickedListener {
 
 	private MapView mMapView;
 	private Fragment mMapViewHolder;
 
 	TabHost mTabHost;
 	TabManager mTabManager;
+	public GoogleAnalyticsTracker tracker;
 
 	/**
 	 * Init the game
@@ -51,8 +55,12 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		tracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
 
-		UserDataManager.instance.setActivity( this );
+		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getApplicationContext());
+		UserDataManager.instance.setActivity(this);
 		setContentView(R.layout.immopoly_activity);
 
 		// mFragmentContainer = (FrameLayout)
@@ -66,10 +74,13 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 
 		mTabManager = new TabManager(this, mTabHost, R.id.fragment_container);
 
-		// TODO cleanup fragment management for fragments with an without tabs (currently in widget.TabManager)
+		// TODO cleanup fragment management for fragments with an without tabs
+		// (currently in widget.TabManager)
 		addTab(R.drawable.btn_map, "map", MapFragment.class, false);
-		addTab(R.drawable.btn_portfolio, "portfolio", PortfolioListFragment.class, false);
-		addTab(R.drawable.btn_portfolio, "portfolio_map", PortfolioMapFragment.class, true);
+		addTab(R.drawable.btn_portfolio, "portfolio",
+				PortfolioListFragment.class, false);
+		addTab(R.drawable.btn_portfolio, "portfolio_map",
+				PortfolioMapFragment.class, true);
 		addTab(R.drawable.btn_profile, "profile", ProfileFragment.class, false);
 		addTab(R.drawable.btn_history, "history", HistoryFragment.class, false);
 
@@ -79,14 +90,15 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 
 	}
 
-	private void addTab(int imageId, String name, Class<?> clss, boolean tabless ) {
+	private void addTab(int imageId, String name, Class<?> clss, boolean tabless) {
 		TabSpec tabSpec = mTabHost.newTabSpec(name);
-		if ( ! tabless ) {
-			ImageButton tab = (ImageButton) LayoutInflater.from(this).inflate(R.layout.tab_map, null);
+		if (!tabless) {
+			ImageButton tab = (ImageButton) LayoutInflater.from(this).inflate(
+					R.layout.tab_map, null);
 			tab.setImageResource(imageId);
 			tabSpec.setIndicator(tab);
 		}
-		mTabManager.addTab( tabSpec, clss, null, tabless );
+		mTabManager.addTab(tabSpec, clss, null, tabless);
 	}
 
 	public TabManager getTabManager() {
@@ -121,11 +133,15 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	}
 
 	@Override
-	public void onFlatClicked( Flat flat ) {
-//		Toast.makeText(this, "onFlatClicked", Toast.LENGTH_LONG).show();
+	public void onFlatClicked(Flat flat) {
+		// Toast.makeText(this, "onFlatClicked", Toast.LENGTH_LONG).show();
 		DialogFragment newFragment = ExposeFragment.newInstance(flat);
 		// newFragment.setArguments(tmp);
 		newFragment.show(getSupportFragmentManager(), "dialog");
+		tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+				TrackingManager.ACTION_EXPOSE,
+				TrackingManager.LABEL_EXPOSE_MAP, 0);
+
 	}
 
 	/**
@@ -137,12 +153,14 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	 */
 	public MapView acquireMapView(Fragment mapViewHolder) {
 		if (this.mMapViewHolder != null) {
-			throw new IllegalStateException("The one and only MapView was not released by "
-					+ mMapViewHolder.getClass().getName());
+			throw new IllegalStateException(
+					"The one and only MapView was not released by "
+							+ mMapViewHolder.getClass().getName());
 		}
 		this.mMapViewHolder = mapViewHolder;
 		if (mMapView == null) {
-			mMapView = new MapView(this, getString(R.string.google_maps_key_debug));
+			mMapView = new MapView(this,
+					getString(R.string.google_maps_key_debug));
 			mMapView.setClickable(true);
 			mMapView.setTag("map_view");
 		}
@@ -157,27 +175,31 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	 */
 	public void releaseMapView(Fragment mapViewHolder) {
 		if (mapViewHolder != mMapViewHolder) {
-			throw new IllegalStateException("Wrong Fragment tried to release the one and only MapView " + " Holder: "
-					+ this.mMapViewHolder.getClass().getName() + " Releaser: " + mapViewHolder.getClass().getName());
+			throw new IllegalStateException(
+					"Wrong Fragment tried to release the one and only MapView "
+							+ " Holder: "
+							+ this.mMapViewHolder.getClass().getName()
+							+ " Releaser: "
+							+ mapViewHolder.getClass().getName());
 		}
-		if (mMapView.getParent() != null && mMapView.getParent() instanceof ViewGroup)
+		if (mMapView.getParent() != null
+				&& mMapView.getParent() instanceof ViewGroup)
 			((ViewGroup) mMapView.getParent()).removeView(mMapView);
 		mMapView.getOverlays().clear();
 		mMapView.removeAllViews();
 		mMapViewHolder = null;
 	}
 
-
-//	@Override
-//	public void onShareClick(int exposeID, boolean isInPortfolio) {
-//		Log.i(Const.LOG_TAG, "https://github.com/immopoly/android/issues/15");
-//	}
+	// @Override
+	// public void onShareClick(int exposeID, boolean isInPortfolio) {
+	// Log.i(Const.LOG_TAG, "https://github.com/immopoly/android/issues/15");
+	// }
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		UserDataManager.instance.onActivityResult(requestCode, resultCode, data);
+		UserDataManager.instance
+				.onActivityResult(requestCode, resultCode, data);
 	}
-	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -203,7 +225,8 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		case R.id.menu_contact:
 			intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("message/rfc822");
-			intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "immopolyteam@gmail.com" });
+			intent.putExtra(Intent.EXTRA_EMAIL,
+					new String[] { "immopolyteam@gmail.com" });
 			intent.putExtra(Intent.EXTRA_SUBJECT, "Immopoly Feedback");
 			startActivity(Intent.createChooser(intent, "Feedback:"));
 			break;
@@ -215,6 +238,12 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		}
 
 		return true;
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		tracker.stopSession();
 	}
 
 }
