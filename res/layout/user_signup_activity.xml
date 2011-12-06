@@ -71,6 +71,9 @@
             android:text="@string/user_signup_promote_text"
             android:textColor="@color/soft_green"
             android:textSize="20sp"
+            android:paddingBottom="7dip"
+            android:paddingLeft="14dip"
+            android:paddingRight="14dip"
             android:textStyle="bold" />
 
         <Button
