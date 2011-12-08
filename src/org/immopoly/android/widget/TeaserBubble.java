@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.immopoly.android.R;
 import org.immopoly.android.adapter.FlatsPagerAdapter;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.model.Flat;
 
 import com.google.android.maps.GeoPoint;
@@ -21,6 +22,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -35,8 +37,9 @@ public class TeaserBubble extends FrameLayout {
 	private static final float TOP_PADDING_DP 	 	 =   6;
 	private static final float RECT_ROUNDNESS_DP 	 =   6;
 	private static final float SHADOW_OFFSET_DP		 =   6;
-	private static final float NOSE_SIZE_DP		 	 =  15;
+	private static final float NOSE_SIZE_DP		 	 =  60;
 	private static final float NOSE_WIDTH_DP		 =  17;
+	private static final float MAGIC_SHIFT_FACTOR	 = 2.2f; // adjust this if shadow is to far left/right
 
 	// statics 
 	private static float   screenDesity = 1.0f; // like on a G1!!11!
@@ -54,9 +57,12 @@ public class TeaserBubble extends FrameLayout {
 	private RectF bubbleRect;
 	private RectF noseRootRect;
 	private Path nosePath;
+	private ViewPager flatsPager;
+	private Fragment fragment;
 	
 	public TeaserBubble( Fragment fragment, MapView mapView, ArrayList<Flat> flats) {
 		super( fragment.getActivity() );
+		this.fragment	 = fragment;
 		this.mapView 	 = mapView;
 		this.flats 		 = flats;
 
@@ -75,7 +81,7 @@ public class TeaserBubble extends FrameLayout {
 		setBackgroundDrawable( new ColorDrawable( 0x00000000 ) );
 		setup();
 
-		ViewPager flatsPager = new ViewPager( fragment.getActivity() );
+		flatsPager = new ViewPager( fragment.getActivity() );
 		final FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams( 
 				LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT );
 		flatsPager.setLayoutParams(layoutParams);
@@ -154,12 +160,12 @@ public class TeaserBubble extends FrameLayout {
 		final int height = getHeight();
 		
 		// draw shadow
-		final float shadowHeight = getHeight()*0.5f;
+		final float shadowHeight = (getHeight()-noseSizePx)*0.5f;
 		final float skew = 0.3f;
 		final float roundness = RECT_ROUNDNESS_DP * screenDesity;
 		RectF r = new RectF( sidePadding, shadowHeight, width-sidePadding, height-noseSizePx+SHADOW_OFFSET_DP*screenDesity );
 		canvas.save();
-		canvas.translate( shadowHeight*skew*1.96f, 0 );
+		canvas.translate( shadowHeight*skew*MAGIC_SHIFT_FACTOR, 0 );
 		canvas.skew( -skew, 0.0f );
 		canvas.drawRoundRect( r, roundness, roundness, shadowPaint );
 		canvas.restore();
@@ -188,5 +194,13 @@ public class TeaserBubble extends FrameLayout {
 
 	public void detach() {
 		this.mapView.removeView( this );
+	}
+
+	public void refreshContent() {
+		Log.i( Const.LOG_TAG, "TeaserBubble.refresh" );
+		int idx = flatsPager.getCurrentItem();
+		FlatsPagerAdapter pagerAdapter = new FlatsPagerAdapter( flats, fragment );
+		flatsPager.setAdapter( pagerAdapter );
+		flatsPager.setCurrentItem( idx );
 	}
 }

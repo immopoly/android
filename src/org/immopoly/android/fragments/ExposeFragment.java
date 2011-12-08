@@ -139,10 +139,10 @@ public class ExposeFragment extends DialogFragment {
 				@Override
 				public void onClick(View v) {
 
-					Settings.getFlatLink(flat.uid.toString(), false);
+					Settings.getFlatLink(Integer.toString(flat.uid), false);
 					Settings.shareMessage(getActivity(), getActivity()
 							.getString(R.string.share), flat.name, Settings
-							.getFlatLink(flat.uid.toString(), false) /* LINk */);
+							.getFlatLink(Integer.toString(flat.uid), false) /* LINk */);
 					tracker.trackEvent(TrackingManager.CATEGORY_ALERT,
 							TrackingManager.ACTION_SHARE,
 							TrackingManager.LABEL_POSITIVE, 0);

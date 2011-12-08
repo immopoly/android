@@ -238,9 +238,9 @@ public class UserDataManager {
 		builder.setCancelable(true).setNegativeButton(activity.getString(R.string.share_item), new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
-				Settings.getFlatLink(flat.uid.toString(), false);
+				Settings.getFlatLink( Integer.toString(flat.uid), false);
 				Settings.shareMessage(activity, activity.getString(R.string.take_over_try), text, Settings.getFlatLink(
-						flat.uid.toString(), false) /* LINk */);
+						Integer.toString(flat.uid), false) /* LINk */);
 				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_SHARE, TrackingManager.LABEL_POSITIVE, 0);
 			}
 		});

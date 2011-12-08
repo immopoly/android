@@ -213,6 +213,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		if (mFlats == null) {
 			LocationHelper.getLastLocation(getActivity(), new MapLocationCallback());
 		} else {
+			syncFlats(); // flats may have been released in portfolio fragments 
 			updateMap(true);
 		}
 	}
@@ -410,15 +411,13 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			int mLat = (int) Math.round((minY + (maxY - minY) / 2.0) * 1000000);
 			if (centerMap) {
 				mMapController.setCenter(new GeoPoint(mLat, mLon));
-			}
-			if (count > 0) {
-				mMapOverlays.add(overlays);
 				int spanLon = (int) Math.round(((maxX - minX) / 1.0) * 1000000);
 				int spanLat = (int) Math.round(((maxY - minY) / 1.0) * 1000000);
 				mMapController.zoomToSpan(spanLat, spanLon);
-
 			}
-
+			if (count > 0) {
+				mMapOverlays.add(overlays);
+			}
 			mMapView.invalidate();
 		}
 
@@ -550,6 +549,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	public void onUserDataUpdated() {
 		syncFlats();
 		updateMap( false );
+		overlays.updateBubble();
 	}
 
 	public void hideCompass() {

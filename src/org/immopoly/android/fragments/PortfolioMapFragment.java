@@ -63,6 +63,7 @@ public class PortfolioMapFragment extends Fragment implements UserDataListener {
 	public void onUserDataUpdated() {
 		// TODO check my vilibility
 		mFlats = ImmopolyUser.getInstance().getPortfolio();
+		flatsOverlay.hideBubble();
 		flatsOverlay.setFlats(mFlats);
 		mMapView.invalidate();
 	}

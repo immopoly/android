@@ -42,7 +42,7 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 	
 	private static SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	// http://developer.immobilienscout24.de/wiki/Expose/GET
-	public Integer uid;
+	public int uid;
 	public String name;
 	public String description;
 	public String locationNote;

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import org.immopoly.android.R;
 import org.immopoly.android.adapter.FlatsPagerAdapter;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.MapFragment;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
@@ -34,6 +35,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -127,12 +129,7 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 	@Override
 	public boolean onTap(GeoPoint p, MapView mapView) {
 		if (!super.onTap(p, mapView)) {
-			if ( bubble != null ) {
-				bubble.detach();
-				bubble = null;
-				if (mMapFragment instanceof MapFragment) // show wind rose (hack)
-					((MapFragment) mMapFragment).showCompass();
-			}
+			hideBubble();
 			mMapView.setBuiltInZoomControls(true);
 			mMapView.getZoomButtonsController().setVisible(true);
 		}
@@ -147,10 +144,7 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 			Point p   = new Point();		// current screen pos of selected icon 
 			mMapView.getProjection().toPixels( bubble.mapIconGeoPoint, p );
 			if ( Math.abs( ntp.x - p.x) > 20 || Math.abs( ntp.y - p.y) > 20 ) {
-				bubble.detach();
-				bubble = null;
-				if (mMapFragment instanceof MapFragment) // show wind rose (hack)
-					((MapFragment) mMapFragment).showCompass();
+				hideBubble();
 			}
 		}
 		// test for map zoom. Evtly do clusterizing 
@@ -210,6 +204,20 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 		// see http://groups.google.com/group/android-developers/browse_thread/thread/38b11314e34714c3
 		setLastFocusedIndex(-1);
 		populate();
+	}
+	
+	public void hideBubble() {
+		if ( bubble != null ) {
+			bubble.detach();
+			bubble = null;
+			if (mMapFragment instanceof MapFragment) // show wind rose (hack)
+				((MapFragment) mMapFragment).showCompass();
+		}
+	}
+
+	public void updateBubble() {
+		if ( bubble != null )
+			bubble.refreshContent();
 	}
 
 	/*
