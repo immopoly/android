@@ -203,6 +203,66 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>android-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jarsigner-plugin</artifactId>
+            <version>1.2</version>
+            <executions>
+              <execution>
+                <id>signing</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <phase>package</phase>
+                <inherited>true</inherited>
+                <configuration>
+                  <archiveDirectory/>
+                  <includes>
+                    <include>target/*.apk</include>
+                  </includes>
+                  <keystore>immopoly-release-key.keystore</keystore>
+                  <storepass>${env.KEY_PASSWORD}</storepass>
+                  <keypass>${env.KEY_PASSWORD}</keypass>
+                  <alias>immopoly</alias>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+            <artifactId>maven-android-plugin</artifactId>
+            <configuration>
+              <zipalign>
+                <verbose>false</verbose>
+                <skip>false</skip>
+                <!-- defaults to true -->
+              </zipalign>
+            </configuration>
+            <executions>
+              <execution>
+                <id>zipalign</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>zipalign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+    </profile>
+  </profiles>
   <repositories>
     <repository>
       <id>immopoly-snapshots</id>
