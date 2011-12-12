@@ -154,7 +154,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		}
 		this.mMapViewHolder = mapViewHolder;
 		if (mMapView == null) {
-			mMapView = new MapView(this, getString(R.string.google_maps_key_debug));
+			mMapView = new MapView(this, getString(R.string.google_maps_key));
 			mMapView.setClickable(true);
 			mMapView.setTag("map_view");
 		}
