@@ -201,29 +201,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-            <groupId>com.pyx4me</groupId>
-            <artifactId>proguard-maven-plugin</artifactId>
-            <version>2.0.4</version>
-            <executions>
-                  <execution>
-                        <phase>process-classes</phase>
-                        <goals>
-                              <goal>proguard</goal>
-                        </goals>
-                  </execution>
-            </executions>
-            <configuration>
-                  <injar>android-classes</injar>
-                  <libs>
-                        <!--required for Mac-->
-                        <lib>${java.home}/lib/rt.jar</lib>
-                        <lib>${java.home}/lib/jsse.jar</lib>
-                  </libs>
-                  <proguardInclude>${basedir}/proguard.cfg</proguardInclude>
-            </configuration>
-      </plugin>
-  </plugins>
+    </plugins>
   </build>
   <profiles>
     <profile>
