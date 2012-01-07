@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +38,7 @@ import com.google.android.maps.MapView;
  * @author tosa,sebastia,björn Example implementation of fragments communication
  */
 
-public class ImmopolyActivity extends FragmentActvity implements OnMapItemClickedListener {
+public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener {
 
 	private MapView mMapView;
 	private Fragment mMapViewHolder;
