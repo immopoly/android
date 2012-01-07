@@ -12,6 +12,7 @@ import org.immopoly.android.fragments.OnMapItemClickedListener;
 import org.immopoly.android.fragments.PortfolioListFragment;
 import org.immopoly.android.fragments.PortfolioMapFragment;
 import org.immopoly.android.fragments.ProfileFragment;
+import org.immopoly.android.helper.OnTrackingEventListener;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.widget.TabManager;
@@ -38,14 +39,14 @@ import com.google.android.maps.MapView;
  * @author tosa,sebastia,björn Example implementation of fragments communication
  */
 
-public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener {
+public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener, OnTrackingEventListener {
 
 	private MapView mMapView;
 	private Fragment mMapViewHolder;
 
-	TabHost mTabHost;
-	TabManager mTabManager;
-	public GoogleAnalyticsTracker tracker;
+	private TabHost mTabHost;
+	private TabManager mTabManager;
+	private GoogleAnalyticsTracker mTracker;
 
 	/**
 	 * Init the game
@@ -53,10 +54,10 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		tracker = GoogleAnalyticsTracker.getInstance();
+		mTracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
 
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getApplicationContext());
+		mTracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getApplicationContext());
 
 		UserDataManager.instance.setActivity(this);
 		setContentView(R.layout.immopoly_activity);
@@ -133,7 +134,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		DialogFragment newFragment = ExposeFragment.newInstance(flat);
 		// newFragment.setArguments(tmp);
 		newFragment.show(getSupportFragmentManager(), "dialog");
-		tracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE,
+		mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE,
 				TrackingManager.LABEL_EXPOSE_MAP, 0);
 
 	}
@@ -242,7 +243,17 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		tracker.stopSession();
+		mTracker.stopSession();
+	}
+
+	@Override
+	public void onTrackPageView(String page) {
+		mTracker.trackPageView(page);
+	}
+
+	@Override
+	public void onTrackEvent(String category, String action, String label, int i) {
+		mTracker.trackEvent(category, action, label, i);		
 	}
 
 }
