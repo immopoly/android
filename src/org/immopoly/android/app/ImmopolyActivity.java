@@ -14,7 +14,6 @@ import org.immopoly.android.fragments.PortfolioMapFragment;
 import org.immopoly.android.fragments.ProfileFragment;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
-import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.widget.TabManager;
 
 import android.content.Intent;
@@ -22,7 +21,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,7 +29,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
-import android.widget.Toast;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.MapView;
@@ -40,7 +37,7 @@ import com.google.android.maps.MapView;
  * @author tosa,sebastia,björn Example implementation of fragments communication
  */
 
-public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener {
+public class ImmopolyActivity extends FragmentActvity implements OnMapItemClickedListener {
 
 	private MapView mMapView;
 	private Fragment mMapViewHolder;
