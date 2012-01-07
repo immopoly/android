@@ -101,7 +101,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		return mTabManager;
 	}
 
-	/**
+	/**n
 	 * Activity is visible but someone called for a action
 	 */
 	@Override
