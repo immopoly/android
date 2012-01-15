@@ -125,7 +125,7 @@
           </sign>
           <sdk>
             <path>${env.ANDROID_HOME}</path>
-            <platform>13</platform>
+            <platform>14</platform>
           </sdk>
           <emulator>
             <avd>23</avd>
