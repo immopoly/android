@@ -4,46 +4,56 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import org.immopoly.android.R;
-import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.HudPopupHelper;
+import org.immopoly.android.helper.OnTrackingEventListener;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.ImmopolyUser;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 
-public class HudFragment extends Fragment implements OnClickListener, UserDataListener
-{
+public class HudFragment extends Fragment implements OnClickListener, UserDataListener {
 	private HudPopupHelper mHudPopup;
+	private OnTrackingEventListener mEventListener;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			mEventListener = (OnTrackingEventListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString() + " must implement OnTrackingEventListener");
+		}
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.hud, container);
 		((Button) view.findViewById(R.id.hud_text)).setOnClickListener(this);
-		mHudPopup = new HudPopupHelper(getActivity(),
-				HudPopupHelper.TYPE_FINANCE_POPUP);
-		UserDataManager.instance.addUserDataListener( this );
+		mHudPopup = new HudPopupHelper(getActivity(), HudPopupHelper.TYPE_FINANCE_POPUP);
+		UserDataManager.instance.addUserDataListener(this);
 		// update HUD asap. but not now, because there is no view yet
-		Runnable updateRunnable = new Runnable() {  
+		Runnable updateRunnable = new Runnable() {
 			public void run() {
-				if ( getView() != null )
+				if (getView() != null)
 					updateHud();
-				else  // this sometimes happens, try again
-					new Handler().postDelayed( this, 100 );
+				else
+					// this sometimes happens, try again
+					new Handler().postDelayed(this, 100);
 			}
 		};
-		new Handler().post( updateRunnable );
+		new Handler().post(updateRunnable);
 		return view;
 	}
 
@@ -57,7 +67,7 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 
 	@Override
 	public void onDestroyView() {
-		UserDataManager.instance.removeUserDataListener( this );
+		UserDataManager.instance.removeUserDataListener(this);
 		super.onDestroyView();
 	}
 
@@ -68,16 +78,14 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 		View spacer = (View) getView().findViewById(R.id.hud_progress_spacer);
 		View progress = (View) getView().findViewById(R.id.hud_progress);
 		if (hudButton != null) {
-			if ( UserDataManager.instance.getState() == UserDataManager.LOGGED_IN ) {
+			if (UserDataManager.instance.getState() == UserDataManager.LOGGED_IN) {
 				progress.setVisibility(View.GONE);
 				spacer.setVisibility(View.GONE);
 				hudButton.setVisibility(View.VISIBLE);
-				NumberFormat nFormat = NumberFormat
-						.getCurrencyInstance(Locale.GERMANY);
+				NumberFormat nFormat = NumberFormat.getCurrencyInstance(Locale.GERMANY);
 				nFormat.setMinimumIntegerDigits(1);
 				nFormat.setMaximumFractionDigits(0);
-				hudButton.setText(nFormat.format(ImmopolyUser.getInstance()
-						.getBalance()));
+				hudButton.setText(nFormat.format(ImmopolyUser.getInstance().getBalance()));
 			} else if (UserDataManager.instance.getState() == UserDataManager.USER_UNKNOWN) {
 				progress.setVisibility(View.GONE);
 				spacer.setVisibility(View.GONE);
@@ -100,13 +108,11 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 	public void onClick(View arg0) {
 		if (mHudPopup != null) {
 			if (UserDataManager.instance.getState() == UserDataManager.LOGGED_IN && !mHudPopup.isShowing()) {
-				if(getActivity() instanceof ImmopolyActivity){
-					((ImmopolyActivity)getActivity()).tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
-							TrackingManager.ACTION_VIEW,
-							TrackingManager.LABEL_HUD_POPUP, 0);
-				}
+				mEventListener.onTrackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_VIEW,
+						TrackingManager.LABEL_HUD_POPUP, 0);
+
 				mHudPopup.show(getView().findViewById(R.id.hud_text), -200, -60);
-				
+
 			} else {
 				UserDataManager.instance.login();
 			}
@@ -117,5 +123,5 @@ public class HudFragment extends Fragment implements OnClickListener, UserDataLi
 	public void onUserDataUpdated() {
 		updateHud();
 	}
-	
+
 }

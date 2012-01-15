@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Locale;
 
 import org.immopoly.android.R;
+import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.api.IS24ApiService;
 import org.immopoly.android.api.ReceiverState;
-import org.immopoly.android.api.ApiResultReciever.Receiver;
 import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
@@ -17,6 +17,7 @@ import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
+import org.immopoly.android.helper.OnTrackingEventListener;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
@@ -37,13 +38,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -52,7 +53,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -76,16 +76,15 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	private int mNumberGeoCodeTry;
 	private HudPopupHelper mHudPopup;
 
-	private GoogleAnalyticsTracker tracker;
-
 	private Button hudText;
 	private ImageButton mapButton;
 
 	private OnMapItemClickedListener mOnMapItemClickedListener;
+	private OnTrackingEventListener mEventListener;
 
 	private ProgressBar progress;
 	private ImageView compass;
-	
+
 	public OnMapItemClickedListener getOnMapItemClickedListener() {
 		return mOnMapItemClickedListener;
 	}
@@ -124,6 +123,11 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString() + " must implement OnMapItemClickedListener");
 		}
+		try {
+			mEventListener = (OnTrackingEventListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString() + " must implement OnTrackingEventListener");
+		}
 	}
 
 	@Override
@@ -137,10 +141,6 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		mMapView = ((ImmopolyActivity) getActivity()).acquireMapView(this);
 		mMapView.setBuiltInZoomControls(true);
 		mMapController = mMapView.getController();
-		tracker = GoogleAnalyticsTracker.getInstance();
-		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getActivity()
-				.getApplicationContext());
 
 		// mState = (ReceiverState) getActivity()
 		// .getLastNonConfigurationInstance();
@@ -152,21 +152,21 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			mState.mReceiver.setReceiver(this);
 		}
 
-		UserDataManager.instance.addUserDataListener( this );
+		UserDataManager.instance.addUserDataListener(this);
 
-		//wrap map in relative layout for windrose icon rechts oben
-		//https://github.com/immopoly/android/issues/12
-		View layout = getActivity().getLayoutInflater().inflate( R.layout.map_fragment, null, false );
-		RelativeLayout relativeLayout = (RelativeLayout) layout.findViewById( R.id.map_relative_layout );
+		// wrap map in relative layout for windrose icon rechts oben
+		// https://github.com/immopoly/android/issues/12
+		View layout = getActivity().getLayoutInflater().inflate(R.layout.map_fragment, null, false);
+		RelativeLayout relativeLayout = (RelativeLayout) layout.findViewById(R.id.map_relative_layout);
 		relativeLayout.setGravity(Gravity.RIGHT);
-		relativeLayout.addView(mMapView,0);
-//		ImageView compass = new ImageView(getActivity());
-//		compass.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_compass));
-//		relativeLayout.addView(compass,1);
-		progress = (ProgressBar) layout.findViewById( R.id.map_progress);
-		compass = (ImageView) layout.findViewById( R.id.map_reload);
+		relativeLayout.addView(mMapView, 0);
+		// ImageView compass = new ImageView(getActivity());
+		// compass.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_compass));
+		// relativeLayout.addView(compass,1);
+		progress = (ProgressBar) layout.findViewById(R.id.map_progress);
+		compass = (ImageView) layout.findViewById(R.id.map_reload);
 		compass.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				if (null != progress)
@@ -213,7 +213,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		if (mFlats == null) {
 			LocationHelper.getLastLocation(getActivity(), new MapLocationCallback());
 		} else {
-			syncFlats(); // flats may have been released in portfolio fragments 
+			syncFlats(); // flats may have been released in portfolio fragments
 			updateMap(true);
 		}
 	}
@@ -236,11 +236,10 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		}
 	}
 
-
 	@Override
 	public void onStart() {
 		super.onStart();
-		tracker.trackPageView(TrackingManager.VIEW_MAP);
+		mEventListener.onTrackPageView(TrackingManager.VIEW_MAP);
 		updateHud(null, 0);
 	}
 
@@ -258,7 +257,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 
 	public void onDestroyView() {
-		UserDataManager.instance.removeUserDataListener( this );
+		UserDataManager.instance.removeUserDataListener(this);
 		((ImmopolyActivity) getActivity()).releaseMapView(this);
 		Log.i("IMPO", "MapFragment.onDestroyView");
 		mMapView = null;
@@ -289,14 +288,15 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			}
 		});
 	}
-	
+
 	private void requestFlatUpdate(boolean newLoc) {
-		//TODO schtief we dont need this right now
-		//		if (newLoc || LocationHelper.mAddress == null) {
-//			new GeoCodeLocationTask().execute(LocationHelper.sLat, LocationHelper.sLng);
-//		} else {
-//			setAddress(LocationHelper.mAddress);
-//		}
+		// TODO schtief we dont need this right now
+		// if (newLoc || LocationHelper.mAddress == null) {
+		// new GeoCodeLocationTask().execute(LocationHelper.sLat,
+		// LocationHelper.sLng);
+		// } else {
+		// setAddress(LocationHelper.mAddress);
+		// }
 		Intent i = new Intent(getActivity(), IS24ApiService.class);
 		i.putExtra(IS24ApiService.COMMAND, IS24ApiService.CMD_SEARCH);
 		i.putExtra(IS24ApiService.LAT, LocationHelper.sLat);
@@ -306,17 +306,16 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		updateHud(null, 0);
 	}
 
-
 	@Override
 	public void onReceiveResult(int resultCode, Bundle resultData) {
-		Log.i(Const.LOG_TAG, "onReceiveResult "+resultCode);
+		Log.i(Const.LOG_TAG, "onReceiveResult " + resultCode);
 		switch (resultCode) {
 		case IS24ApiService.STATUS_RUNNING:
 			// show progress
 			// Toast.makeText(this, "Running", Toast.LENGTH_SHORT).show();
-			if(null!=progress)
+			if (null != progress)
 				progress.setVisibility(View.VISIBLE);
-			if(null!=compass)
+			if (null != compass)
 				compass.setVisibility(View.GONE);
 			break;
 		case IS24ApiService.STATUS_FINISHED:
@@ -327,9 +326,9 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			updateMap(true);
 			// do something interesting
 			// hide progress
-			if(null!=progress)
+			if (null != progress)
 				progress.setVisibility(View.GONE);
-			if(null!=compass)
+			if (null != compass)
 				compass.setVisibility(View.VISIBLE);
 			break;
 		case IS24ApiService.STATUS_ERROR:
@@ -343,17 +342,18 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		}
 	}
 
-	// sets immopoly specific attributes on owned Flats that were loaded from IS24 json 
+	// sets immopoly specific attributes on owned Flats that were loaded from
+	// IS24 json
 	private void syncFlats() {
-		if ( mFlats == null )
+		if (mFlats == null)
 			return;
-		for ( Flat iscoutFlat : mFlats ) {
+		for (Flat iscoutFlat : mFlats) {
 			int uid = iscoutFlat.uid;
 			iscoutFlat.owned = false;
-			if ( UserDataManager.instance.getState() == UserDataManager.LOGGED_IN )
-				for ( Flat userFlat : ImmopolyUser.getInstance().getPortfolio() ) {
-					if ( userFlat.uid == uid ) {
-						iscoutFlat.takeoverDate  = userFlat.takeoverDate;
+			if (UserDataManager.instance.getState() == UserDataManager.LOGGED_IN)
+				for (Flat userFlat : ImmopolyUser.getInstance().getPortfolio()) {
+					if (userFlat.uid == uid) {
+						iscoutFlat.takeoverDate = userFlat.takeoverDate;
 						iscoutFlat.takeoverTries = userFlat.takeoverTries;
 						iscoutFlat.owned = true;
 						break;
@@ -382,10 +382,9 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 					if (f.lng < minX) {
 						minX = f.lng;
 					}
-					if (f.lng > maxX){
+					if (f.lng > maxX) {
 						maxX = f.lng;
 					}
-						
 
 					if (f.lat < minY)
 						minY = f.lat;
@@ -452,37 +451,38 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 		@Override
 		protected void onPostExecute(String result) {
-			//TODO schtief we dont need geocoding right now
-			//			setAddress(result);
+			// TODO schtief we dont need geocoding right now
+			// setAddress(result);
 		}
 	}
 
-	//TODO schtief we dont need geocoding right now
-//	private void setAddress(String address) {
-//		if (address != null && address.length() > 0) {
-//			mNumberGeoCodeTry = 0;
-//			// ((TextView) findViewById(R.id.header_location)).setText(address);
-//		} else if (LocationHelper.sAccuracy >= 0) {
-//			mNumberGeoCodeTry++;
-//			if (mNumberGeoCodeTry < 3) {
-//				new GeoCodeLocationTask().execute(LocationHelper.sLat, LocationHelper.sLng);
-//			} else {
-//				NumberFormat nFormat = NumberFormat.getInstance(Locale.GERMANY);
-//				nFormat.setMinimumIntegerDigits(2);
-//				nFormat.setMaximumFractionDigits(2);
-//				/*
-//				 * ((TextView)
-//				 * findViewById(R.id.header_location)).setText("lat:" +
-//				 * nFormat.format(LocationHelper.sLat) + " - lng:" +
-//				 * nFormat.format(LocationHelper.sLng) + " ~" +
-//				 * nFormat.format(LocationHelper.sAccuracy));
-//				 */
-//			}
-//		} else {
-//			// ((TextView) findViewById(R.id.header_location))
-//			// .setText(R.string.no_location_value);
-//		}
-//	}
+	// TODO schtief we dont need geocoding right now
+	// private void setAddress(String address) {
+	// if (address != null && address.length() > 0) {
+	// mNumberGeoCodeTry = 0;
+	// // ((TextView) findViewById(R.id.header_location)).setText(address);
+	// } else if (LocationHelper.sAccuracy >= 0) {
+	// mNumberGeoCodeTry++;
+	// if (mNumberGeoCodeTry < 3) {
+	// new GeoCodeLocationTask().execute(LocationHelper.sLat,
+	// LocationHelper.sLng);
+	// } else {
+	// NumberFormat nFormat = NumberFormat.getInstance(Locale.GERMANY);
+	// nFormat.setMinimumIntegerDigits(2);
+	// nFormat.setMaximumFractionDigits(2);
+	// /*
+	// * ((TextView)
+	// * findViewById(R.id.header_location)).setText("lat:" +
+	// * nFormat.format(LocationHelper.sLat) + " - lng:" +
+	// * nFormat.format(LocationHelper.sLng) + " ~" +
+	// * nFormat.format(LocationHelper.sAccuracy));
+	// */
+	// }
+	// } else {
+	// // ((TextView) findViewById(R.id.header_location))
+	// // .setText(R.string.no_location_value);
+	// }
+	// }
 
 	class MyDetector extends SimpleOnGestureListener {
 		@Override
@@ -517,12 +517,6 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		}
 	}
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		tracker.stopSession();
-	}
-
 	public void updateHud(Intent data, int element) {
 		if (mapButton != null) {
 			mapButton.setSelected(true);
@@ -548,7 +542,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	@Override
 	public void onUserDataUpdated() {
 		syncFlats();
-		updateMap( false );
+		updateMap(false);
 		overlays.updateBubble();
 	}
 
@@ -557,7 +551,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 
 	public void showCompass() {
-		if ( progress.getVisibility() != View.VISIBLE )
+		if (progress.getVisibility() != View.VISIBLE)
 			compass.setVisibility(View.VISIBLE);
 	}
 

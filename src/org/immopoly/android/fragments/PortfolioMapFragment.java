@@ -5,6 +5,7 @@ import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.widget.ImmoscoutPlacesOverlay;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 
 public class PortfolioMapFragment extends Fragment implements UserDataListener {
@@ -50,6 +52,19 @@ public class PortfolioMapFragment extends Fragment implements UserDataListener {
 
 		UserDataManager.instance.addUserDataListener(this);
 
+		// set map to show all flats
+		double minLat = Double.MAX_VALUE, maxLat = Double.MIN_VALUE, minLon = Double.MAX_VALUE, maxLon = Double.MIN_VALUE;
+		for (Flat f : mFlats) {
+			if ( f.lat < minLat ) minLat = f.lat;
+			if ( f.lat > maxLat ) maxLat = f.lat;
+			if ( f.lng < minLon ) minLon = f.lng;
+			if ( f.lng > maxLon ) maxLon = f.lng;
+		}
+		Log.i( Const.LOG_TAG, "LAT MIN: " + minLat + "  MAX: " + maxLat );
+		Log.i( Const.LOG_TAG, "LON MIN: " + minLon + "  MAX: " + maxLon );
+		mMapView.getController().setCenter( new GeoPoint( (int) ((minLat+maxLat)/2 * 1E6), (int) ((minLon+maxLon)/2*1E6) ));
+		mMapView.getController().zoomToSpan( (int) ((maxLat-minLat) * 1E6 * 1.1), (int) ((maxLon-minLon) * 1E6 * 1.1));
+		
 		return layout;
 	}
 
