@@ -3,6 +3,12 @@
  */
 package org.immopoly.android.app;
 
+import oauth.signpost.OAuth;
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+import oauth.signpost.exception.OAuthNotAuthorizedException;
+
 import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.ExposeFragment;
@@ -15,9 +21,11 @@ import org.immopoly.android.fragments.ProfileFragment;
 import org.immopoly.android.helper.OnTrackingEventListener;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
+import org.immopoly.android.model.OAuthData;
 import org.immopoly.android.widget.TabManager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -84,7 +92,8 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		if (savedInstanceState != null) {
 			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
 		}
-
+		// for generating oauth token
+		// signIn();
 	}
 
 	private void addTab(int imageId, String name, Class<?> clss, boolean tabless) {
@@ -254,6 +263,43 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	@Override
 	public void onTrackEvent(String category, String action, String label, int i) {
 		mTracker.trackEvent(category, action, label, i);		
+	}
+	
+	
+	public void signIn() {
+		String authUrl = "";
+		SharedPreferences shared = getSharedPreferences("oauth", 0);
+		String accessToken = shared.getString("oauth_token", "");
+		if (accessToken.length() > 0) {
+			OAuthData.getInstance(this).signedIn = true;
+			OAuthData.getInstance(this).accessToken = accessToken;
+
+		} else {
+			OAuthData.getInstance(this).signedIn = false;
+			try {
+				authUrl = OAuthData.getInstance(this).provider.retrieveRequestToken(
+						OAuthData.getInstance(this).consumer, OAuth.OUT_OF_BAND);
+			} catch (OAuthMessageSignerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthNotAuthorizedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthExpectationFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthCommunicationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			// Login in web view
+			Intent i = new Intent(this, OauthLoginActivity.class);
+			i.putExtra("oauth_url", authUrl);
+			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(i);
+		}
+
 	}
 
 }

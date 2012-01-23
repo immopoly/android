@@ -66,7 +66,10 @@
         </receiver>
 
         <service android:name=".c2dm.C2DMReceiver" />
-
+		
+        <activity android:name=".app.OauthLoginActivity"
+            android:launchMode="singleTop" >
+		</activity>
         <activity
             android:name=".app.UserSignupActivity"
             android:launchMode="singleTop"
