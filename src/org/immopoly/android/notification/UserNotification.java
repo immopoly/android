@@ -38,6 +38,7 @@ public class UserNotification {
 		
 		// TODO need to define proper starting point
 		Intent notificationIntent = new Intent(context, ImmopolyActivity.class);
+		notificationIntent.putExtra(ImmopolyActivity.C2DM_START, ImmopolyActivity.START_HISTORY);
 		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
 

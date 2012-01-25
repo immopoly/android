@@ -28,16 +28,16 @@ public class C2DMReceiver extends C2DMBaseReceiver {
 		// The registrationId should be send to your applicatioin server.
 		// We just log it to the LogCat view
 		// We will copy it from there
-		Log.e("C2DM", "Registration ID arrived: Fantastic!!!");
-		Log.e("C2DM", registrationId);
+		Log.d("C2DM", "Registration ID arrived: Fantastic!!!");
+		Log.d("C2DM", registrationId);
 		String registerC2DM = WebHelper.SERVER_URL_PREFIX + "/user/C2DMregister?token="+ ImmopolyUser.getInstance().readToken(context	) + "&c2dmregistrationid=" + registrationId;
 		try {
 			JSONObject obj = WebHelper.getHttpData(new URL(registerC2DM), false, context);
-			Log.e("C2DM", "registration with immopoly server YES");
-			Log.e("C2DM", "request->" + registerC2DM);
-			Log.e("C2DM", "DATA " + obj.toString());
+			Log.d("C2DM", "registration with immopoly server YES");
+			Log.d("C2DM", "request->" + registerC2DM);
+			Log.d("C2DM", "DATA " + obj.toString());
 		} catch (JSONException e) {
-			Log.e("C2DM", "registration with immopoly NOOOOOOOOOOOOOOO");
+			Log.d("C2DM", "registration with immopoly NOOOOOOOOOOOOOOO");
 			e.printStackTrace();
 		}
 	};
@@ -45,25 +45,25 @@ public class C2DMReceiver extends C2DMBaseReceiver {
 	@Override
 	public void onUnregistered(Context context) {
 		super.onUnregistered(context);
-		Log.e("C2DM", "Sucessfully unregistered");
+		Log.d("C2DM", "Sucessfully unregistered");
 	}
 
 	@Override
 	protected void onMessage(Context context, Intent intent) {
-		Log.e("C2DM", "Message: Fantastic!!!");
+		Log.d("C2DM", "Message: Fantastic!!!");
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 		boolean notification = sharedPreferences.getBoolean("notification", true);
 		if (!notification) {
-			Log.e("C2DM", "BUT WE DONT WANT IT ;///!!!");
+			Log.d("C2DM", "BUT WE DONT WANT IT ;///!!!");
 			return;
 		}
 		// Extract the payload from the message
 		Bundle extras = intent.getExtras();
 		if (extras != null) {
 			for(String s : extras.keySet()){
-				Log.e("C2DM", s);
+				Log.d("C2DM", s);
 			}
-			System.out.println(extras.get("message"));
+			//System.out.println(extras.get("message"));
 			UserNotification.showNotification(context,extras.getString("type"), extras.getString("message"),extras.getString("title"));
 			// Now do something smart based on the information
 		}
@@ -71,7 +71,7 @@ public class C2DMReceiver extends C2DMBaseReceiver {
 
 	@Override
 	public void onError(Context context, String errorId) {
-		Log.e("C2DM", "Error occured!!!");
+		Log.d("C2DM", "Error occured!!!");
 	}
 
 }

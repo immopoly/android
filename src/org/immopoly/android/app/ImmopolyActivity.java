@@ -22,8 +22,10 @@ import org.immopoly.android.helper.OnTrackingEventListener;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.OAuthData;
+import org.immopoly.android.notification.UserNotification;
 import org.immopoly.android.widget.TabManager;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -47,8 +49,11 @@ import com.google.android.maps.MapView;
  * @author tosa,sebastia,björn Example implementation of fragments communication
  */
 
-public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener, OnTrackingEventListener {
+public class ImmopolyActivity extends FragmentActivity implements
+		OnMapItemClickedListener, OnTrackingEventListener {
 
+	public static final String C2DM_START = "c2dm_start";
+	public static final int START_HISTORY = 0x1;
 	private MapView mMapView;
 	private Fragment mMapViewHolder;
 
@@ -65,7 +70,8 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		mTracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
 
-		mTracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getApplicationContext());
+		mTracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getApplicationContext());
 
 		UserDataManager.instance.setActivity(this);
 		setContentView(R.layout.immopoly_activity);
@@ -84,8 +90,10 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		// TODO cleanup fragment management for fragments with an without tabs
 		// (currently in widget.TabManager)
 		addTab(R.drawable.btn_map, "map", MapFragment.class, false);
-		addTab(R.drawable.btn_portfolio, "portfolio", PortfolioListFragment.class, false);
-		addTab(R.drawable.btn_portfolio, "portfolio_map", PortfolioMapFragment.class, true);
+		addTab(R.drawable.btn_portfolio, "portfolio",
+				PortfolioListFragment.class, false);
+		addTab(R.drawable.btn_portfolio, "portfolio_map",
+				PortfolioMapFragment.class, true);
 		addTab(R.drawable.btn_profile, "profile", ProfileFragment.class, false);
 		addTab(R.drawable.btn_history, "history", HistoryFragment.class, false);
 
@@ -99,26 +107,38 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	private void addTab(int imageId, String name, Class<?> clss, boolean tabless) {
 		TabSpec tabSpec = mTabHost.newTabSpec(name);
 		if (!tabless) {
-			ImageButton tab = (ImageButton) LayoutInflater.from(this).inflate(R.layout.tab_map, null);
+			ImageButton tab = (ImageButton) LayoutInflater.from(this).inflate(
+					R.layout.tab_map, null);
 			tab.setImageResource(imageId);
 			tabSpec.setIndicator(tab);
 		}
 		mTabManager.addTab(tabSpec, clss, null, tabless);
 	}
 
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+	}
+
 	public TabManager getTabManager() {
 		return mTabManager;
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		parseData();
+	}
 
-	/**n
-	 * Activity is visible but someone called for a action
+	/**
+	 * n Activity is visible but someone called for a action
 	 */
 	@Override
 	public void onNewIntent(Intent newIntent) {
-		super.onNewIntent(newIntent);
 		// update original intent
-		setIntent(newIntent);
-		parseData();
+		setIntent(newIntent);	
 	}
 
 	@Override
@@ -131,10 +151,21 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	 * parse intent and do action
 	 */
 	private void parseData() {
-		// TODO implement parsing and actions
-		getIntent();
+		// Start with specific fragment
+		Intent i = getIntent();
+		if (mTabHost != null && i.hasExtra(ImmopolyActivity.C2DM_START)) {
+			switch (i.getIntExtra(ImmopolyActivity.C2DM_START,
+					ImmopolyActivity.START_HISTORY)) {
+			case ImmopolyActivity.START_HISTORY:
+				mTabHost.setCurrentTabByTag("history");
+				break;
 
-		// showFragment(1, null);
+			default:
+				mTabHost.setCurrentTabByTag("history");
+				break;
+			}
+			i.removeExtra(ImmopolyActivity.C2DM_START);
+		}
 	}
 
 	@Override
@@ -143,7 +174,8 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		DialogFragment newFragment = ExposeFragment.newInstance(flat);
 		// newFragment.setArguments(tmp);
 		newFragment.show(getSupportFragmentManager(), "dialog");
-		mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE,
+		mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+				TrackingManager.ACTION_EXPOSE,
 				TrackingManager.LABEL_EXPOSE_MAP, 0);
 
 	}
@@ -157,12 +189,14 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	 */
 	public MapView acquireMapView(Fragment mapViewHolder) {
 		if (this.mMapViewHolder != null) {
-			throw new IllegalStateException("The one and only MapView was not released by "
-					+ mMapViewHolder.getClass().getName());
+			throw new IllegalStateException(
+					"The one and only MapView was not released by "
+							+ mMapViewHolder.getClass().getName());
 		}
 		this.mMapViewHolder = mapViewHolder;
 		if (mMapView == null) {
-			mMapView = new MapView(this, getString(R.string.google_maps_key_debug));
+			mMapView = new MapView(this,
+					getString(R.string.google_maps_key_debug));
 			mMapView.setClickable(true);
 			mMapView.setTag("map_view");
 		}
@@ -177,10 +211,15 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	 */
 	public void releaseMapView(Fragment mapViewHolder) {
 		if (mapViewHolder != mMapViewHolder) {
-			throw new IllegalStateException("Wrong Fragment tried to release the one and only MapView " + " Holder: "
-					+ this.mMapViewHolder.getClass().getName() + " Releaser: " + mapViewHolder.getClass().getName());
+			throw new IllegalStateException(
+					"Wrong Fragment tried to release the one and only MapView "
+							+ " Holder: "
+							+ this.mMapViewHolder.getClass().getName()
+							+ " Releaser: "
+							+ mapViewHolder.getClass().getName());
 		}
-		if (mMapView.getParent() != null && mMapView.getParent() instanceof ViewGroup)
+		if (mMapView.getParent() != null
+				&& mMapView.getParent() instanceof ViewGroup)
 			((ViewGroup) mMapView.getParent()).removeView(mMapView);
 		mMapView.getOverlays().clear();
 		mMapView.removeAllViews();
@@ -194,7 +233,8 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		UserDataManager.instance.onActivityResult(requestCode, resultCode, data);
+		UserDataManager.instance
+				.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -231,7 +271,8 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		case R.id.menu_contact:
 			intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("message/rfc822");
-			intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "immopolyteam@gmail.com" });
+			intent.putExtra(Intent.EXTRA_EMAIL,
+					new String[] { "immopolyteam@gmail.com" });
 			intent.putExtra(Intent.EXTRA_SUBJECT, "Immopoly Feedback");
 			startActivity(Intent.createChooser(intent, "Feedback:"));
 			break;
@@ -262,10 +303,9 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 
 	@Override
 	public void onTrackEvent(String category, String action, String label, int i) {
-		mTracker.trackEvent(category, action, label, i);		
+		mTracker.trackEvent(category, action, label, i);
 	}
-	
-	
+
 	public void signIn() {
 		String authUrl = "";
 		SharedPreferences shared = getSharedPreferences("oauth", 0);
@@ -277,8 +317,10 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		} else {
 			OAuthData.getInstance(this).signedIn = false;
 			try {
-				authUrl = OAuthData.getInstance(this).provider.retrieveRequestToken(
-						OAuthData.getInstance(this).consumer, OAuth.OUT_OF_BAND);
+				authUrl = OAuthData.getInstance(this).provider
+						.retrieveRequestToken(
+								OAuthData.getInstance(this).consumer,
+								OAuth.OUT_OF_BAND);
 			} catch (OAuthMessageSignerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
