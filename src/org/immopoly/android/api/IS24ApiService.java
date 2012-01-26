@@ -44,7 +44,6 @@ public class IS24ApiService extends IntentService {
 
 	public IS24ApiService() {
 		super("");
-		// TODO Auto-generated constructor stub
 	}
 	
 	public static final int CMD_REGION = 0x10;
