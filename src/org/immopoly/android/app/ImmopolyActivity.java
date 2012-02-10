@@ -154,6 +154,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 		// Start with specific fragment
 		Intent i = getIntent();
 		if (mTabHost != null && i.hasExtra(ImmopolyActivity.C2DM_START)) {
+			UserDataManager.instance.getUserInfo();
 			switch (i.getIntExtra(ImmopolyActivity.C2DM_START,
 					ImmopolyActivity.START_HISTORY)) {
 			case ImmopolyActivity.START_HISTORY:
