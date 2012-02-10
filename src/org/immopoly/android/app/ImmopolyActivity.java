@@ -117,7 +117,6 @@ public class ImmopolyActivity extends FragmentActivity implements
 
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 	}
 
@@ -127,7 +126,6 @@ public class ImmopolyActivity extends FragmentActivity implements
 	
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		parseData();
 	}
@@ -323,16 +321,12 @@ public class ImmopolyActivity extends FragmentActivity implements
 								OAuthData.getInstance(this).consumer,
 								OAuth.OUT_OF_BAND);
 			} catch (OAuthMessageSignerException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (OAuthNotAuthorizedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (OAuthExpectationFailedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (OAuthCommunicationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
