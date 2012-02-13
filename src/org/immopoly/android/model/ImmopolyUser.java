@@ -51,6 +51,7 @@ public class ImmopolyUser extends User {
 	private static ImmopolyUser sInstance = null;
 
 	private List<ImmopolyBadge> badges;
+	private int maxExposes;
 
 	
 // private static long mTimeUpdated = -1;
@@ -251,11 +252,15 @@ public class ImmopolyUser extends User {
 
 	@Override
 	public void setMaxExposes(int maxExposes) {
-		// TODO Auto-generated method stub
+		this.maxExposes = maxExposes;
 	}
 
+	public int getMaxExposes() {
+		return maxExposes;
+	}
+	
 	@Override
 	public void setNumExposes(int numExposes) {
-		// TODO Auto-generated method stub
+		// numExposes == flats.size() !
 	}
 }
