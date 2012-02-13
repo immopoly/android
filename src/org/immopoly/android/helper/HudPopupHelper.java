@@ -89,7 +89,7 @@ public class HudPopupHelper {
 				}
 				
 				TextView numFlatsView = (TextView) mLayoutView.findViewById( R.id.num_flats );
-				numFlatsView.setText( user.getPortfolio().size() +" / 30" );
+				numFlatsView.setText( user.getPortfolio().size() +" / " + user.getMaxExposes() );
 
 				mPopupView.showAsDropDown(view, view.getWidth(), 0 );
 			} else {

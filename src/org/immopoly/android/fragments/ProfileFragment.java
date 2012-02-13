@@ -26,7 +26,9 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ProfileFragment extends Fragment implements UserDataListener {
 
 	private ImageListDownloader imageDownloader;
-
+	private int badgeSize;
+	private int badgePadding;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -35,12 +37,18 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 		UserDataManager.instance.addUserDataListener(this);
 		imageDownloader = Settings.getExposeImageDownloader(getActivity());
 		updateVisibility(layout);
+	
+		
 		return layout;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		
+		badgeSize    = (int) Settings.dp2px( getActivity(), 100 );
+		badgePadding = (int) Settings.dp2px( getActivity(), 8 );
+
 		GridView gridView = (GridView) getView().findViewById(R.id.gridview);
 		final BadgeAdapter badgeAdapter = new BadgeAdapter();
 		gridView.setAdapter(badgeAdapter);
@@ -110,9 +118,11 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 										// attributes
 				imageView = new ImageView(getActivity());
 				imageView.setTag("badge_image");
-				imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
+				imageView.setLayoutParams(new GridView.LayoutParams(badgeSize, badgeSize));
+//				imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
 				imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				imageView.setPadding(8, 8, 8, 8);
+//				imageView.setPadding(8, 8, 8, 8);
+				imageView.setPadding(badgePadding, badgePadding, badgePadding, badgePadding);
 			} else {
 				imageView = (ImageView) convertView;
 			}

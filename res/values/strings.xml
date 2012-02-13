@@ -15,7 +15,7 @@
     <string name="app_name">Immopoly</string>
     <string name="region_hint">Region Suche</string>
     <string name="settings_description">Beschreibung</string>
-    <string name="release_expose">Wohnung aufgeben</string>
+    <string name="release_expose">Wohnung abgeben</string>
     <string name="username_hint">Benutzername</string>
     <string name="password_hint">Passwort</string>
     <string name="password_confirm_hint">Passwort bestätigen</string>
@@ -46,7 +46,9 @@
     <string name="flat_has_no_raw_rent">Expose hat keine Kaltmiete und kann nicht
 		übernommen werden
 	</string>
-    <string name="take_over_try">Übernahme Versuch!</string>
+    <string name="take_over_success_dlg_title">Übernahme erfolgreich!</string>
+    <string name="take_over_fail_dlg_title">Übernahme gescheitert!</string>
+    <string name="flat_released_dlg_title">Wohnung abgegeben!</string>
     <string name="share_item">Share</string>
     <string name="expose_couldnt_add">Expose konnte nicht hinzugefügt werden.</string>
     <string name="expose_couldnt_release">Expose konnte nicht freigegeben werden.</string>

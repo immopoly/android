@@ -220,7 +220,8 @@ public class UserDataManager {
 				 * show the feedback in a dialog, from there the user can either
 				 * share the result or
 				 */
-				showExposeDialog(flat, result);
+				int title = result.success ? R.string.take_over_success_dlg_title : R.string.take_over_fail_dlg_title;
+				showExposeDialog(flat, result, activity.getString(title));
 				//TODO schtief wird schon in super gemacht
 				fireUsedDataChanged();
 //				actionPending = false;
@@ -228,9 +229,9 @@ public class UserDataManager {
 		}.execute(flat);
 	}
 
-	protected void showExposeDialog(final Flat flat, final Result result) {
+	protected void showExposeDialog(final Flat flat, final Result result, final String title ) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-		builder.setTitle(activity.getString(R.string.take_over_try));
+		builder.setTitle( title );
 		final String text = null != result.history ? result.history.getText() : (null != result.exception ? result.exception.getMessage(): "Häää?");
 
 		builder.setMessage(text);
@@ -239,7 +240,7 @@ public class UserDataManager {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				Settings.getFlatLink( Integer.toString(flat.uid), false);
-				Settings.shareMessage(activity, activity.getString(R.string.take_over_try), text, Settings.getFlatLink(
+				Settings.shareMessage(activity, title, text, Settings.getFlatLink(
 						Integer.toString(flat.uid), false) /* LINk */);
 				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_SHARE, TrackingManager.LABEL_POSITIVE, 0);
 			}
@@ -294,7 +295,7 @@ public class UserDataManager {
 					 * show the feedback in a dialog, from there the user can either
 					 * share the result or
 					 */
-					showExposeDialog(flat, result);
+					showExposeDialog(flat, result, activity.getString(R.string.flat_released_dlg_title));
 					
 					fireUsedDataChanged();
 //					actionPending = false;
