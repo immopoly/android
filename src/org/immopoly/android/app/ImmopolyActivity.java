@@ -24,6 +24,7 @@ import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.OAuthData;
 import org.immopoly.android.notification.UserNotification;
 import org.immopoly.android.widget.TabManager;
+import org.immopoly.common.User;
 
 import android.app.NotificationManager;
 import android.content.Intent;
