@@ -29,7 +29,6 @@ import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.common.History;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,36 +75,35 @@ public class HistoryAdapter extends BaseAdapter {
 
 			holder.text = (TextView) convertView.findViewById(R.id.historyText);
 		}
-		boolean isPlus = true;
-		int color = Color.BLACK;
-		switch (((ImmopolyHistory) getItem(position)).getType()) {
+
+		int background = R.drawable.bg_history_text_plus;
+		int type = ((ImmopolyHistory) getItem(position)).getType();
+		switch (type) {
+		case History.TYPE_EXPOSE_ADDED:
+			background = R.drawable.bg_history_text_middle;
+			break;
 		case History.TYPE_EXPOSE_SOLD:
-			color = Color.GREEN;
+			background = R.drawable.bg_history_text_plus;
 			break;
 		case History.TYPE_EXPOSE_MONOPOLY_POSITIVE:
-			color = Color.GREEN;
+			background = R.drawable.bg_history_text_plus;
 			break;
 		case History.TYPE_DAILY_PROVISION:
-			color = Color.GREEN;
+			background = R.drawable.bg_history_text_plus;
 			break;
 		case History.TYPE_EXPOSE_MONOPOLY_NEGATIVE:
-			color = Color.RED;
-			isPlus = false;
+			background = R.drawable.bg_history_text_minus;
 			break;
 		case History.TYPE_DAILY_RENT:
-			color = Color.RED;
-			isPlus = false;
-			break;
-		default:
+			background = R.drawable.bg_history_text_minus;
 			break;
 		}
 
-		// holder.date.setTextColor(color);
 		String text = create_datestring(((ImmopolyHistory) getItem(position)).getTime()) + "\n"
 				+ create_timestring(((ImmopolyHistory) getItem(position)).getTime()) + " Uhr";
 		holder.date.setText(text);
 
-		holder.text.setBackgroundResource(isPlus ? R.drawable.bg_history_text_plus : R.drawable.bg_history_text_minus);
+		holder.text.setBackgroundResource(background);
 		holder.text.setText(((ImmopolyHistory) getItem(position)).getText());
 		return convertView;
 	}
@@ -124,7 +122,7 @@ public class HistoryAdapter extends BaseAdapter {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.GERMANY);
 		return sdf.format(timestring);
 	}
-	
+
 	@Override
 	public boolean isEnabled(int position) {
 		// TODO no function yet
