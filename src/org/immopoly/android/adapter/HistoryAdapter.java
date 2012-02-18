@@ -72,7 +72,6 @@ public class HistoryAdapter extends BaseAdapter {
 		if (holder == null) {
 			holder = new ViewHolder();
 
-			holder.time = (TextView) convertView.findViewById(R.id.time);
 			holder.date = (TextView) convertView.findViewById(R.id.date);
 
 			holder.text = (TextView) convertView.findViewById(R.id.historyText);
@@ -102,17 +101,16 @@ public class HistoryAdapter extends BaseAdapter {
 		}
 
 		// holder.date.setTextColor(color);
-		holder.date.setText(create_datestring(((ImmopolyHistory) getItem(position)).getTime()));
-		// holder.time.setTextColor(color);
-		holder.time.setText(create_timestring(((ImmopolyHistory) getItem(position)).getTime()) + " Uhr");
-		// holder.text.setTextColor(color);
+		String text = create_datestring(((ImmopolyHistory) getItem(position)).getTime()) + "\n"
+				+ create_timestring(((ImmopolyHistory) getItem(position)).getTime()) + " Uhr";
+		holder.date.setText(text);
+
 		holder.text.setBackgroundResource(isPlus ? R.drawable.bg_history_text_plus : R.drawable.bg_history_text_minus);
 		holder.text.setText(((ImmopolyHistory) getItem(position)).getText());
 		return convertView;
 	}
 
 	class ViewHolder {
-		TextView time;
 		TextView date;
 		TextView text;
 	}
@@ -125,6 +123,12 @@ public class HistoryAdapter extends BaseAdapter {
 	public static String create_timestring(long timestring) {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.GERMANY);
 		return sdf.format(timestring);
+	}
+	
+	@Override
+	public boolean isEnabled(int position) {
+		// TODO no function yet
+		return false;
 	}
 
 }

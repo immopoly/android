@@ -22,29 +22,17 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="5dp" >
-    <LinearLayout
+    <TextView
+        android:id="@+id/date"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="4dip"
+        android:layout_marginRight="4dip"
         android:background="@drawable/bg_history_time"
         android:gravity="center"
-        android:orientation="vertical" >
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dip"
-            android:layout_marginRight="4dip"
-            android:text="@string/date"
-            android:textColor="@android:color/black" />
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dip"
-            android:layout_marginRight="4dip"
-            android:text="@string/time"
-            android:textColor="@android:color/black" />
-    </LinearLayout>
+        android:padding="2dp"
+        android:text="@string/date"
+        android:textColor="@android:color/black" />
     <TextView
         android:id="@+id/historyText"
         android:layout_width="0dip"
@@ -52,6 +40,6 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:background="@drawable/bg_history_time"
-        android:padding="5dp"
-        android:textColor="@android:color/black" />
+        android:padding="8dp"
+        android:textColor="@android:color/white" />
 </LinearLayout>
