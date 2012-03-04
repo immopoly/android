@@ -32,56 +32,23 @@ import android.text.TextPaint;
 import android.util.DisplayMetrics;
 
 /**
- *	Marker drawable for ImmoPlaceOverlayItem with >1 flats 
+ *	Marker drawable for ImmoPlaceOverlayItem with =1 flats 
+ *  prevents shadow drawing
  */
-public class ClusterMarker extends Drawable {
-
-	private static final float TEXT_SIZE_DP = 16.0f;
-	
-	private static Paint textPaint = new TextPaint();
-	private static Paint shadowPaint = new TextPaint();
-	private static int textSize;
-	private static float textY;
-	private static float textX;
-
-	private ArrayList<Flat> flats;
+public class SingleFlatMarker extends Drawable 
+{
 	private boolean		 	shadowMode;
 	private Drawable		baseDrawable;
+	
 
-	public ClusterMarker(ArrayList<Flat> flats, Drawable baseDrawable ) {
+	public SingleFlatMarker( Drawable baseDrawable ) {
 		this.baseDrawable = baseDrawable;
-		this.flats 		  = flats;
 	}
 	
-	static void init(DisplayMetrics displayMetrics, int markerHeight) {
-		textSize = (int) (TEXT_SIZE_DP * displayMetrics.density + 0.5f);
-		textY = -(markerHeight - textSize) / 2 - (4*displayMetrics.density);
-		textX = -4f * displayMetrics.density;
-		
-		textPaint.setColor( 0xFFFFFFFF );
-		textPaint.setTextSize( textSize );
-		textPaint.setAntiAlias( true );
-		textPaint.setTextAlign( Align.CENTER );
-//		textPaint.setShadowLayer( 10, 10, 5, Color.BLACK ); // no go :(
-		
-		shadowPaint.setColor( 0xFFB25200 );
-		shadowPaint.setTextSize( textSize );
-		shadowPaint.setAntiAlias( true );
-		shadowPaint.setTextAlign( Align.CENTER );
-		shadowPaint.setFlags( Paint.FAKE_BOLD_TEXT_FLAG );
-	}
-
 	@Override
 	public void draw(Canvas canvas) {
 		if ( ! shadowMode ) {
-			int numFlats = flats.size();
 			baseDrawable.draw(canvas);
-			String text = numFlats < 10 ? Integer.toString( numFlats ) : "+";
-			canvas.drawText( text, textX+1, textY+1, shadowPaint );
-			canvas.drawText( text, textX-1, textY+1, shadowPaint );
-			canvas.drawText( text, textX+1, textY-1, shadowPaint );
-			canvas.drawText( text, textX-1, textY-1, shadowPaint );
-			canvas.drawText( text, textX,   textY  , textPaint );
 		}
 	}
 

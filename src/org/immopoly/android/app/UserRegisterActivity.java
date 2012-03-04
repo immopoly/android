@@ -245,8 +245,6 @@ public class UserRegisterActivity extends Activity {
 			dialog.show();
 		}
 	}
-
-
 	
 	private void toggleProgress() {
 		toggleProgressHandler.post(new Runnable() {

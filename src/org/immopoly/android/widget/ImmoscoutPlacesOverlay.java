@@ -258,13 +258,13 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 			if (size == 1) {
 				Flat f = flats.get(0);
 				if (f.owned)
-					overlayItem.setMarker( mapMarkerIcon_owned );
+					overlayItem.setMarker( boundCenterBottom( new SingleFlatMarker( mapMarkerIcon_owned ) ));
 				else if (f.age == Flat.AGE_NEW)
-					overlayItem.setMarker( mapMarkerIcon_new );
+					overlayItem.setMarker( boundCenterBottom( new SingleFlatMarker( mapMarkerIcon_new )));
 				else if (f.age == Flat.AGE_OLD)
-					overlayItem.setMarker( mapMarkerIcon_old );
+					overlayItem.setMarker( boundCenterBottom( new SingleFlatMarker( mapMarkerIcon_old )));
 				else
-					overlayItem.setMarker( mapMarkerIcon );
+					overlayItem.setMarker( boundCenterBottom( new SingleFlatMarker( mapMarkerIcon )));
 			} else
 				overlayItem.setMarker( boundCenterBottom( new ClusterMarker( flats, mapMarkerIcon_cluster ) ) );
 			return overlayItem;
