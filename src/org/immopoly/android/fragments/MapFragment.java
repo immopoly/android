@@ -82,8 +82,10 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	private OnMapItemClickedListener mOnMapItemClickedListener;
 	private OnTrackingEventListener mEventListener;
 
-	private ProgressBar progress;
-	private ImageView compass;
+	private ProgressBar mProgressIndicator;
+	private ImageView mCompassButton;
+
+	private View mSplashscreen;
 
 	public OnMapItemClickedListener getOnMapItemClickedListener() {
 		return mOnMapItemClickedListener;
@@ -156,27 +158,37 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 		// wrap map in relative layout for windrose icon rechts oben
 		// https://github.com/immopoly/android/issues/12
-		View layout = getActivity().getLayoutInflater().inflate(R.layout.map_fragment, null, false);
+		View layout = inflater.inflate(R.layout.map_fragment, null, false);
 		RelativeLayout relativeLayout = (RelativeLayout) layout.findViewById(R.id.map_relative_layout);
 		relativeLayout.setGravity(Gravity.RIGHT);
 		relativeLayout.addView(mMapView, 0);
 		// ImageView compass = new ImageView(getActivity());
 		// compass.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_compass));
 		// relativeLayout.addView(compass,1);
-		progress = (ProgressBar) layout.findViewById(R.id.map_progress);
-		compass = (ImageView) layout.findViewById(R.id.map_reload);
-		compass.setOnClickListener(new View.OnClickListener() {
+		mProgressIndicator = (ProgressBar) layout.findViewById(R.id.map_progress);
+		mCompassButton = (ImageView) layout.findViewById(R.id.map_reload);
+		mSplashscreen = layout.findViewById(R.id.splashscreen);
+		if (mMapOverlays == null) {
+			mSplashscreen.setVisibility(View.VISIBLE);
+		}
+		
+		mCompassButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				if (null != progress)
-					progress.setVisibility(View.VISIBLE);
-				if (null != compass)
-					compass.setVisibility(View.GONE);
+				showProgress(true);
 				LocationHelper.getLastLocation(getActivity(), new MapLocationCallback());
 			}
+
 		});
 		return layout;
+	}
+
+	private void showProgress(boolean showProgress) {
+		if (null != mProgressIndicator)
+			mProgressIndicator.setVisibility(showProgress ? View.VISIBLE : View.GONE);
+		if (null != mCompassButton)
+			mCompassButton.setVisibility(showProgress ? View.GONE : View.VISIBLE);
 	}
 
 	@Override
@@ -229,10 +241,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 		@Override
 		public void failed() {
-			if (null != progress)
-				progress.setVisibility(View.GONE);
-			if (null != compass)
-				compass.setVisibility(View.VISIBLE);
+			showProgress(true);
 		}
 	}
 
@@ -313,10 +322,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		case IS24ApiService.STATUS_RUNNING:
 			// show progress
 			// Toast.makeText(this, "Running", Toast.LENGTH_SHORT).show();
-			if (null != progress)
-				progress.setVisibility(View.VISIBLE);
-			if (null != compass)
-				compass.setVisibility(View.GONE);
+			showProgress(true);
 			break;
 		case IS24ApiService.STATUS_FINISHED:
 			// Toast.makeText(this, "Finished", Toast.LENGTH_SHORT).show();
@@ -326,18 +332,18 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			updateMap(true);
 			// do something interesting
 			// hide progress
-			if (null != progress)
-				progress.setVisibility(View.GONE);
-			if (null != compass)
-				compass.setVisibility(View.VISIBLE);
+			showProgress(false);
+			if (mSplashscreen.isShown()) {
+				mSplashscreen.setVisibility(View.GONE);
+			}
 			break;
 		case IS24ApiService.STATUS_ERROR:
 			// Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
 			// handle the error;
-			if (null != progress)
-				progress.setVisibility(View.GONE);
-			if (null != compass)
-				compass.setVisibility(View.VISIBLE);
+			showProgress(false);
+			if (mSplashscreen.isShown()) {
+				mSplashscreen.setVisibility(View.GONE);
+			}
 			break;
 		}
 	}
@@ -364,6 +370,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 	public void updateMap(boolean centerMap) {
 		if (mMapView != null && mFlats != null) {
+
 			int count = 0;
 			double minX = 999, minY = 999, maxX = -999, maxY = -999;
 			myLocationOverlays.clear();
@@ -547,12 +554,12 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 
 	public void hideCompass() {
-		compass.setVisibility(View.GONE);
+		mCompassButton.setVisibility(View.GONE);
 	}
 
 	public void showCompass() {
-		if (progress.getVisibility() != View.VISIBLE)
-			compass.setVisibility(View.VISIBLE);
+		if (mProgressIndicator.getVisibility() != View.VISIBLE)
+			mCompassButton.setVisibility(View.VISIBLE);
 	}
 
 }

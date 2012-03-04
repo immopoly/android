@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/hud_root"
-    style="@style/hud"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -40,16 +39,20 @@
         style="@style/hudElement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/ic_corner_background"
         android:gravity="right"
-        android:text="" android:visibility="gone"/>
-    <View android:id="@+id/hud_progress_spacer" 
-        android:layout_width="0dp" 
-        android:layout_weight="1"
-        android:layout_height="match_parent"/>
-   <ProgressBar android:id="@+id/hud_progress"
+        android:visibility="gone" />
+    <View
+        android:id="@+id/hud_progress_spacer"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+    <ProgressBar
+        android:id="@+id/hud_progress"
+        style="@android:style/Widget.ProgressBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-         style="@android:style/Widget.ProgressBar.Small"
-         android:gravity="right"
-         android:layout_marginRight="15dp" />
+        android:layout_marginRight="15dp"
+        android:gravity="right" />
 </LinearLayout>

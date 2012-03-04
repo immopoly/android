@@ -20,34 +20,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="0dip"
-    android:orientation="vertical"
-    android:padding="0dip" >
-
+    android:orientation="vertical" >
     <RelativeLayout
-        style="@style/hud"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
+        android:layout_height="wrap_content"
+        android:background="@drawable/hud_background"
+        android:gravity="center_vertical" >
         <Button
             android:id="@+id/TakeOrReleaseButton"
             style="@style/hudElement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:background="@drawable/btn_background"
-            android:drawableLeft="@drawable/btn_portfolio"
-            android:enabled="false"
+            android:drawableLeft="@drawable/btn_portfolio_new"
             android:text="@string/release_expose"
             android:textColor="@android:color/black" />
-
         <LinearLayout
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:orientation="horizontal">
-
-            
-
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal" >
             <ImageButton
                 android:id="@+id/shareExpose"
                 style="@style/hudElement"
@@ -55,10 +48,10 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/progress"
                 android:adjustViewBounds="true"
+                android:background="@null"
                 android:contentDescription="@string/share"
                 android:gravity="center_vertical"
-                android:src="@drawable/btn_share" />
-
+                android:src="@drawable/btn_share_new" />
             <ProgressBar
                 android:id="@+id/progress"
                 style="@android:style/Widget.ProgressBar.Small"
@@ -66,13 +59,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="14dp" />
-
         </LinearLayout>
     </RelativeLayout>
-
     <WebView
         android:id="@+id/exposeWevView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </LinearLayout>

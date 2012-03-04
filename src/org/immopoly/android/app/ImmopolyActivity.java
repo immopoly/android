@@ -87,13 +87,13 @@ public class ImmopolyActivity extends FragmentActivity implements
 
 		// TODO cleanup fragment management for fragments with an without tabs
 		// (currently in widget.TabManager)
-		addTab(R.drawable.btn_map, "map", MapFragment.class, false);
-		addTab(R.drawable.btn_portfolio, "portfolio",
+		addTab(R.drawable.ic_tab_map, "map", MapFragment.class, false);
+		addTab(R.drawable.ic_tab_portfolio, "portfolio",
 				PortfolioListFragment.class, false);
-		addTab(R.drawable.btn_portfolio, "portfolio_map",
+		addTab(R.drawable.ic_tab_portfolio, "portfolio_map",
 				PortfolioMapFragment.class, true);
-		addTab(R.drawable.btn_profile, "profile", ProfileFragment.class, false);
-		addTab(R.drawable.btn_history, "history", HistoryFragment.class, false);
+		addTab(R.drawable.ic_tab_profile, "profile", ProfileFragment.class, false);
+		addTab(R.drawable.ic_tab_history, "history", HistoryFragment.class, false);
 
 		if (savedInstanceState != null) {
 			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
@@ -108,6 +108,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 			ImageButton tab = (ImageButton) LayoutInflater.from(this).inflate(
 					R.layout.tab_map, null);
 			tab.setImageResource(imageId);
+			tab.setBackgroundResource(R.drawable.tab_button);
 			tabSpec.setIndicator(tab);
 		}
 		mTabManager.addTab(tabSpec, clss, null, tabless);

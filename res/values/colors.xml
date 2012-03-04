@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="light_gray">#CCCCCC</color>
-	<color name="soft_red">#a4353e</color>
-	<color name="soft_green">#6a9006</color>
+    <color name="light_gray">#CCCCCC</color>
+    <color name="soft_red">#a4353e</color>
+    <color name="soft_green">#6a9006</color>
+    <color name="hud_text">#003468</color>
 </resources>

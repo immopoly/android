@@ -174,18 +174,18 @@ public class ExposeFragment extends DialogFragment {
 	public void onResume() {
 		super.onResume();
 		if (null != flat && flat.owned) {
-			takeOrReleaseButton.setCompoundDrawablesWithIntrinsicBounds(
-					getResources().getDrawable(R.drawable.btn_portfolio_red),
-					null, null, null);
-			takeOrReleaseButton.setTextColor(getResources().getColor(
-					R.color.soft_red));
+//			takeOrReleaseButton.setCompoundDrawablesWithIntrinsicBounds(
+//					getResources().getDrawable(R.drawable.btn_portfolio_red),
+//					null, null, null);
+//			takeOrReleaseButton.setTextColor(getResources().getColor(
+//					R.color.soft_red));
 			takeOrReleaseButton.setText(getString(R.string.release_expose));
 		} else {
-			takeOrReleaseButton.setCompoundDrawablesWithIntrinsicBounds(
-					getResources().getDrawable(R.drawable.btn_portfolio_green),
-					null, null, null);
-			takeOrReleaseButton.setTextColor(getResources().getColor(
-					R.color.soft_green));
+//			takeOrReleaseButton.setCompoundDrawablesWithIntrinsicBounds(
+//					getResources().getDrawable(R.drawable.btn_portfolio_green),
+//					null, null, null);
+//			takeOrReleaseButton.setTextColor(getResources().getColor(
+//					R.color.soft_green));
 			takeOrReleaseButton.setText(getString(R.string.try_takeover));
 
 		}
