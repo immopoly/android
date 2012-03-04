@@ -256,10 +256,12 @@ public class UserRegisterActivity extends Activity {
 					progress.setVisibility(View.VISIBLE);
 					findViewById(R.id.login).setVisibility(View.GONE);
 					findViewById(R.id.register).setVisibility(View.GONE);
+					findViewById(R.id.forgot_password).setVisibility(View.GONE);
 				} else {
 					progress.setVisibility(View.GONE);
 					findViewById(R.id.login).setVisibility(View.VISIBLE);
 					findViewById(R.id.register).setVisibility(View.VISIBLE);
+					findViewById(R.id.forgot_password).setVisibility(View.VISIBLE);
 				}
 			}
 		});
