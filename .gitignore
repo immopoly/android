@@ -15,6 +15,8 @@ res/values/config_data.xml
 
 #maven eclipse stuff
 
+pom.xml
+
 .externalToolBuilders/
 maven-eclipse.xml
 /immopoly-android.iws
