@@ -196,7 +196,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 		this.mMapViewHolder = mapViewHolder;
 		if (mMapView == null) {
 			mMapView = new MapView(this,
-					getString(R.string.google_maps_key_debug));
+					getString(R.string.google_maps_key));
 			mMapView.setClickable(true);
 			mMapView.setTag("map_view");
 		}
