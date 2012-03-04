@@ -270,12 +270,18 @@ public class ImmopolyActivity extends FragmentActivity implements
 			intent.setData(Uri.parse("http://immopoly.org/livestats.html?c=android"));
 			startActivity(intent);
 			break;
-		case R.id.menu_recommend:
-			intent = new Intent(Intent.ACTION_SEND);
-			intent.setType("text/plain");
-			intent.putExtra(Intent.EXTRA_TEXT, "Immopoly is geil, lade es dir hier runter http://immopoly.org/download.html");
-			startActivity(Intent.createChooser(intent, "Sahre"));
+		case R.id.menu_help:
+			intent = new Intent(Intent.ACTION_VIEW);
+			intent.setData(Uri.parse("http://immopoly.org/helpandroid.html"));
+			startActivity(intent);
 			break;
+		// case R.id.menu_recommend:
+		// intent = new Intent(Intent.ACTION_SEND);
+		// intent.setType("text/plain");
+		// intent.putExtra(Intent.EXTRA_TEXT,
+		// "Immopoly is geil, lade es dir hier runter http://immopoly.org/download.html");
+		// startActivity(Intent.createChooser(intent, "Sahre"));
+		// break;
 		case R.id.menu_contact:
 			intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("message/rfc822");
