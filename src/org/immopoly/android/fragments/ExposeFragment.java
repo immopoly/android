@@ -39,7 +39,7 @@ public class ExposeFragment extends DialogFragment {
 		jsInjectString = new StringBuilder(
 				"var headID = document.getElementsByTagName('head')[0];");
 		jsInjectString.append("var cssNode = document.createElement('style');")
-				.append("cssNode.innerHTML = '#layer{display:none;}';")
+				.append("cssNode.innerHTML = '#layer{display:none;}div.header_blue{display:none;}';")
 				.append("headID.appendChild(cssNode);");
 		sInjectJString = "javascript:" + jsInjectString.toString() + ";";
 	}
