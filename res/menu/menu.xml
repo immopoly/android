@@ -10,6 +10,12 @@
         android:id="@+id/menu_website"
         android:title="@string/menu_website"></item>
     <item
+        android:id="@+id/menu_highscore"
+        android:title="@string/menu_highscore"></item>
+    <item
+        android:id="@+id/menu_help"
+        android:title="@string/menu_help"></item>
+    <item
         android:id="@+id/menu_contact"
         android:title="@string/menu_contact"></item>
 </menu>

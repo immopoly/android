@@ -22,11 +22,8 @@ import org.immopoly.android.helper.OnTrackingEventListener;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.OAuthData;
-import org.immopoly.android.notification.UserNotification;
 import org.immopoly.android.widget.TabManager;
-import org.immopoly.common.User;
 
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -265,9 +262,26 @@ public class ImmopolyActivity extends FragmentActivity implements
 			break;
 		case R.id.menu_website:
 			intent = new Intent(Intent.ACTION_VIEW);
-			intent.setData(Uri.parse("http://immopoly.appspot.com"));
+			intent.setData(Uri.parse("http://immopoly.org"));
 			startActivity(intent);
 			break;
+		case R.id.menu_highscore:
+			intent = new Intent(Intent.ACTION_VIEW);
+			intent.setData(Uri.parse("http://immopoly.org/livestats.html?c=android"));
+			startActivity(intent);
+			break;
+		case R.id.menu_help:
+			intent = new Intent(Intent.ACTION_VIEW);
+			intent.setData(Uri.parse("http://immopoly.org/helpandroid.html"));
+			startActivity(intent);
+			break;
+		// case R.id.menu_recommend:
+		// intent = new Intent(Intent.ACTION_SEND);
+		// intent.setType("text/plain");
+		// intent.putExtra(Intent.EXTRA_TEXT,
+		// "Immopoly is geil, lade es dir hier runter http://immopoly.org/download.html");
+		// startActivity(Intent.createChooser(intent, "Sahre"));
+		// break;
 		case R.id.menu_contact:
 			intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("message/rfc822");
