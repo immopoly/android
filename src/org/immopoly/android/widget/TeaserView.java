@@ -49,8 +49,9 @@ public class TeaserView extends RelativeLayout {
 		
 		setBackgroundDrawable( new ColorDrawable( 0x00000000 ) );
 
+		int totalHeight = mapView.getHeight()/2;
 		int frameHeight = 122;
-		
+		int noseHeight  = totalHeight - (int) ((122 - 13)*screenDesity);
 		FrameLayout frame = new FrameLayout( fragment.getActivity() );
 		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
 				(int) (330*screenDesity), (int) (frameHeight*screenDesity) );
@@ -73,14 +74,14 @@ public class TeaserView extends RelativeLayout {
 		noseView = new View( fragment.getActivity() );
 		noseView.setBackgroundResource(R.drawable.teaser_nose);
 		layoutParams = new RelativeLayout.LayoutParams(
-				(int) (24*screenDesity), (int) (140*screenDesity) );
+				(int) (24*screenDesity), noseHeight );
 		layoutParams.addRule( RelativeLayout.CENTER_HORIZONTAL );
 		layoutParams.addRule( RelativeLayout.BELOW, frame.getId() );
 		layoutParams.setMargins(0, (int) (screenDesity*-13), 0, 0);
 		noseView.setLayoutParams(layoutParams);
 		addView( noseView );
 
-		setLayoutParams( new MapView.LayoutParams( (int)(330*screenDesity), mapView.getHeight()/2, mapView.getWidth()/2, 0, MapView.LayoutParams.TOP | MapView.LayoutParams.CENTER_HORIZONTAL | MapView.LayoutParams.MODE_VIEW ) );
+		setLayoutParams( new MapView.LayoutParams( (int)(330*screenDesity), totalHeight, mapView.getWidth()/2, 0, MapView.LayoutParams.TOP | MapView.LayoutParams.CENTER_HORIZONTAL | MapView.LayoutParams.MODE_VIEW ) );
 		mapView.addView( this );
 		
 		Animation animation = AnimationUtils.loadAnimation( fragment.getActivity(), R.anim.bubble_animation );
