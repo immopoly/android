@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/teaser_content_base"
+    android:clipChildren="false"
+    android:paddingBottom="2dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="6dp"
+    android:paddingTop="6dp" >
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="80dp"
+        android:layout_height="84dp" >
+        <FrameLayout
+            android:id="@+id/frameLayout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:background="@drawable/teaser_image_border"
+            android:padding="2dp" >
+            <ImageView
+                android:id="@+id/teaser_icon"
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/loading" />
+        </FrameLayout>
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/LinearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="84dp"
+        android:layout_marginTop="-1dp"
+        android:orientation="vertical"
+        android:paddingLeft="6dp" >
+        <org.immopoly.android.widget.EllipsizingTextView
+            android:id="@+id/flat_desc_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:duplicateParentState="true"
+            android:ellipsize="start"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="2"
+            android:text="Schöne Altbauwohnung im Herzen Berlins. Geniale Verkehrsanbindung und unüberschaubares Freizeitangebot"
+            android:textColor="#003468"
+            android:textSize="13dp"
+            android:textStyle="bold" />
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+            <LinearLayout
+                android:id="@+id/takeover_daterow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:includeFontPadding="false"
+                    android:text="Übernommen:"
+                    android:textColor="#500"
+                    android:textSize="13dp" />
+                <TextView
+                    android:id="@+id/takeover_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:includeFontPadding="false"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="2dp"
+                    android:text="23.08.2011"
+                    android:textColor="#500"
+                    android:textSize="13dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/takeover_numrow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:includeFontPadding="false"
+                    android:text="Übernahmeversuche:"
+                    android:textColor="#500"
+                    android:textSize="13dp" />
+                <TextView
+                    android:id="@+id/takeovers_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:includeFontPadding="false"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="2dp"
+                    android:text="3"
+                    android:textColor="#300"
+                    android:textSize="13dp" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical" >
+            <TextView
+                android:id="@+id/rooms_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:text="3"
+                android:textColor="#003468"
+                android:textSize="13dp" />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:includeFontPadding="false"
+                android:paddingLeft="3dp"
+                android:text="Zimmer"
+                android:textColor="#003468"
+                android:textSize="13dp" />
+            <TextView
+                android:id="@+id/qm_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:includeFontPadding="false"
+                android:text="97"
+                android:textColor="#003468"
+                android:textSize="13dp" />
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:includeFontPadding="false"
+                android:paddingLeft="2dp"
+                android:text="m²"
+                android:textColor="#003468"
+                android:textSize="13dp" />
+            <TextView
+                android:id="@+id/price_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:includeFontPadding="false"
+                android:paddingLeft="3dp"
+                android:paddingTop="3dp"
+                android:text="1399 €"
+                android:textColor="#003468"
+                android:textSize="13dp" />
+        </LinearLayout>
+        <!-- <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"> -->
+        <!-- </LinearLayout> -->
+        <!-- <TextView android:id="@+id/textView4" android:layout_width="wrap_content" android:layout_height="0dp" android:layout_weight="1"></TextView> -->
+    </LinearLayout>
+</LinearLayout>

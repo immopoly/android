@@ -144,6 +144,10 @@ public class ImmopolyUser extends User {
 							"expose.expose");
 					realEstate = expose.getJSONObject("realEstate");
 					item.priceValue = realEstate.optString("baseRent");
+					try {
+						double price = Double.parseDouble(item.priceValue);
+						item.priceValue = Integer.toString( (int) Math.round(price) );
+					} catch (Exception e) {} 
 					item.name = realEstate.optString("title");
 					item.uid = realEstate.optInt("@id");
 					item.lat = realEstate.getJSONObject("address")

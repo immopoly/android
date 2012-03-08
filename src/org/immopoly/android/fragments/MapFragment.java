@@ -202,7 +202,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		// this is the bounding box container
 
 		myLocationOverlayItem = new PlaceOverlayItem(point, "my city", "This is wher you are");
-		overlays = new ImmoscoutPlacesOverlay(this, mMapView, getActivity().getLayoutInflater());
+		overlays = new ImmoscoutPlacesOverlay(this, mMapView, getActivity().getLayoutInflater(), false);
 		myLocationOverlays = new MyPositionOverlay(getResources().getDrawable(R.drawable.mylocation), getActivity(),
 				mMapView, getActivity().getLayoutInflater());
 		myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.mylocation));

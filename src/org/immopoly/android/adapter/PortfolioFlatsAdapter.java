@@ -50,8 +50,6 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 	private LayoutInflater inflater;
 	
 	private Flats mFlats;
-	private Flats clusterFlats;
-	private Flat  selectedFlat;
 
 	private ImageListDownloader imageDownloader;
 
@@ -83,32 +81,28 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 
 	public View getView( int position, View convertView, ViewGroup parent ) {
 		final Flat flat = mFlats.get( position );
-		int selectIdx = -1;
-		if ( clusterFlats != null )
-			selectIdx = clusterFlats.indexOf( flat );
-		else if ( flat == selectedFlat ) 
-			selectIdx = 0;
-			
+
 		if ( convertView == null )
-			convertView = inflater.inflate( R.layout.portfolio_list_item, parent, false);
+			convertView = inflater.inflate( R.layout.teaser_content_portfolio, parent, false);
 		
 		((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setText( flat.name );
 		
-		((TextView) convertView.findViewById( R.id.rooms_text )).setText( flat.numRooms > 0 ? Integer.toString(flat.numRooms) : "?" );
+		((TextView) convertView.findViewById( R.id.rooms_text )).setText( 
+							flat.numRooms > 0 ? Integer.toString(flat.numRooms) : "?" );
 		((TextView) convertView.findViewById( R.id.qm_text )).setText( flat.livingSpace > 0 ? 
 							Integer.toString( (int) Math.round(flat.livingSpace) ) : "?" );
-		((TextView) convertView.findViewById( R.id.price_text )).setText( flat.priceValue + "€" ); // TODO kommt im IS24 JSON immer EUR/MONTH ?
+		((TextView) convertView.findViewById( R.id.price_text )).setText( 
+							flat.priceValue + " €" ); // TODO kommt im IS24 JSON immer EUR/MONTH ?
 		
 		String takeoverDate = flat.takeoverDate > 0 ? dateSDF.format( new Date(flat.takeoverDate) ) : "?";
 		((TextView) convertView.findViewById( R.id.takeover_date )).setText( takeoverDate ); 
 		
 		if ( flat.takeoverTries > 0 ) {
 			((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setMaxLines( 2 );
-			((LinearLayout) convertView.findViewById( R.id.takeover_row )).setVisibility( View.VISIBLE ) ;
+			((LinearLayout) convertView.findViewById( R.id.takeover_numrow )).setVisibility( View.VISIBLE ) ;
 			((TextView) convertView.findViewById( R.id.takeovers_text )).setText( "" + flat.takeoverTries );
 		} else {
-			((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setMaxLines( 3 );
-			((LinearLayout) convertView.findViewById( R.id.takeover_row )).setVisibility( View.GONE ) ;
+			((LinearLayout) convertView.findViewById( R.id.takeover_numrow )).setVisibility( View.GONE ) ;
 		}
 
 		ImageView iconView = (ImageView) convertView.findViewById( R.id.teaser_icon );
@@ -119,24 +113,7 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 			iconView.setAnimation( null );
 			iconView.setImageDrawable( inflater.getContext().getResources().getDrawable( R.drawable.portfolio_fallback));
 		}
-		
-//		if ( selectIdx > -1 ) { // TODO this was used when testing list & map side-by-side in a tablet layout - unused for now
-//			if ( flat == selectedFlat )
-//				convertView.setBackgroundColor( 0xFFAAAAAA ); // TODO colors
-//			else
-//				convertView.setBackgroundColor( 0xFFCCCCCC ); 
-//			convertView.findViewById( R.id.swipe_indicator ).setVisibility( View.VISIBLE );
-//			convertView.findViewById( R.id.swipe_indicator ).setVisibility( View.GONE );
-//			convertView.findViewById( R.id.swipe_finger ).setVisibility( View.GONE );
-//			convertView.findViewById( R.id.swipe_left_img ).setVisibility( View.GONE );
-//			convertView.findViewById( R.id.swipe_right_img ).setVisibility( View.GONE );
-//			convertView.findViewById( R.id.swipe_counter ).setVisibility( View.VISIBLE );
-//			((TextView) convertView.findViewById( R.id.swipe_counter )).setText(
-//					(selectIdx+1)+"/"+ (clusterFlats == null ? 1 : clusterFlats.size()) );
-//		} else {
-//			convertView.setBackgroundColor( 0xFFFFFFFF );
-//			convertView.findViewById( R.id.swipe_indicator ).setVisibility( View.GONE );
-//		}
+
 		return convertView;
 	}
 

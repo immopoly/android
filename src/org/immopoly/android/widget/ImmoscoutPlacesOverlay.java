@@ -22,8 +22,6 @@ package org.immopoly.android.widget;
 import java.util.ArrayList;
 
 import org.immopoly.android.R;
-import org.immopoly.android.adapter.FlatsPagerAdapter;
-import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.MapFragment;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
@@ -34,18 +32,12 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
@@ -62,7 +54,8 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 	public static Rect markerBounds;	// TODO public static
 	private Flats mFlats;
 	private int prevLatProjection = -1;
-	private TeaserBubble bubble;
+	private TeaserView bubble;
+	private boolean isPortfolio;
 
 	static Drawable mapMarkerIcon;
 	static Drawable mapMarkerIcon_old;
@@ -70,9 +63,10 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 	static Drawable mapMarkerIcon_owned;
 	static Drawable mapMarkerIcon_cluster;
 
-	public ImmoscoutPlacesOverlay(Fragment fragment, MapView mapView, LayoutInflater inflator) {
+	public ImmoscoutPlacesOverlay(Fragment fragment, MapView mapView, LayoutInflater inflator, boolean isPortfolio) {
 		super(boundCenterBottom(fragment.getResources().getDrawable(R.drawable.map_marker_icon)));
 		mMapView = mapView;
+		this.isPortfolio = isPortfolio;
 		mMapFragment = fragment;
 		Resources resources = fragment.getResources();
 		mapMarkerIcon = boundCenterBottom(resources.getDrawable(R.drawable.map_marker_icon));
@@ -120,7 +114,7 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 		final RelativeLayout.LayoutParams relLayoutParams = new RelativeLayout.LayoutParams(
 				LayoutParams.FILL_PARENT, 210 );
 		relLayoutParams.addRule( RelativeLayout.BELOW, R.id.header );
-		bubble = new TeaserBubble( mMapFragment, mMapView, item.flats );
+		bubble = new TeaserView( mMapFragment, mMapView, item.flats, isPortfolio );
 		if (mMapFragment instanceof MapFragment) // hide wind rose (hack)
 			((MapFragment) mMapFragment).hideCompass();
 		return true;
@@ -258,15 +252,15 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 			if (size == 1) {
 				Flat f = flats.get(0);
 				if (f.owned)
-					overlayItem.setMarker( boundCenterBottom( new SingleFlatMarker( mapMarkerIcon_owned ) ));
+					overlayItem.setMarker( boundCenter( new SingleFlatMarker( mapMarkerIcon_owned ) ));
 				else if (f.age == Flat.AGE_NEW)
-					overlayItem.setMarker( boundCenterBottom( new SingleFlatMarker( mapMarkerIcon_new )));
+					overlayItem.setMarker( boundCenter( new SingleFlatMarker( mapMarkerIcon_new )));
 				else if (f.age == Flat.AGE_OLD)
-					overlayItem.setMarker( boundCenterBottom( new SingleFlatMarker( mapMarkerIcon_old )));
+					overlayItem.setMarker( boundCenter( new SingleFlatMarker( mapMarkerIcon_old )));
 				else
-					overlayItem.setMarker( boundCenterBottom( new SingleFlatMarker( mapMarkerIcon )));
+					overlayItem.setMarker( boundCenter( new SingleFlatMarker( mapMarkerIcon )));
 			} else
-				overlayItem.setMarker( boundCenterBottom( new ClusterMarker( flats, mapMarkerIcon_cluster ) ) );
+				overlayItem.setMarker( boundCenter( new ClusterMarker( flats, mapMarkerIcon_cluster ) ) );
 			return overlayItem;
 		}
 	}

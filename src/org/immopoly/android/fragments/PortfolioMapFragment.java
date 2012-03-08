@@ -36,7 +36,7 @@ public class PortfolioMapFragment extends Fragment implements UserDataListener {
 		mFlats = user.getPortfolio();
 
 		mMapView = ((ImmopolyActivity) getActivity()).acquireMapView(this);
-		flatsOverlay = new ImmoscoutPlacesOverlay(this, mMapView, inflater);
+		flatsOverlay = new ImmoscoutPlacesOverlay(this, mMapView, inflater, true);
 		flatsOverlay.setFlats(mFlats);
 		mMapView.getOverlays().add(flatsOverlay);
 

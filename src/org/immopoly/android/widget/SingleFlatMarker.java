@@ -19,17 +19,9 @@
 
 package org.immopoly.android.widget;
 
-import java.util.ArrayList;
-
-import org.immopoly.android.model.Flat;
-
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.Paint.Align;
 import android.graphics.drawable.Drawable;
-import android.text.TextPaint;
-import android.util.DisplayMetrics;
 
 /**
  *	Marker drawable for ImmoPlaceOverlayItem with =1 flats 

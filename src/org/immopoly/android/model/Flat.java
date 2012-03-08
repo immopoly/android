@@ -181,14 +181,14 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 			}
 		}
 		if (objRealEstate.has("price")) {
-			marketingType = objRealEstate.getJSONObject("price").optString(
-					"marketingType");
-			priceValue = objRealEstate.getJSONObject("price")
-					.optString("value");
-			priceIntervaleType = objRealEstate.getJSONObject("price")
-					.optString("priceIntervalType");
-			currency = objRealEstate.getJSONObject("price").optString(
-					"currency");
+			marketingType = objRealEstate.getJSONObject("price").optString("marketingType");
+			priceValue = objRealEstate.getJSONObject("price").optString("value");
+			priceIntervaleType = objRealEstate.getJSONObject("price").optString("priceIntervalType");
+			currency = objRealEstate.getJSONObject("price").optString("currency");
+			try {
+				double price = Double.parseDouble(priceValue);
+				priceValue = Integer.toString( (int) Math.round(price) );
+			} catch (Exception e) {} 
 		} else {
 			priceValue = "?";
 		}
