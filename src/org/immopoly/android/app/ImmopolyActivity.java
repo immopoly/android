@@ -21,9 +21,12 @@ import org.immopoly.android.fragments.ProfileFragment;
 import org.immopoly.android.helper.OnTrackingEventListener;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
+import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.model.OAuthData;
 import org.immopoly.android.widget.TabManager;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -31,14 +34,19 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
+import android.widget.Toast;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.MapView;
@@ -272,9 +280,10 @@ public class ImmopolyActivity extends FragmentActivity implements
 			startActivity(intent);
 			break;
 		case R.id.menu_help:
-			intent = new Intent(Intent.ACTION_VIEW);
-			intent.setData(Uri.parse("http://immopoly.org/helpandroid.html"));
-			startActivity(intent);
+//			intent = new Intent(Intent.ACTION_VIEW);
+//			intent.setData(Uri.parse("http://immopoly.org/helpandroid.html"));
+//			startActivity(intent);
+			showHelpDialog();
 			break;
 		// case R.id.menu_recommend:
 		// intent = new Intent(Intent.ACTION_SEND);
@@ -353,6 +362,33 @@ public class ImmopolyActivity extends FragmentActivity implements
 			startActivity(i);
 		}
 
+	}
+	
+	// TODO url constant & string externalisation 
+	private void showHelpDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder( this );
+		builder.setTitle( "Hilfe wird geladen..." );
+		WebView webView = new WebView( this );
+		builder.setView( webView );
+		webView.getSettings().setJavaScriptEnabled(true);
+		webView.setBackgroundColor( 0 );
+		webView.setMinimumHeight( 300 );
+		builder.setCancelable(false)
+			   .setPositiveButton("Schließen",
+					new DialogInterface.OnClickListener() {
+						public void onClick( DialogInterface dialog, int id) {
+							dialog.dismiss();
+						}
+				});
+		final AlertDialog alert = builder.create();
+		webView.loadUrl( "http://immopoly.org/helpandroid/helpandroid.html" );
+		webView.setWebViewClient( new WebViewClient() {
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				alert.setTitle( "Hilfe" );
+			}
+		});
+		alert.show();
 	}
 
 }
