@@ -381,7 +381,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 						}
 				});
 		final AlertDialog alert = builder.create();
-		webView.loadUrl( "http://immopoly.org/helpandroid/helpandroid.html" );
+		webView.loadUrl( "http://immopoly.org/helpandroid.html" );
 		webView.setWebViewClient( new WebViewClient() {
 			@Override
 			public void onPageFinished(WebView view, String url) {
