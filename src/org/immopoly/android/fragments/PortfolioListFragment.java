@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class PortfolioListFragment extends ListFragment implements UserDataListener, OnClickListener {
 	private Flats mFlats;
@@ -47,6 +48,7 @@ public class PortfolioListFragment extends ListFragment implements UserDataListe
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		UserDataManager.instance.addUserDataListener(this);
+		getListView().setDividerHeight(0);
 	}
 
 	@Override
