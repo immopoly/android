@@ -125,8 +125,8 @@ public class HistoryAdapter extends BaseAdapter {
 
 	@Override
 	public boolean isEnabled(int position) {
-		// TODO no function yet
-		return false;
+		// TODO only enable list items which are clickable
+		return true;
 	}
 
 }
