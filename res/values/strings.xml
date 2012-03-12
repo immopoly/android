@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- ~ This is the Android component of Immopoly ~ http://immopoly.appspot.com 
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--
+     ~ This is the Android component of Immopoly ~ http://immopoly.appspot.com 
 	~ Copyright (C) 2011 Tobias Sasse ~ ~ This program is free software: you 
 	can redistribute it and/or modify ~ it under the terms of the GNU Affero 
 	General Public License as ~ published by the Free Software Foundation, either 
@@ -8,77 +9,115 @@
 	ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY or FITNESS 
 	FOR A PARTICULAR PURPOSE. See the ~ GNU Affero General Public License for 
 	more details. ~ ~ You should have received a copy of the GNU Affero General 
-	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/. -->
-
+	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/.
+-->
 <resources>
-	<string name="app_name">Immopoly</string>
-	<string name="region_hint">Region Suche</string>
-	<string name="settings_description">Beschreibung</string>
-	<string name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string>
-	<!-- <string name="google_maps_key_debug">046wWKjg8saxIcTdBbAGRJCRYlzKn60QPaJF1Ng</string> -->
-	<!-- <string name="google_maps_key_debug">0bLS0H9J6frq-jJZADgTjmyp_hq84tDcy_BznUw</string> -->
-	<string name="webview_back_button">Zurück</string>
-	<string name="username_hint">Benutzername</string>
-	<string name="password_hint">Passwort</string>
-	<string name="password_confirm_hint">Passwort bestätigen</string>
-	<string name="password_min_lenght">Passwort muss mindestens %1$s Zeichen lang sein
+    <string name="app_name">Immopoly</string>
+    <string name="region_hint">Region Suche</string>
+    <string name="settings_description">Beschreibung</string>
+    <string name="release_expose">Wohnung abgeben</string>
+    <string name="username_hint">Benutzername</string>
+    <string name="password_hint">Passwort</string>
+    <string name="password_confirm_hint">Passwort bestätigen</string>
+    <string name="password_min_lenght">Passwort muss mindestens %1$s Zeichen lang sein
 	</string>
-	<string name="username_min_lenght">Username muss mindestens %1$s Zeichen lang sein"
+    <string name="username_min_lenght">Username muss mindestens %1$s Zeichen lang sein"
 	</string>
-	<string name="username_already_used">Benutzername ist bereits vergeben, wähl doch einen
+    <string name="username_already_used">Benutzername ist bereits vergeben, wähl doch einen
 		anderen!
 	</string>
-	<string name="no_internet_connection">Keine Internet Verbindung, diese ist notwending um
+    <string name="no_internet_connection">Keine Internet Verbindung, diese ist notwending um
 		das Spiel zu spielen.
 	</string>
-	<string name="welcome_message">Willkommen zu Immopoly, vergrößere dein Portfolio
+    <string name="welcome_message">Willkommen zu Immopoly, vergrößere dein Portfolio
 		und somit deine Provision- und Mieteinamen!</string>
-	<string name="register">Registrieren</string>
-	<string name="login">Anmelden</string>
-	<string name="button_ok">OK</string>
-	<string name="button_cancel">Abbrechen</string>
-	<string name="no_history_entries">History (Keine Einträge)</string>
-	<string name="history_title">History</string>
-	<string name="link_share_flat">Schau mal habe ich bei @immopoly gefunden</string>
-	<string name="no_location_value">&lt;Keine Lokation></string>
-	<string name="flat_already_in_portifolio">Die Wohnung ist bereits in deinem Portfolio!
+    <string name="register">Jetzt registrieren</string>
+    <string name="login">Anmelden</string>
+    <string name="button_ok">OK</string>
+    <string name="button_mist">Mist!</string>
+    <string name="button_cancel">Abbrechen</string>
+    <string name="no_history_entries">History (Keine Einträge)</string>
+    <string name="history_title">History</string>
+    <string name="link_share_flat">Schau mal habe ich bei @immopoly gefunden</string>
+    <string name="no_location_value">&amp;lt;Keine Lokation&amp;gt;</string>
+    <string name="flat_already_in_portifolio">Die Wohnung ist bereits in deinem Portfolio!
 	</string>
-	<string name="flat_does_not_exist_anymore">"Expose gibt es nicht mehr."</string>
-	<string name="flat_has_no_raw_rent">Expose hat keine Kaltmiete und kann nicht
+    <string name="flat_does_not_exist_anymore">"Expose gibt es nicht mehr."</string>
+    <string name="flat_has_no_raw_rent">Expose hat keine Kaltmiete und kann nicht
 		übernommen werden
 	</string>
-	<string name="take_over_try">Übernahme Versuch!</string>
-	<string name="share_item">Share</string>
-	<string name="expose_couldnt_add">Expose konnte nicht hinzugefügt werden.</string>
-	<string name="allow_localization_title">Lokalisierung erlauben!</string>
-	<string name="allow_localization_message">Für das Spiel die Lokalisierung notwendig</string>
-
-
-	<!-- Toasty stuff -->
-	<string name="toast_min_lenght_username">Username muss mindestens $1%s Zeichen lang sein
+    <string name="take_over_success_dlg_title">Übernahme erfolgreich!</string>
+    <string name="take_over_fail_dlg_title">Übernahme gescheitert!</string>
+    <string name="flat_released_dlg_title">Wohnung abgegeben!</string>
+    <string name="share_item">Share</string>
+    <string name="expose_couldnt_add">Expose konnte nicht hinzugefügt werden.</string>
+    <string name="expose_couldnt_release">Expose konnte nicht freigegeben werden.</string>
+    <string name="allow_localization_title">Lokalisierung erlauben!</string>
+    <string name="allow_localization_message">Für das Spiel die Lokalisierung notwendig</string>
+    <!-- Toasty stuff -->
+    <string name="toast_min_lenght_username">Username muss mindestens %s Zeichen lang sein
 	</string>
-	<string name="toast_min_lenght_password">Passwort muss mindestens $1%s Zeichen lang sein
+    <string name="toast_min_lenght_password">Passwort muss mindestens %s Zeichen lang sein
 	</string>
-	<string name="toast_wrong_username_or_pasword">Benutzername oder Password falsch!</string>
-	<string name="toast_no_connection">Keine Internet Verbindung, diese ist notwending um
+    <string name="toast_wrong_username_or_pasword">Benutzername oder Password falsch!</string>
+    <string name="toast_no_connection">Keine Internet Verbindung, diese ist notwending um
 		das Spiel zu spielen.</string>
-	<string name="toast_session_timeout">Zu lange nicht angemeldet, bitte erneut anmelden!
+    <string name="toast_session_timeout">Zu lange nicht angemeldet, bitte erneut anmelden!
 	</string>
-	<string name="toast_passwords_must_match">Passwörter müssen übereinstimmen</string>
-
-	<string name="portfolio">Portfolio:</string>
-	<string name="provision">Provision:</string>
-	<string name="bank">Bank:</string>
-	<string name="rent">Miete:</string>
-	<string name="dash">-</string>
-
-	<string name="share">Share</string>
-	<string name="try_takeover">Übernahme versuchen</string>
-	<string name="flat">Wohnung</string>
-	<string name="locating_message">Standort wird ermittelt ...</string>
-	<string name="date">Datum</string>
-	<string name="time">Zeit</string>
-	<string name="expose_location_spoofing">Nicht schneller reisen als die Polizei erlaubt :).</string>
-	
-	<string name="header_login">Jetzt Anmelden</string>
+    <string name="toast_passwords_must_match">Passwörter müssen übereinstimmen</string>
+    <string name="portfolio">Portfolio:</string>
+    <string name="provision">Provision:</string>
+    <string name="bank">Bank:</string>
+    <string name="rent">Miete:</string>
+    <string name="dash">-</string>
+    <string name="share">Share</string>
+    <string name="try_takeover">Übernahme versuchen</string>
+    <string name="flat">Wohnung</string>
+    <string name="locating_message">Standort wird ermittelt ...</string>
+    <string name="date">Datum</string>
+    <string name="time">Zeit</string>
+    <string name="expose_location_spoofing">Nicht schneller reisen als die Polizei erlaubt :).</string>
+    <string name="header_login">Jetzt Anmelden</string>
+    <string name="current_cost_text">Miete gestern:</string>
+    <string name="last_provision_text">Provision gestern:</string>
+    <string name="calculated_cost_text">Geschätzte Kosten 30 Tage:</string>
+    <string name="current_ballance_text">Verfügbares Bargeld:</string>
+    <string name="num_flats_text">Wohnungen:</string>
+    <string name="login_button">Anmelden</string>
+    <string name="please_wait">10 Sekunden warten &amp; lesen ;)</string>
+    <string name="notification_setting_detail">Benachrichtigungen erhalten</string>
+    <string name="notification_setting">Benachrichtigungen</string>
+    <string name="menu_settings">Einstellungen</string>
+    <string name="menu_logout">Abmelden</string>
+    <string name="menu_website">Webseite</string>
+    <string name="menu_highscore">Highscore</string>
+    <string name="menu_help">Hilfe</string>
+    <string name="menu_contact">Kontakt</string>
+    <string name="user_signup_no_account_register">Wenn du noch keinen Account hast, kannst du dich hier registrieren.</string>
+    <string name="user_email_hint">Email, falls Passwort vergessen.</string>
+    <string name="user_twitter_hint">Twitter name (optional)</string>
+    <string name="toast_email_verification">Gibt bitte deine Email Adresse an.</string>
+    <string name="register_short">Register</string>
+    <string name="forgot_passwd">Passwort vergessen</string>
+    <string name="user_signup_app_name">IMMOPOLY</string>
+    <string name="signup_no_agent_yet">Erobere deinen Kiez</string>
+    <string name="user_signup_promote_text">Finde die besten Wohnungen und baue dein Portfolio aus, zeig das du deinen Kiez am besten kennst.</string>
+    <string name="badge_info">Badge info</string>
+    <string name="start_game_button">Zum Spiel</string>
+    <string name="pwd_reset_mail_sent">Eine EMail zum Passwort-Reset wurde dir geschickt.</string>
+    <!-- ImmopolyException Strings -->
+    <string name="account_not_found">Kein Account zu diesem Benutzernamen gefunden.</string>
+    <string name="account_has_no_email">Zu diesem Account ist keine EMail-Adresse hinterlegt.</string>
+    <string name="account_has_different_email">Die EMail-Adresse passt nicht zu diesem Account.</string>
+    <!-- social password reset -->
+    <string name="social_pwd_reset_dlg_title">Account reaktivieren...</string>
+    <string name="social_pwd_reset_dlg_text">Zu deinem Account ist keine EMail-Adresse hinterlegt. Du kannst das Immopoly-Team per EMail kontaktieren, um deinen Account zu reaktivieren.</string>
+    <string name="social_pwd_reset_dlg_cancel">Nein, danke!</string>
+    <string name="social_pwd_reset_dlg_ok">Ja, bitte!</string>
+    <string name="social_pwd_reset_mail_subject">Immopoly Account Reaktivierung</string>
+    <string name="social_pwd_reset_mail_text1">Liebes Immopoly Team,\n\nIch bin der \'</string>
+    <string name="social_pwd_reset_mail_text2">\' und habe Probleme, meinen Immopoly-Account zu reaktivieren, da bei euch keine EMail-Adresse hinterlegt ist.\n\nBitte helft mir...</string>
+    <string name="social_pwd_reset_intent_title">Immopoly-Team kontaktieren:</string>
+    <string name="forgottPassword">Passwort vergessen?</string>
+    <string name="still_loading">lädt noch...</string>
 </resources>

@@ -27,8 +27,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
@@ -43,7 +41,7 @@ import android.content.Context;
 public class WebHelper {
 
 // appengine on immopoly.appspot.com
-	public static final String SERVER_URL_PREFIX       = "http://immopoly.appspot.com";
+	public static final String SERVER_URL_PREFIX = "http://immopoly.appspot.com";
 	public static final String SERVER_HTTPS_URL_PREFIX = "https://immopoly.appspot.com";
 // appengine on emulator host (http only)
 //	public static final String SERVER_URL_PREFIX       = "http://10.0.2.2:8888";

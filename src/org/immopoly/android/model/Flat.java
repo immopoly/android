@@ -26,7 +26,6 @@ import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.immopoly.android.app.PlacesMapActivity;
 import org.immopoly.android.constants.Const;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +42,7 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 	
 	private static SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	// http://developer.immobilienscout24.de/wiki/Expose/GET
-	public Integer uid;
+	public int uid;
 	public String name;
 	public String description;
 	public String locationNote;
@@ -71,8 +70,12 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 	public String priceValue;
 	public String priceIntervaleType;
 	public String currency;
-	public long creationDate=0;
-	public int age;
+	public double livingSpace;
+	public int    numRooms;
+	public long   creationDate=0;
+	public int    age;
+	public int    takeoverTries;
+	public long   takeoverDate;
 	
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -133,6 +136,8 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 		name = objRealEstate.optString("title");
 		description = objRealEstate.optString("descriptionNote");
 		locationNote = objRealEstate.optString("locationNote");
+		livingSpace = objRealEstate.optDouble("livingSpace");
+		numRooms = objRealEstate.optInt("numberOfRooms");
 		// OWN OBJECT
 
 		/**
@@ -176,14 +181,16 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 			}
 		}
 		if (objRealEstate.has("price")) {
-			marketingType = objRealEstate.getJSONObject("price").optString(
-					"marketingType");
-			priceValue = objRealEstate.getJSONObject("price")
-					.optString("value");
-			priceIntervaleType = objRealEstate.getJSONObject("price")
-					.optString("priceIntervalType");
-			currency = objRealEstate.getJSONObject("price").optString(
-					"currency");
+			marketingType = objRealEstate.getJSONObject("price").optString("marketingType");
+			priceValue = objRealEstate.getJSONObject("price").optString("value");
+			priceIntervaleType = objRealEstate.getJSONObject("price").optString("priceIntervalType");
+			currency = objRealEstate.getJSONObject("price").optString("currency");
+			try {
+				double price = Double.parseDouble(priceValue);
+				priceValue = Integer.toString( (int) Math.round(price) );
+			} catch (Exception e) {} 
+		} else {
+			priceValue = "?";
 		}
 		//schtief issue #7 2006-09-19T15:27:19.000+02:00
 		if (jsonObject.has("@modification")) {
@@ -194,7 +201,7 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 			try {
 				creationDate=DF.parse(creationDateS).getTime();
 			} catch (ParseException e) {
-				Log.e(PlacesMapActivity.TAG, "could not parse creationDate", e);
+				Log.e("ERRO", "could not parse creationDate", e);
 			}
 		}else{
 //			Log.e(PlacesMap.TAG,"no creationDate "+jsonObject.toString());

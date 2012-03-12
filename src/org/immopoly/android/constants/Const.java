@@ -2,6 +2,8 @@ package org.immopoly.android.constants;
 
 public class Const {
 
+	public static final String LOG_TAG = "IMPO";
+
 	// Intents
 
 	// Intent open webview
@@ -10,10 +12,12 @@ public class Const {
 	public static final String EXPOSE_DESC = "exposeDescription";
 	public static final String EXPOSE_URL = "exposeURL";
 	public static final String EXPOSE_IN_PORTOFOLIO = "exposeInPortfolio";
-	public static final String EXPOSE_OWNED = "exposeOwned";
+	
+//	public static final String EXPOSE_OWNED = "exposeOwned";
 
 	// Intent add portofolio
 	public static final String EXPOSE_ADD_PORTIFOLIO = "addToPortifolio";
+	public static final String EXPOSE_RELEASE_PORTIFOLIO = "releaseFromPortifolio";
 
 	public static final String SOURCE = "source";
 
@@ -39,6 +43,8 @@ public class Const {
 
 	public static final String IMMOPOLY_EMAIL = "immopolyteam@gmail.com";
 	public static final int ANALYTICS_INTERVAL = 20;
+
+	public static final int USER_SIGNUP = 110;
 	
 
 }

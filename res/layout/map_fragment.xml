@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/map_relative_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="right"
+    android:gravity="right" >
+    <ImageView
+        android:id="@+id/map_reload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@android:drawable/ic_menu_compass" >
+    </ImageView>
+    <ProgressBar
+        android:id="@+id/map_progress"
+        style="@android:style/Widget.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:visibility="gone" />
+    <RelativeLayout
+        android:id="@+id/splashscreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#C0ffffff"
+        android:clickable="true"
+        android:gravity="center_horizontal"
+        android:visibility="gone" >
+        <ImageView
+            android:id="@+id/splash_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/logo_splash" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="15dp"
+            android:text="powered by Immobilienscout API"
+            android:textColor="@color/hud_text"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+</RelativeLayout>

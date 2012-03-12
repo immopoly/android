@@ -16,12 +16,7 @@
   ~
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see http://www.gnu.org/licenses/.
-  -->
-
+-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:state_focused="true" android:drawable="@drawable/owned_property_big"/>
-    <item
-	android:state_selected="true"
-	android:drawable="@drawable/owned_property_big" />
-    <item android:drawable="@drawable/owned_property" />
+    <item android:drawable="@drawable/owned_property"/>
 </selector>

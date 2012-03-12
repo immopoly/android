@@ -19,14 +19,25 @@
 
 package org.immopoly.android.helper;
 
+import org.immopoly.android.R;
 import org.immopoly.android.model.OAuthData;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.util.DisplayMetrics;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 public class Settings {
 
+	private static ImageListDownloader exposeImageDownloader;
+	private static float screenDesity;
+	
 	public static void shareMessage(Context context, String title,
 			String message, String link) {
 		final String tag = "@immopoly";
@@ -65,4 +76,32 @@ public class Settings {
 		else
 			return OAuthData.sExposeUrlWeb + exposeID;
 	}
+	
+	public static ImageListDownloader getExposeImageDownloader( Context ctx ) {
+		if ( exposeImageDownloader == null ) {
+			Bitmap loadingBmp = ((BitmapDrawable) ctx.getResources().getDrawable( R.drawable.loading )).getBitmap();
+			Bitmap fallbackBmp = ((BitmapDrawable) ctx.getResources().getDrawable( R.drawable.portfolio_fallback )).getBitmap();
+			Animation loadingAni = AnimationUtils.loadAnimation( ctx,R.anim.loading_animation );
+			exposeImageDownloader = new ImageListDownloader( loadingBmp, loadingAni, fallbackBmp );
+		}
+		return exposeImageDownloader;
+	}
+
+
+	
+	public static float getScreenDensity( Activity activity) {
+		if ( screenDesity == 0.0f ) {
+			DisplayMetrics metrics = new DisplayMetrics();
+			activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			screenDesity = metrics.density;
+		}
+		return screenDesity;
+	}
+	
+	public static float dp2px( Activity activity, float dp ) {
+		if ( screenDesity == 0.0f ) 
+			getScreenDensity(activity);
+		return screenDesity*dp;
+	}
+	
 }

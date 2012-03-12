@@ -21,8 +21,11 @@ package org.immopoly.android.tasks;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
+import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.helper.WebHelper;
+import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.provider.FlatsProvider;
 import org.json.JSONException;
@@ -62,66 +65,14 @@ public abstract class GetUserInfoTask extends
 		if (obj == null || obj.has("org.immopoly.common.ImmopolyException")) {
 			user = null;
 		} else {
+			// fill user objects from server's UserInfo data
 			ImmopolyUser.getInstance().fromJSON(obj);
 			user = ImmopolyUser.getInstance();
-
-			// getContentResolver().delete(
-			// FlatsProvider.CONTENT_URI,
-			// org.immopoly.android.provider.FlatsProvider.Flat.FLAT_ID
-			// + " > 0", null);
-			Cursor cur = mContext.getContentResolver().query(
-					FlatsProvider.CONTENT_URI, null, null, null, null);
-			if (cur.getCount() > 0) {
-				boolean isIn;
-				int current;
-				cur.moveToFirst();
-				do {
-					isIn = false;
-					current = -1;
-					for (int i = 0; i < ImmopolyUser.getInstance().flats.size(); i++) {
-						if (cur.getInt(cur
-								.getColumnIndex(FlatsProvider.Flat.FLAT_ID)) == ImmopolyUser
-								.getInstance().flats.get(i).uid) {
-							isIn = true;
-							current = i;
-							break;
-						}
-					}
-					if (isIn == false) {
-						// delete
-						deleteFlat(cur.getInt(cur
-								.getColumnIndex(FlatsProvider.Flat.FLAT_ID)));
-					} else if (current != -1) {
-						ImmopolyUser.getInstance().flats.remove(current);
-					}
-				} while (cur.moveToNext());
-			}
-			for (org.immopoly.android.model.Flat f : ImmopolyUser.getInstance().flats) {
-				addFlat(f);
-			}
 		}
 		return user;
 	}
 
 	@Override
 	protected void onPostExecute(ImmopolyUser user) {
-
-	}
-
-	private void deleteFlat(int id) {
-		mContext.getContentResolver().delete(FlatsProvider.CONTENT_URI,
-				FlatsProvider.Flat.FLAT_ID + "=" + id, null);
-	}
-
-	private void addFlat(org.immopoly.android.model.Flat f) {
-		ContentValues values;
-		values = new ContentValues();
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_ID,f.uid);
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_NAME,f.name);
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_DESCRIPTION,"-");
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_LATITUDE, f.lat);
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_LONGITUDE, f.lng);
-		values.put(org.immopoly.android.provider.FlatsProvider.Flat.FLAT_CREATIONDATE, f.creationDate);
-		mContext.getContentResolver().insert(FlatsProvider.CONTENT_URI, values);
 	}
 }

@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    <fragment
+        android:id="@+id/hud_fragment"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:name="org.immopoly.android.fragments.HudFragment" >
+        <!-- Preview: layout=@layout/hud -->
+    </fragment>
+    <fragment
+        android:id="@+id/map_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="org.immopoly.android.fragments.MapFragment" >
+    </fragment>
+    <fragment
+        android:id="@+id/expose_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="org.immopoly.android.fragments.ExposeFragment" >
+    </fragment>
+</LinearLayout>

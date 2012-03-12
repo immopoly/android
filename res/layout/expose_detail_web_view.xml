@@ -15,47 +15,59 @@
   ~
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see http://www.gnu.org/licenses/.
-  -->
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0dip"
+    android:orientation="vertical" >
 
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:padding="0dip"
-	android:layout_margin="0dip">
-	<RelativeLayout
-		android:orientation="horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-		<LinearLayout
-			android:layout_alignParentLeft="true"
-			android:layout_alignParentTop="true"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<ProgressBar
-				android:id="@+id/progress"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-			<Button
-				android:id="@+id/BackButton"
-				android:layout_weight="1"
-				android:layout_toRightOf="@+id/progress"
-				android:text="@string/try_takeover"
-				android:onClick="addCurrentExpose"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-			<Button
-				android:id="@+id/shareExpose"
-				android:layout_weight="1"
-				android:text="@string/share"
-				android:onClick="shareExpose"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-		</LinearLayout>
-	</RelativeLayout>
-	<WebView
-		android:id="@+id/exposeWevView"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/hud_background"
+        android:gravity="center_vertical" >
+
+        <Button
+            android:id="@+id/TakeOrReleaseButton"
+            style="@style/immopolyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/linearLayout1"
+            android:drawableLeft="@drawable/btn_portfolio_new"
+            android:text="@string/release_expose" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/shareExpose"
+                style="@style/immopolyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:background="@null"
+                android:contentDescription="@string/share"
+                android:gravity="center_vertical"
+                android:src="@drawable/btn_share_new" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                style="@android:style/Widget.ProgressBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="14dp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <WebView
+        android:id="@+id/exposeWevView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

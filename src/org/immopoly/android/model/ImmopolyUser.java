@@ -20,9 +20,10 @@
 package org.immopoly.android.model;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
+import org.immopoly.android.constants.Const;
+import org.immopoly.common.Badge;
 import org.immopoly.common.History;
 import org.immopoly.common.User;
 import org.json.JSONArray;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class ImmopolyUser extends User {
 
@@ -42,25 +44,35 @@ public class ImmopolyUser extends User {
 	private String mEmail;
 	private String mTwitter;
 	private double mBalance;
-	public List<ImmopolyHistory> mUserHistory;
-	public List<Flat> flats;
+	private List<ImmopolyHistory> mUserHistory;
+	public Flats flats;
 	private double sLastProvision;
 	private double sLastRent;
 	private static ImmopolyUser sInstance = null;
 
-	private static long mTimeUpdated = -1;
+	private List<ImmopolyBadge> badges;
+	private int maxExposes;
+
+	
+// private static long mTimeUpdated = -1;
 
 	private ImmopolyUser() {
 		mUserHistory = new ArrayList<ImmopolyHistory>();
-		flats = new ArrayList<Flat>();
+		badges = new ArrayList<ImmopolyBadge>();
+		flats = new Flats();
 	}
 
 	@Override
 	public double getBalance() {
-		// TODO Auto-generated method stub
 		return mBalance;
 	}
 
+	/**
+	 * 
+	 * @param context
+	 * @return
+	 * @deprecated was soll der schmarn hier? fragt den USerDataManager nach dem status
+	 */
 	public String readToken(Context context) {
 		if (mUserToken == null || mUserToken.length() == 0) {
 			SharedPreferences shared = context.getSharedPreferences(sPREF_USER,
@@ -78,7 +90,6 @@ public class ImmopolyUser extends User {
 
 	@Override
 	public String getUserName() {
-		// TODO Auto-generated method stub
 		return mUserName;
 	}
 
@@ -94,7 +105,6 @@ public class ImmopolyUser extends User {
 
 	@Override
 	public void setUsername(String username) {
-		// TODO Auto-generated method stub
 		mUserName = username;
 	}
 
@@ -109,11 +119,15 @@ public class ImmopolyUser extends User {
 		}
 		return sInstance;
 	}
+	
+	public static void resetInstance(){
+		sInstance=null;
+	}
 
 	@Override
 	public void setPortfolio(JSONObject portfolio) {
 		if (portfolio != null) {
-			this.mTimeUpdated = Calendar.getInstance().getTimeInMillis();
+			// this.mTimeUpdated = Calendar.getInstance().getTimeInMillis();
 			JSONArray results;
 			JSONArray resultEntries;
 			try {
@@ -123,35 +137,56 @@ public class ImmopolyUser extends User {
 
 				JSONObject expose;
 				JSONObject realEstate;
-				flats = new ArrayList<Flat>();
+				flats = new Flats();
 				for (int i = 0; i < resultEntries.length(); i++) {
 					item = new Flat();
 					expose = resultEntries.getJSONObject(i).getJSONObject(
 							"expose.expose");
 					realEstate = expose.getJSONObject("realEstate");
 					item.priceValue = realEstate.optString("baseRent");
+					try {
+						double price = Double.parseDouble(item.priceValue);
+						item.priceValue = Integer.toString( (int) Math.round(price) );
+					} catch (Exception e) {} 
 					item.name = realEstate.optString("title");
 					item.uid = realEstate.optInt("@id");
 					item.lat = realEstate.getJSONObject("address")
 							.getJSONObject("wgs84Coordinate")
-							.optDouble("longitude");
+							.optDouble("latitude");
 					item.lng = realEstate.getJSONObject("address")
 							.getJSONObject("wgs84Coordinate")
-							.optDouble("latitude");
+							.optDouble("longitude");
+					item.takeoverDate  = realEstate.optLong("overtakeDate");
+					item.takeoverTries = realEstate.optInt("overtakeTries");
+					item.numRooms      = realEstate.optInt("numberOfRooms");
+					item.livingSpace   = realEstate.optInt("livingSpace");
+					
+					if (realEstate.has("titlePicture")) {
+						Log.i(Const.LOG_TAG, "REAL_ESTATE: " + realEstate.toString() );
+						JSONObject objPicture = realEstate.getJSONObject("titlePicture");
+						if (objPicture.has("urls") && objPicture.getJSONArray("urls").length() > 0) {
+							JSONObject urls = objPicture.getJSONArray("urls").getJSONObject(0).getJSONObject("url");
+							if ( urls != null )
+							item.titlePictureSmall = urls.optString("@href");
+						}
+					}
+					item.owned         = true;
 					flats.add(item);
-
 				}
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e( Const.LOG_TAG, "Exception while parsing portfolio: ", e );
 			}
 		}
-
 	}
+	
+	public Flats getPortfolio() {
+		return flats;
+	}
+	
 
 	@Override
-	public History instantiateHistory() {
-		return new ImmopolyHistory();
+	public History instantiateHistory(JSONObject o) {
+		return new ImmopolyHistory(o);
 	}
 
 	@Override
@@ -163,6 +198,10 @@ public class ImmopolyUser extends User {
 
 	}
 
+	public List<ImmopolyHistory> getHistory() {
+		return mUserHistory;
+	}
+
 	@Override
 	public void setLastProvision(double lastProvision) {
 		sLastProvision = lastProvision;
@@ -170,7 +209,6 @@ public class ImmopolyUser extends User {
 
 	@Override
 	public void setLastRent(double lastRent) {
-		// TODO Auto-generated method stub
 		sLastRent = lastRent;
 	}
 
@@ -182,28 +220,6 @@ public class ImmopolyUser extends User {
 		return sLastRent;
 	}
 
-	/**
-	 * checks if time difference between last update is bigger then 5 minutes
-	 * 
-	 * @return boolean true if isOld and needs to get updated
-	 */
-	public boolean isOld() {
-		if (mTimeUpdated > 0) {
-			long diff = Calendar.getInstance().getTimeInMillis()
-					- mTimeUpdated;
-			// int seconds = (int) (diff / 1000) % 60 ;
-			int minutes = (int) ((diff / (1000 * 60)) % 60);
-			// int hours = (int) ((diff / (1000*60*60)) % 24);
-			if (minutes >= 5) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return true;
-		}
-	}
-
 	public String getEmail() {
 		return mEmail;
 	}
@@ -213,10 +229,42 @@ public class ImmopolyUser extends User {
 	}
 
 	public void setEmail(String email) {
-		mEmail=email;
+		mEmail = email;
 	}
 
 	public void setTwitter(String twitter) {
-		mTwitter=twitter;
+		mTwitter = twitter;
+	}
+
+	public List<ImmopolyBadge> getBadges() {
+		return badges;
+	}
+
+	@Override
+	public Badge instantiateBadge(JSONObject o) {
+		return new ImmopolyBadge(o);
+	}
+
+	@Override
+	public void setBadges(List<Badge> badges) {
+		this.badges.clear();
+		for (Badge badge: badges) {
+			this.badges.add((ImmopolyBadge) badge);
+		}
+
+	}
+
+	@Override
+	public void setMaxExposes(int maxExposes) {
+		this.maxExposes = maxExposes;
+	}
+
+	public int getMaxExposes() {
+		return maxExposes;
+	}
+	
+	@Override
+	public void setNumExposes(int numExposes) {
+		// numExposes == flats.size() !
 	}
 }

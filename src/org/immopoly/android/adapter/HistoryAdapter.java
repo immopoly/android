@@ -24,23 +24,25 @@ import java.util.List;
 import java.util.Locale;
 
 import org.immopoly.android.R;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.model.ImmopolyHistory;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.common.History;
 
 import android.app.Activity;
-import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
-
 
 public class HistoryAdapter extends BaseAdapter {
 
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - HH:mm", Locale.GERMANY);
+	
 	private LayoutInflater inflater;
-
 
 	public HistoryAdapter(Activity context) {
 		inflater = context.getLayoutInflater();
@@ -48,14 +50,13 @@ public class HistoryAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
-		List<ImmopolyHistory> h = ImmopolyUser.getInstance().mUserHistory;
+		List<ImmopolyHistory> h = ImmopolyUser.getInstance().getHistory();
 		return h.size();
 	}
 
 	@Override
 	public History getItem(int arg0) {
-		return ImmopolyUser.getInstance().mUserHistory.get(arg0);
+		return ImmopolyUser.getInstance().getHistory().get(arg0);
 	}
 
 	@Override
@@ -75,56 +76,57 @@ public class HistoryAdapter extends BaseAdapter {
 		if (holder == null) {
 			holder = new ViewHolder();
 
-			holder.time = (TextView) convertView.findViewById(R.id.time);
 			holder.date = (TextView) convertView.findViewById(R.id.date);
-
 			holder.text = (TextView) convertView.findViewById(R.id.historyText);
+			holder.icon = (ImageView) convertView.findViewById(R.id.icon);
+			holder.bttn = (ImageView) convertView.findViewById(R.id.show_expo_btn);
 		}
 
-		int color = Color.BLACK;
-		switch (((ImmopolyHistory) getItem(position)).mtype) {
+		ImmopolyHistory entry = (ImmopolyHistory) getItem(position);
+
+		Log.i( Const.LOG_TAG, "History entry expos'e id: " + entry.getExposeId() );
+		
+		boolean showButton = false;
+		int type = entry.getType();
+		switch (type) {
+		case History.TYPE_EXPOSE_ADDED:
+		case History.TYPE_EXPOSE_REMOVED:
+			holder.icon.setImageResource( R.drawable.history_btn_info );
+			showButton = entry.getExposeId() > 0;
+			break;
 		case History.TYPE_EXPOSE_SOLD:
-			color = Color.GREEN;
+			holder.icon.setImageResource( R.drawable.history_btn_star );
 			break;
 		case History.TYPE_EXPOSE_MONOPOLY_POSITIVE:
-			color = Color.GREEN;
+			holder.icon.setImageResource( R.drawable.history_btn_star );
 			break;
 		case History.TYPE_DAILY_PROVISION:
-			color = Color.GREEN;
+			holder.icon.setImageResource( R.drawable.history_btn_star );
 			break;
 		case History.TYPE_EXPOSE_MONOPOLY_NEGATIVE:
-			color = Color.RED;
+			holder.icon.setImageResource( R.drawable.history_btn_attention );
 			break;
 		case History.TYPE_DAILY_RENT:
-			color = Color.RED;
-			break;
-		default:
+			holder.icon.setImageResource( R.drawable.history_btn_attention );
 			break;
 		}
-
-		holder.date.setTextColor(color);
-		holder.date.setText(create_datestring(((ImmopolyHistory) getItem(position)).mTime));
-		holder.time.setTextColor(color);
-		holder.time.setText(create_timestring(((ImmopolyHistory) getItem(position)).mTime) + " Uhr");
-		holder.text.setTextColor(color);
-		holder.text.setText(((ImmopolyHistory) getItem(position)).mText);
+		holder.date.setText(sdf.format(entry.getTime()));
+		holder.text.setText(entry.getText());
+		holder.bttn.setVisibility( showButton ? View.VISIBLE : View.GONE );
 		return convertView;
 	}
 
 	class ViewHolder {
-		TextView time;
 		TextView date;
 		TextView text;
+		ImageView icon;
+		ImageView bttn;
 	}
 
-	public static String create_datestring(long timestring) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY);
-		return sdf.format(timestring);
-	}
-
-	public static String create_timestring(long timestring) {
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.GERMANY);
-		return sdf.format(timestring);
+	@Override
+	public boolean isEnabled(int position) {
+		// TODO only enable list items which are clickable
+		return true;
 	}
 
 }

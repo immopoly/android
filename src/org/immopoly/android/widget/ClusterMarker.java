@@ -27,6 +27,7 @@ import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.DisplayMetrics;
@@ -36,17 +37,17 @@ import android.util.DisplayMetrics;
  */
 public class ClusterMarker extends Drawable {
 
-	private static final float TEXT_SIZE_DP = 18.0f;
+	private static final float TEXT_SIZE_DP = 14.0f;
 	
 	private static Paint textPaint = new TextPaint();
 	private static Paint shadowPaint = new TextPaint();
 	private static int textSize;
-	private static int textY;
+	private static float textY;
+	private static float textX;
 
 	private ArrayList<Flat> flats;
 	private boolean		 	shadowMode;
 	private Drawable		baseDrawable;
-	
 
 	public ClusterMarker(ArrayList<Flat> flats, Drawable baseDrawable ) {
 		this.baseDrawable = baseDrawable;
@@ -55,15 +56,17 @@ public class ClusterMarker extends Drawable {
 	
 	static void init(DisplayMetrics displayMetrics, int markerHeight) {
 		textSize = (int) (TEXT_SIZE_DP * displayMetrics.density + 0.5f);
-		textY = -(markerHeight - textSize) / 2;
+		textY = -(markerHeight - textSize) / 2 - (3*displayMetrics.density);
+		textX = -3f * displayMetrics.density;
 		
 		textPaint.setColor( 0xFFFFFFFF );
 		textPaint.setTextSize( textSize );
 		textPaint.setAntiAlias( true );
 		textPaint.setTextAlign( Align.CENTER );
+		textPaint.setTypeface(Typeface.DEFAULT_BOLD); 
 //		textPaint.setShadowLayer( 10, 10, 5, Color.BLACK ); // no go :(
 		
-		shadowPaint.setColor( 0xFF000000 );
+		shadowPaint.setColor( 0xFFB25200 );
 		shadowPaint.setTextSize( textSize );
 		shadowPaint.setAntiAlias( true );
 		shadowPaint.setTextAlign( Align.CENTER );
@@ -72,15 +75,15 @@ public class ClusterMarker extends Drawable {
 
 	@Override
 	public void draw(Canvas canvas) {
-		int numFlats = flats.size();
-		baseDrawable.draw(canvas);
 		if ( ! shadowMode ) {
+			int numFlats = flats.size();
+			baseDrawable.draw(canvas);
 			String text = numFlats < 10 ? Integer.toString( numFlats ) : "+";
-			canvas.drawText( text,  1, textY+1, shadowPaint );
-			canvas.drawText( text, -1, textY+1, shadowPaint );
-			canvas.drawText( text,  1, textY-1, shadowPaint );
-			canvas.drawText( text, -1, textY-1, shadowPaint );
-			canvas.drawText( text,  0, textY  , textPaint );
+//			canvas.drawText( text, textX+1, textY+1, shadowPaint );
+//			canvas.drawText( text, textX-1, textY+1, shadowPaint );
+//			canvas.drawText( text, textX+1, textY-1, shadowPaint );
+//			canvas.drawText( text, textX-1, textY-1, shadowPaint );
+			canvas.drawText( text, textX,   textY  , textPaint );
 		}
 	}
 
