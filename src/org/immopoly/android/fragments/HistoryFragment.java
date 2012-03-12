@@ -1,15 +1,18 @@
 package org.immopoly.android.fragments;
 
+import java.util.List;
+
 import org.immopoly.android.adapter.HistoryAdapter;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
-import org.immopoly.android.constants.Const;
+import org.immopoly.android.model.ImmopolyHistory;
+import org.immopoly.android.model.ImmopolyUser;
 
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
+import android.widget.Toast;
 
 public class HistoryFragment extends ListFragment implements UserDataListener{
 	@Override
@@ -39,11 +42,22 @@ public class HistoryFragment extends ListFragment implements UserDataListener{
 	@Override
 	public void onUserDataUpdated() {
 		setListAdapter(null);
-		if (UserDataManager.instance.getState() == UserDataManager.LOGGED_IN) {
+		int userState = UserDataManager.instance.getState();
+		if ( userState == UserDataManager.LOGGED_IN) {
 			setListAdapter(new HistoryAdapter(getActivity()));
 			setEmptyText("Noch keine Einträge in der History");
+		} else if ( userState == UserDataManager.LOGIN_PENDING ) {
+			setEmptyText("Anmeldung läuft...");
 		} else {
 			setEmptyText("Anmelden um hier History Einträge zu sehen");
 		}
+	}
+	
+	// TODO geht nicht ... wiiieeessoooooo?
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		List<ImmopolyHistory> history = ImmopolyUser.getInstance().getHistory();
+		ImmopolyHistory entry = history.get(position);
+		Toast.makeText(getActivity(), "ExposeId: " + entry.getExposeId(), Toast.LENGTH_LONG).show();
 	}
 }

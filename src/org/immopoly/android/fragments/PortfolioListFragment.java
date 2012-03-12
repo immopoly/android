@@ -76,7 +76,6 @@ public class PortfolioListFragment extends ListFragment implements UserDataListe
 
 		mEventListener.onTrackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE,
 				TrackingManager.LABEL_EXPOSE_PORTFOLIO, 0);
-
 	}
 
 	@Override

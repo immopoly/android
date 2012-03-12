@@ -18,28 +18,54 @@
   ~ along with this program. If not, see http://www.gnu.org/licenses/.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/history_item_background"
     android:orientation="horizontal"
     android:padding="5dp" >
-    <TextView
-        android:id="@+id/date"
+    <ImageView
+        android:id="@+id/icon"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_marginLeft="4dip"
-        android:layout_marginRight="4dip"
-        android:background="@drawable/bg_history_time"
-        android:gravity="center"
-        android:padding="2dp"
-        android:text="@string/date"
-        android:textColor="@android:color/black" />
-    <TextView
-        android:id="@+id/historyText"
-        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:src="@drawable/history_btn_star" />
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@drawable/bg_history_time"
-        android:padding="8dp"
-        android:textColor="@android:color/white" />
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:padding="2dp"
+            android:text="12.03.2012 - 14:35"
+            android:textColor="#F87107"
+            android:textSize="12dp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/historyText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:text="Tagesabrechnung: 123456€. Herzlichen Glückwunsch!"
+            android:textColor="#6D7C91" />
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/frameLayout1"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0" >
+        <ImageView
+            android:id="@+id/show_expo_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/history_btn_show" />
+    </FrameLayout>
 </LinearLayout>

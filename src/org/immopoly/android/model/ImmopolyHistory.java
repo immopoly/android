@@ -32,7 +32,7 @@ public class ImmopolyHistory extends History{
 
 	// optional
 	private Double amount;
-	private Long exposeId;
+	private long exposeId;
 
 
 	public ImmopolyHistory(JSONObject obj) {
@@ -70,8 +70,14 @@ public class ImmopolyHistory extends History{
 
 	@Override
 	public void setExposeId(long exposeId) {
+		this.exposeId = exposeId;
 	}
 
+	// TODO method should exist in base interface
+	public long getExposeId() {
+		return exposeId;
+	}
+	
 	public int getType() {
 		return type;
 	}
