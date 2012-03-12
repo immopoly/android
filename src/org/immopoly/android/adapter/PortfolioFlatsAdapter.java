@@ -83,7 +83,7 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 		final Flat flat = mFlats.get( position );
 
 		if ( convertView == null )
-			convertView = inflater.inflate( R.layout.teaser_content_portfolio, parent, false);
+			convertView = inflater.inflate( R.layout.portfolio_list_item, parent, false);
 		
 		((EllipsizingTextView) convertView.findViewById( R.id.flat_desc_text )).setText( flat.name );
 		

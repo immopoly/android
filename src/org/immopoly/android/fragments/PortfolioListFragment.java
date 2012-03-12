@@ -119,7 +119,8 @@ public class PortfolioListFragment extends ListFragment implements UserDataListe
 			// ImageView view = (ImageView) getListView().getEmptyView();
 			// view.setImageResource(R.drawable.portfolio_fallback);
 			// }
-
+		} else if ( UserDataManager.instance.getState() == UserDataManager.LOGIN_PENDING ) {
+			setEmptyText("Anmeldung läuft...");
 		} else {
 			setEmptyText("Anmelden um dein Portfolio zu sehen");
 		}
