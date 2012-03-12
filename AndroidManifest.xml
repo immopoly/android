@@ -14,7 +14,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="auto"
     package="org.immopoly.android"
-    android:versionCode="5"
+    android:versionCode="6"
     android:versionName="2.0" >
 
     <uses-sdk
