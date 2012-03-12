@@ -1,101 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-     ~ This is the Android component of Immopoly ~ http://immopoly.appspot.com 
-	~ Copyright (C) 2011 Tobias Sasse ~ ~ This program is free software: you 
-	can redistribute it and/or modify ~ it under the terms of the GNU Affero 
-	General Public License as ~ published by the Free Software Foundation, either 
-	version 3 of the ~ License, or (at your option) any later version. ~ ~ This 
-	program is distributed in the hope that it will be useful, ~ but WITHOUT 
-	ANY WARRANTY; without even the implied warranty of ~ MERCHANTABILITY or FITNESS 
-	FOR A PARTICULAR PURPOSE. See the ~ GNU Affero General Public License for 
-	more details. ~ ~ You should have received a copy of the GNU Affero General 
-<<<<<<< HEAD
-	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/.
--->
-
+<!-- 	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/blue_grey" >
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/login_intro"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dip"
-            android:layout_weight="1"
-            android:text="@string/user_signup_app_name"
-            android:textSize="34dp" />
-
-        <ProgressBar
-            android:id="@+id/login_register_progress"
-            style="@android:style/Widget.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone" />
+            android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:onClick="loginUser"
-            android:text="@string/login"
-            android:textSize="20dip" />
-    </LinearLayout>
-        
+            <TextView
+                android:id="@+id/login_intro"
+                style="@style/immopolyHeading1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/user_signup_app_name"
+                android:textSize="34dp" />
+
+            <ProgressBar
+                android:id="@+id/login_register_progress"
+                style="@android:style/Widget.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/login"
+                style="@style/immopolyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|right"
+                android:layout_marginLeft="10dip"
+                android:onClick="loginUser"
+                android:text="@string/login"
+                android:textSize="20dip" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/registerOrLogin"
-            android:layout_width="match_parent"
+            style="@style/immopolyHeading2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal|center_vertical"
-            android:padding="7dip"
+            android:paddingBottom="7dip"
             android:text="@string/signup_no_agent_yet"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/registerDescription"
+            style="@style/immopolyText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/user_signup_promote_text"
-            android:textColor="@color/soft_green"
-            android:textSize="20sp"
+            android:gravity="center_horizontal"
             android:paddingBottom="7dip"
             android:paddingLeft="14dip"
             android:paddingRight="14dip"
+            android:text="@string/user_signup_promote_text"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/register"
-            android:layout_width="match_parent"
+            style="@style/immopolyButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="left"
             android:onClick="registerUser"
             android:text="@string/register"
             android:textSize="20dip" >
         </Button>
-
+
         <Button
             android:id="@+id/forgot_password"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/preLoginRegisterView"
+            android:layout_gravity="left"
             android:onClick="registerUser"
-            android:text="Passwort vergessen?"
+            android:text="@string/forgottPassword"
             android:textSize="20dip"
             android:visibility="gone" />
-
     </LinearLayout>
 
 </ScrollView>

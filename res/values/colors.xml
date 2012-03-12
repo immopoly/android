@@ -4,4 +4,9 @@
     <color name="soft_red">#a4353e</color>
     <color name="soft_green">#6a9006</color>
     <color name="hud_text">#003468</color>
+    <color name="orange">#ff7500</color>
+    <color name="orange_opacity">#22ff7500</color>
+    <color name="blue_grey">#f0f2f4</color>
+    <color name="blue">#033568</color>
+    <color name="blue_grey_dark">#97acc1</color>
 </resources>

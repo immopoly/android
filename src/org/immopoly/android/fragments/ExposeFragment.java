@@ -62,6 +62,7 @@ public class ExposeFragment extends DialogFragment {
 		flat = getArguments().getParcelable( "flat" );
 		// fullscreen dialog with no title
 		setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme);
+		
 	}
 
 	@Override
@@ -80,7 +81,9 @@ public class ExposeFragment extends DialogFragment {
 				.findViewById(R.id.shareExpose);
 		takeOrReleaseButton = (Button) view
 				.findViewById(R.id.TakeOrReleaseButton);
-
+		takeOrReleaseButton.setEnabled(false);
+		takeOrReleaseButton.setText(R.string.still_loading);
+		
 		mWebView = (WebView) view.findViewById(R.id.exposeWevView);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setWebViewClient(new WebViewClient() {
@@ -120,6 +123,11 @@ public class ExposeFragment extends DialogFragment {
 					getView().findViewById(R.id.progress).setVisibility(
 							View.GONE);
 					takeOrReleaseButton.setEnabled(true);
+					if (null != flat && flat.owned) {
+						takeOrReleaseButton.setText(getString(R.string.release_expose));
+					} else {
+						takeOrReleaseButton.setText(getString(R.string.try_takeover));
+					}
 				}
 			}
 
@@ -173,43 +181,8 @@ public class ExposeFragment extends DialogFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (null != flat && flat.owned) {
-//			takeOrReleaseButton.setCompoundDrawablesWithIntrinsicBounds(
-//					getResources().getDrawable(R.drawable.btn_portfolio_red),
-//					null, null, null);
-//			takeOrReleaseButton.setTextColor(getResources().getColor(
-//					R.color.soft_red));
-			takeOrReleaseButton.setText(getString(R.string.release_expose));
-		} else {
-//			takeOrReleaseButton.setCompoundDrawablesWithIntrinsicBounds(
-//					getResources().getDrawable(R.drawable.btn_portfolio_green),
-//					null, null, null);
-//			takeOrReleaseButton.setTextColor(getResources().getColor(
-//					R.color.soft_green));
-			takeOrReleaseButton.setText(getString(R.string.try_takeover));
-
-		}
+		
 	}
-
-	// @Override
-	// public void onDestroyView() {
-	// // TODO schtief #22
-	// // buttonDelayFinishedHandler.
-	// super.onDestroyView();
-	// }
-
-	// private void buttonWait(final Button takeOrReleaseButton) {
-	// buttonDelayFinishedHandler = new Handler() {
-	// public void handleMessage(Message msg) {
-	// takeOrReleaseButton.setEnabled(true);
-	// if (flat.owned)
-	// takeOrReleaseButton.setText(getString(R.string.release_expose));
-	// else
-	// takeOrReleaseButton.setText(getString(R.string.try_takeover));
-	// }
-	// };
-	// buttonDelayFinishedHandler.sendMessageDelayed(new Message(), 10000);
-	// }
 
 	void loadPage(Bundle intent) {
 		if (null == flat)
