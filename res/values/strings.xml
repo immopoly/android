@@ -120,4 +120,5 @@
     <string name="social_pwd_reset_intent_title">Immopoly-Team kontaktieren:</string>
     <string name="forgottPassword">Passwort vergessen?</string>
     <string name="still_loading">lädt noch...</string>
+    <string name="badge_vertical">B\na\nd\ng\ne\ns</string>
 </resources>

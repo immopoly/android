@@ -95,12 +95,12 @@ public class TeaserView extends RelativeLayout {
 		startAnimation( animation );
 
 		mapIconGeoPoint  = new GeoPoint( (int) (flats.get(0).lat * 1E6), (int) (flats.get(0).lng * 1E6) );
-		mapIconPos =  new Point( mapView.getWidth() / 2, mapView.getHeight() / 2 + ImmoscoutPlacesOverlay.markerBounds.height()*2/4 );
+		mapIconPos =  new Point( mapView.getWidth() / 2, mapView.getHeight() / 2 );
 		Point currentIconPos = mapView.getProjection().toPixels( mapIconGeoPoint, null );
 		int moveX = currentIconPos.x - mapView.getWidth()/2;
-		if ( flats.size() > 1 )
+		if ( flats.size() > 1 ) // beim cluster icon liegt die Zahl nicht in ganz der Mitte 
 			moveX -= (int) (3*screenDesity);
-		int moveY = currentIconPos.y - (mapView.getHeight() / 2 + ImmoscoutPlacesOverlay.markerBounds.height()*2/4);
+		int moveY = currentIconPos.y - (mapView.getHeight() / 2 );
 		Point moveToPoint = new Point( mapView.getWidth() / 2 + moveX, mapView.getHeight()/2 + moveY );
 		mapView.getController().animateTo( mapView.getProjection().fromPixels( moveToPoint.x, moveToPoint.y ) );
 	}

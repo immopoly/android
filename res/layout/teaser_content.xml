@@ -10,12 +10,12 @@
     android:paddingTop="8dp" >
     <RelativeLayout
         android:id="@+id/RelativeLayout1"
-        android:layout_width="80dp"
+        android:layout_width="84dp"
         android:layout_height="84dp" >
         <FrameLayout
             android:id="@+id/frameLayout1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
             android:layout_marginLeft="8dp"
             android:background="@drawable/teaser_image_border"
             android:padding="2dp" >

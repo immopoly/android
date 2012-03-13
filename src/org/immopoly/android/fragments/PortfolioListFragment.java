@@ -98,27 +98,6 @@ public class PortfolioListFragment extends ListFragment implements UserDataListe
 			} else {
 				setEmptyText("Noch keine Wohnungen im Portfolio");
 			}
-
-			// if (mFlats != null && mFlats.size() > 0) {
-			// TextView view;
-			// LayoutInflater inflater = LayoutInflater.from(getActivity());
-			// if (getListView().getHeaderViewsCount() == 0) {
-			// view = (TextView)
-			// inflater.inflate(R.layout.portfolio_list_header, null);
-			// getListView().addHeaderView(view);
-			// } else {
-			// view = (TextView)
-			// getView().findViewById(R.id.portfolio_header_text);
-			// }
-			// view.setText(getResources().getString(R.string.flats_number,
-			// mFlats.size(), MAX_NUMBER_FLATS));
-			//
-			// setListAdapter(new PortfolioFlatsAdapter(getActivity(), mFlats));
-			// addMapButton(inflater);
-			// } else {
-			// ImageView view = (ImageView) getListView().getEmptyView();
-			// view.setImageResource(R.drawable.portfolio_fallback);
-			// }
 		} else if ( UserDataManager.instance.getState() == UserDataManager.LOGIN_PENDING ) {
 			setEmptyText("Anmeldung läuft...");
 		} else {

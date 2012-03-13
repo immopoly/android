@@ -56,15 +56,14 @@ public class ClusterMarker extends Drawable {
 	
 	static void init(DisplayMetrics displayMetrics, int markerHeight) {
 		textSize = (int) (TEXT_SIZE_DP * displayMetrics.density + 0.5f);
-		textY = -(markerHeight - textSize) / 2 - (3*displayMetrics.density);
-		textX = -3f * displayMetrics.density;
+		textY = 6*displayMetrics.density;
+		textX = -2.5f * displayMetrics.density;
 		
 		textPaint.setColor( 0xFFFFFFFF );
 		textPaint.setTextSize( textSize );
 		textPaint.setAntiAlias( true );
 		textPaint.setTextAlign( Align.CENTER );
 		textPaint.setTypeface(Typeface.DEFAULT_BOLD); 
-//		textPaint.setShadowLayer( 10, 10, 5, Color.BLACK ); // no go :(
 		
 		shadowPaint.setColor( 0xFFB25200 );
 		shadowPaint.setTextSize( textSize );
