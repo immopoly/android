@@ -281,7 +281,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 			break;
 		case R.id.menu_help:
 //			intent = new Intent(Intent.ACTION_VIEW);
-//			intent.setData(Uri.parse("http://immopoly.org/helpandroid.html"));
+//			intent.setData(Uri.parse("http://immopoly.org/frameless-helpandroid.html"));
 //			startActivity(intent);
 			showHelpDialog();
 			break;
@@ -381,7 +381,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 						}
 				});
 		final AlertDialog alert = builder.create();
-		webView.loadUrl( "http://immopoly.org/helpandroid.html" );
+		webView.loadUrl( "http://immopoly.org/frameless-helpandroid.html" );
 		webView.setWebViewClient( new WebViewClient() {
 			@Override
 			public void onPageFinished(WebView view, String url) {
