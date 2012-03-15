@@ -45,13 +45,20 @@ public class Flats extends ArrayList<Flat> {
 			JSONArray resultEntries = resultList
 					.optJSONArray("resultlistEntries");
 			if (resultEntries != null && resultEntries.length() > 0) {
-				JSONArray resultEntry = ((JSONObject) resultEntries.get(0))
-						.optJSONArray("resultlistEntry");
-				if (resultEntries != null) {
-					for (int i = 0; i < resultEntry.length(); i++) {
-						item = new Flat(resultEntry.getJSONObject(i));
-
+				JSONObject flatsObj = resultEntries.getJSONObject(0);
+				JSONArray resultEntry = flatsObj.optJSONArray("resultlistEntry");
+				if(resultEntry == null){
+					JSONObject flatObj = flatsObj.optJSONObject("resultlistEntry");
+					if ( flatObj != null) {
+						item = new Flat(flatObj);
 						add(item);
+					}
+				} else {
+					if (resultEntries != null && resultEntry != null) {
+						for (int i = 0; i < resultEntry.length(); i++) {
+							item = new Flat(resultEntry.getJSONObject(i));
+							add(item);
+						}
 					}
 				}
 			}
