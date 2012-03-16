@@ -1,9 +1,11 @@
 package org.immopoly.android.model;
 
 import org.immopoly.android.R;
+import org.immopoly.android.constants.Const;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 public class ImmopolyException extends org.immopoly.common.ImmopolyException {
@@ -37,7 +39,7 @@ public class ImmopolyException extends org.immopoly.common.ImmopolyException {
 			message = context.getString(R.string.account_has_different_email);;
 			break;
 		default:
-			Toast.makeText( context, "Exc errorCode: " + errorCode, Toast.LENGTH_LONG).show();
+			Log.i( Const.LOG_TAG, "not yet translated ImmopolyException errorCode: " + errorCode );
 		}
 	}
 }

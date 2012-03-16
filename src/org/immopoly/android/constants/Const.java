@@ -21,7 +21,7 @@ public class Const {
 
 	public static final String SOURCE = "source";
 
-	// immopolly
+	// immopoly
 	public static final String EXPOSE_PICTURE_SMALL = "exposeDescription";
 
 	public static final String SHARED_PREF_EXPOSE_WEBVIEW = "exposeWebView";
@@ -33,18 +33,15 @@ public class Const {
 	public static final long EXPOSE_THRESHOLD_NEW = 1000L * 60L * 60L * 24L
 			* 7L;
 
-	// background colors by flat 'state' for map_marker_popup
-	public static final int OWNED_FLAT_BACKGROUND_COLOR = 0xFF255788;
-	public static final int OLD_FLAT_BACKGROUND_COLOR = 0xFF5B605A;
-	public static final int NEW_FLAT_BACKGROUND_COLOR = 0xFF3A882D;
-	public static final int NORMAL_FLAT_BACKGROUND_COLOR = 0xFFFFBC38;
-
 	public static final String MESSAGE_IMMOPOLY_EXCEPTION = "org.immopoly.common.ImmopolyException";
 
 	public static final String IMMOPOLY_EMAIL = "immopolyteam@gmail.com";
 	public static final int ANALYTICS_INTERVAL = 20;
 
 	public static final int USER_SIGNUP = 110;
-	
 
+	// IS24 search control - search different radii until at least SEARCH_MIN_RESULTS flats are found  
+	public static final float[] SEARCH_RADII 	   = { 1, 3, 10 }; // in km
+	public static final int     SEARCH_MIN_RESULTS = 50;		   // ignored for last search radius
+	public static final int     SEARCH_MAX_RESULTS = 80;		   // forced result limit. fernglas me, baby!
 }
