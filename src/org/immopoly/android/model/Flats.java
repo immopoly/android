@@ -21,9 +21,12 @@ package org.immopoly.android.model;
 
 import java.util.ArrayList;
 
+import org.immopoly.android.constants.Const;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Log;
 
 public class Flats extends ArrayList<Flat> {
 
@@ -52,13 +55,24 @@ public class Flats extends ArrayList<Flat> {
 					if ( flatObj != null) {
 						item = new Flat(flatObj);
 						add(item);
+						if ( flatObj.has("distance") )
+							Log.d( Const.LOG_TAG, "Parsed 1 flat. Max distance: " + flatObj.get( "distance" ) );
 					}
 				} else {
 					if (resultEntries != null && resultEntry != null) {
+						double maxDistance = 0;
 						for (int i = 0; i < resultEntry.length(); i++) {
-							item = new Flat(resultEntry.getJSONObject(i));
+							JSONObject flatObj = resultEntry.getJSONObject(i);
+							item = new Flat(flatObj);
+							Log.d( Const.LOG_TAG, "parsed flat " + item.uid );
 							add(item);
+							if ( flatObj.has("distance") ) {
+								double dist = flatObj.getDouble("distance");
+								if ( dist > maxDistance )
+									maxDistance = dist;
+							}
 						}
+						Log.d( Const.LOG_TAG, "Parsed " + resultEntry.length() + " flats. Max distance: " + maxDistance );
 					}
 				}
 			}
