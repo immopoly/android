@@ -20,6 +20,7 @@
 package org.immopoly.android.widget;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 
@@ -60,5 +61,11 @@ public class MyPositionOverlay extends ItemizedOverlay<PlaceOverlayItem> {
 
 	public void clear() {
 		overlayItem = null;
+	}
+	
+	@Override
+	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		if ( ! shadow )
+			super.draw(canvas, mapView, shadow);
 	}
 }
