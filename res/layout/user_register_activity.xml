@@ -82,13 +82,5 @@
             android:text="@string/register"
             android:textSize="20dip" >
         </Button>
-        <Button
-            android:id="@+id/forgot_password"
-            style="@style/immopolyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="recoverPassword"
-            android:text="@string/forgot_passwd"
-            android:textSize="20dip" />
     </LinearLayout>
 </ScrollView>

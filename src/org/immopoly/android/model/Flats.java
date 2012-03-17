@@ -64,7 +64,6 @@ public class Flats extends ArrayList<Flat> {
 						for (int i = 0; i < resultEntry.length(); i++) {
 							JSONObject flatObj = resultEntry.getJSONObject(i);
 							item = new Flat(flatObj);
-							Log.d( Const.LOG_TAG, "parsed flat " + item.uid );
 							add(item);
 							if ( flatObj.has("distance") ) {
 								double dist = flatObj.getDouble("distance");

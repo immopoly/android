@@ -100,19 +100,6 @@ public class UserRegisterActivity extends Activity {
 		// }
 	}
 
-	public void recoverPassword(View v) {
-		EditText username = (EditText) findViewById(R.id.user_name);
-		EditText userEmail = (EditText) findViewById(R.id.user_email);
-
-		if ( username.length() == 0 || userEmail.length() == 0 ) {
-			// TODO strings
-			Toast.makeText( this, "Bitte gib Name und Email-Adresse ein.", Toast.LENGTH_LONG ).show();
-			return;
-		}
-		
-		new RecoverPasswordTask().execute(username.getText().toString(), userEmail.getText().toString() );
-	}
-	
 	private class RegisterUserTask extends AsyncTask<String, Void, ImmopolyUser> {
 
 		@Override
@@ -180,72 +167,6 @@ public class UserRegisterActivity extends Activity {
 		}
 	}
 
-	private class RecoverPasswordTask extends AsyncTask<String, Void, JSONObject> {
-		private String username;
-		@Override
-		protected JSONObject doInBackground(String... params) {
-			username = params[0];
-			String email = params[1];
-			JSONObject obj = null;
-			try {
-				toggleProgress();
-				StringBuilder sb = new StringBuilder(
-						WebHelper.SERVER_HTTPS_URL_PREFIX + "/user/sendpasswordmail?");
-				sb.append("username=").append(URLEncoder.encode(username))
-						.append("&email=").append(URLEncoder.encode(email));
-				obj = WebHelper.getHttpsData(new URL(sb.toString()), false,
-						UserRegisterActivity.this);
-				Log.i( Const.LOG_TAG, "GOT PWD JSON: " + obj.toString() );
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			toggleProgress();
-			return obj;
-		}
-		
-		@Override
-		protected void onPostExecute(JSONObject obj) {
-			if (obj == null ) {
-				if ( ! Settings.isOnline(UserRegisterActivity.this)) {
-					Toast.makeText(UserRegisterActivity.this, getString(R.string.no_internet_connection),
-						Toast.LENGTH_LONG).show();
-				} else {
-					Log.e( Const.LOG_TAG, "ooops: " + obj );
-				}
-			} else if (obj.has("OK")) {
-				Toast.makeText(UserRegisterActivity.this, getString(R.string.pwd_reset_mail_sent),
-						Toast.LENGTH_LONG).show();
-			} else if ( obj.has(Const.MESSAGE_IMMOPOLY_EXCEPTION) ) {
-				ImmopolyException exc = new ImmopolyException(UserRegisterActivity.this, obj);
-				if ( exc.getErrorCode() == ImmopolyException.USER_SEND_PASSWORDMAIL_NOEMAIL )
-					startSocialPasswordReset();
-				else
-					Toast.makeText(UserRegisterActivity.this, exc.getMessage(), Toast.LENGTH_LONG).show();
-			}
-		}
-		
-		private void startSocialPasswordReset() {
-			AlertDialog.Builder dialog = new AlertDialog.Builder(UserRegisterActivity.this);
-			dialog.setTitle(getString(R.string.social_pwd_reset_dlg_title)); 
-			dialog.setMessage( getString(R.string.social_pwd_reset_dlg_text));
-			dialog.setNegativeButton( getString(R.string.social_pwd_reset_dlg_cancel), null );
-			dialog.setPositiveButton( getString(R.string.social_pwd_reset_dlg_ok), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					Intent intent = new Intent(Intent.ACTION_SEND);
-					intent.setType("message/rfc822");
-					intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "immopolyteam@gmail.com" });
-					intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.social_pwd_reset_mail_subject));
-					intent.putExtra(Intent.EXTRA_TEXT, 
-							getString(R.string.social_pwd_reset_mail_text1) + username + getString(R.string.social_pwd_reset_mail_text2) );
-					startActivity(Intent.createChooser(intent, getString(R.string.social_pwd_reset_intent_title)));
-				}
-			} );
-			dialog.show();
-		}
-	}
-	
 	private void toggleProgress() {
 		toggleProgressHandler.post(new Runnable() {
 			public void run() {
@@ -254,12 +175,10 @@ public class UserRegisterActivity extends Activity {
 					progress.setVisibility(View.VISIBLE);
 					findViewById(R.id.login).setVisibility(View.GONE);
 					findViewById(R.id.register).setVisibility(View.GONE);
-					findViewById(R.id.forgot_password).setVisibility(View.GONE);
 				} else {
 					progress.setVisibility(View.GONE);
 					findViewById(R.id.login).setVisibility(View.VISIBLE);
 					findViewById(R.id.register).setVisibility(View.VISIBLE);
-					findViewById(R.id.forgot_password).setVisibility(View.VISIBLE);
 				}
 			}
 		});
