@@ -94,7 +94,8 @@
     <string name="menu_help">Hilfe</string>
     <string name="menu_contact">Kontakt</string>
     <string name="user_signup_no_account_register">Wenn du noch keinen Account hast, kannst du dich hier registrieren.</string>
-    <string name="user_email_hint">Email, falls Passwort vergessen.</string>
+    <string name="user_email_hint">Email</string>
+    <string name="user_email_hint_login">Email, falls Passwort vergessen.</string>
     <string name="user_twitter_hint">Twitter name (optional)</string>
     <string name="toast_email_verification">Gibt bitte deine Email Adresse an.</string>
     <string name="register_short">Register</string>

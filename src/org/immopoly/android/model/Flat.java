@@ -153,7 +153,8 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 			JSONObject coordinate = objAddress.getJSONObject("wgs84Coordinate");
 			lat = coordinate.optDouble("latitude");
 			lng = coordinate.optDouble("longitude");
-		}
+		} else // TODO get rid of this flat
+			Log.w( Const.LOG_TAG, "Exposee has no coordinates: " + uid  );
 		if (objRealEstate.has("titlePicture")) {
 			JSONObject objPicture = objRealEstate.getJSONObject("titlePicture");
 			titlePictureTitle = objPicture.optString("title");

@@ -122,7 +122,7 @@ public class IS24ApiService extends IntentService {
 		
 		// evtly get more pages
 		for ( int i = 2; i <= pages; i++ ) {
-			json = loadPage(lat, lon, results, i);
+			json = loadPage(lat, lon, r, i);
 			flats.parse( json );
 			Log.d( Const.LOG_TAG, "IS24 search got page " + i + "/" + pages + " #flats: " + flats.size() ); 
 		}
