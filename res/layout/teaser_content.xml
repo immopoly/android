@@ -10,12 +10,12 @@
     android:paddingTop="8dp" >
     <RelativeLayout
         android:id="@+id/RelativeLayout1"
-        android:layout_width="80dp"
+        android:layout_width="84dp"
         android:layout_height="84dp" >
         <FrameLayout
             android:id="@+id/frameLayout1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
             android:layout_marginLeft="8dp"
             android:background="@drawable/teaser_image_border"
             android:padding="2dp" >
@@ -28,11 +28,12 @@
         </FrameLayout>
         <ImageView
             android:id="@+id/stateSymbol"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="56dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="57dp"
             android:src="@drawable/map_marker_property_icon" />
     </RelativeLayout>
     <LinearLayout

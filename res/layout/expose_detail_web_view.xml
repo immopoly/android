@@ -21,13 +21,11 @@
     android:layout_height="match_parent"
     android:layout_margin="0dip"
     android:orientation="vertical" >
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/hud_background"
         android:gravity="center_vertical" >
-
         <Button
             android:id="@+id/TakeOrReleaseButton"
             style="@style/immopolyButton"
@@ -36,14 +34,12 @@
             android:layout_alignBottom="@+id/linearLayout1"
             android:drawableLeft="@drawable/btn_portfolio_new"
             android:text="@string/release_expose" />
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:orientation="horizontal" >
-
             <ImageButton
                 android:id="@+id/shareExpose"
                 style="@style/immopolyButton"
@@ -54,7 +50,6 @@
                 android:contentDescription="@string/share"
                 android:gravity="center_vertical"
                 android:src="@drawable/btn_share_new" />
-
             <ProgressBar
                 android:id="@+id/progress"
                 style="@android:style/Widget.ProgressBar.Small"
@@ -64,10 +59,19 @@
                 android:layout_marginRight="14dp" />
         </LinearLayout>
     </RelativeLayout>
-
-    <WebView
-        android:id="@+id/exposeWevView"
+    <FrameLayout
+        android:id="@+id/frameLayout1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="fill_parent" >
+        <WebView
+            android:id="@+id/exposeWevView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <FrameLayout
+            android:id="@+id/frameLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@drawable/hud_shadow" >
+        </FrameLayout>
+    </FrameLayout>
 </LinearLayout>

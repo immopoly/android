@@ -62,17 +62,18 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 							.getItem(position).getText(), Toast.LENGTH_LONG);
 					AlertDialog.Builder builder = new AlertDialog.Builder(
 							getActivity());
-					builder.setTitle(R.string.badge_info);
+//					builder.setTitle(R.string.badge_info);
+					View layout = getActivity().getLayoutInflater().inflate( R.layout.badge_dialog, null );
+					builder.setView(layout);
 					if (arg1 instanceof ImageView) {
+						ImageView badgeImage = (ImageView) layout.findViewById( R.id.badgeImage );
 						ImageView imageView = (ImageView) arg1;
-						if (imageView != null) {
-							builder.setIcon(imageView.getDrawable());
-						}
+						badgeImage.setImageDrawable(imageView.getDrawable());
 					}
-
-					builder.setMessage(badgeAdapter.getItem(position).getText())
-							.setCancelable(false)
-							.setPositiveButton("Tschüss",
+					((TextView) layout.findViewById(R.id.badgeText)).setText(badgeAdapter.getItem(position).getText()); 
+					
+					builder.setCancelable(false)
+						   .setPositiveButton("Tschüss",
 									new DialogInterface.OnClickListener() {
 										public void onClick(
 												DialogInterface dialog, int id) {

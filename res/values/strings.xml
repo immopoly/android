@@ -94,7 +94,8 @@
     <string name="menu_help">Hilfe</string>
     <string name="menu_contact">Kontakt</string>
     <string name="user_signup_no_account_register">Wenn du noch keinen Account hast, kannst du dich hier registrieren.</string>
-    <string name="user_email_hint">Email, falls Passwort vergessen.</string>
+    <string name="user_email_hint">Email</string>
+    <string name="user_email_hint_login">Email, falls Passwort vergessen.</string>
     <string name="user_twitter_hint">Twitter name (optional)</string>
     <string name="toast_email_verification">Gibt bitte deine Email Adresse an.</string>
     <string name="register_short">Register</string>
@@ -120,4 +121,6 @@
     <string name="social_pwd_reset_intent_title">Immopoly-Team kontaktieren:</string>
     <string name="forgottPassword">Passwort vergessen?</string>
     <string name="still_loading">lädt noch...</string>
+    <string name="badge_vertical">B\na\nd\ng\ne\ns</string>
+    <string name="sorry_no_flats">In deiner Nähe werden leider keine Wohnungen zur Miete angeboten.</string>
 </resources>

@@ -235,6 +235,9 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		@Override
 		public void onLocationChanged(boolean center) {
 			if (getActivity() != null) {
+				if ( mMapView != null )
+					mMapView.getController().setCenter( 
+						new GeoPoint( (int) (LocationHelper.sLat*1E6), (int)(LocationHelper.sLng * 1E6)));
 				requestFlatUpdate(center);
 			}
 		}
@@ -307,7 +310,6 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		// setAddress(LocationHelper.mAddress);
 		// }
 		Intent i = new Intent(getActivity(), IS24ApiService.class);
-		i.putExtra(IS24ApiService.COMMAND, IS24ApiService.CMD_SEARCH);
 		i.putExtra(IS24ApiService.LAT, LocationHelper.sLat);
 		i.putExtra(IS24ApiService.LNG, LocationHelper.sLng);
 		i.putExtra(IS24ApiService.API_RECEIVER, mState.mReceiver);
@@ -338,12 +340,14 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			}
 			break;
 		case IS24ApiService.STATUS_ERROR:
-			// Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
 			// handle the error;
 			showProgress(false);
 			if (mSplashscreen.isShown()) {
 				mSplashscreen.setVisibility(View.GONE);
 			}
+			if ( IS24ApiService.NO_FLATS.equals(resultData.getString(Intent.EXTRA_TEXT)) )
+				Toast.makeText( getActivity(), R.string.sorry_no_flats, Toast.LENGTH_LONG ).show();
+			// else there was an exception (probably logged already). what TODO?
 			break;
 		}
 	}
@@ -369,21 +373,20 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 
 	public void updateMap(boolean centerMap) {
+		int count = 0;
+		double minX = 999, minY = 999, maxX = -999, maxY = -999;
+		myLocationOverlays.clear();
+		mMapOverlays.clear();
+
+		GeoPoint point = new GeoPoint((int) (LocationHelper.sLat * 1E6), (int) (LocationHelper.sLng * 1E6));
+
+		myLocationOverlayItem = new PlaceOverlayItem(point, "my city", "THis is wher you are");
+		myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.mylocation));
+
+		myLocationOverlays.setPlaceOverlayItem(myLocationOverlayItem);
+		mMapOverlays.add(myLocationOverlays);
+
 		if (mMapView != null && mFlats != null) {
-
-			int count = 0;
-			double minX = 999, minY = 999, maxX = -999, maxY = -999;
-			myLocationOverlays.clear();
-			mMapOverlays.clear();
-
-			GeoPoint point = new GeoPoint((int) (LocationHelper.sLat * 1E6), (int) (LocationHelper.sLng * 1E6));
-
-			myLocationOverlayItem = new PlaceOverlayItem(point, "my city", "THis is wher you are");
-			myLocationOverlayItem.setMarker(this.getResources().getDrawable(R.drawable.mylocation));
-
-			myLocationOverlays.setPlaceOverlayItem(myLocationOverlayItem);
-			mMapOverlays.add(myLocationOverlays);
-
 			for (Flat f : mFlats) {
 				if (f.lat != 0.0 || f.lng != 0.0) {
 					if (f.lng < minX) {

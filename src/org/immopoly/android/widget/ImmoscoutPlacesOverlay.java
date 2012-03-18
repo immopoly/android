@@ -44,7 +44,7 @@ import com.google.android.maps.Projection;
 
 public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 
-	private static final float MIN_INTERSECTION_AMOUNT = 0.25f;
+	private static final float MIN_INTERSECTION_AMOUNT = 0.15f;
 	private static int MIN_INTERSECTION_AREA;
 
 	private final ArrayList<ClusterItem> tmpItems = new ArrayList<ClusterItem>();
@@ -64,16 +64,16 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 	static Drawable mapMarkerIcon_cluster;
 
 	public ImmoscoutPlacesOverlay(Fragment fragment, MapView mapView, LayoutInflater inflator, boolean isPortfolio) {
-		super(boundCenterBottom(fragment.getResources().getDrawable(R.drawable.map_marker_icon)));
+		super(boundCenter(fragment.getResources().getDrawable(R.drawable.map_marker_icon)));
 		mMapView = mapView;
 		this.isPortfolio = isPortfolio;
 		mMapFragment = fragment;
 		Resources resources = fragment.getResources();
-		mapMarkerIcon = boundCenterBottom(resources.getDrawable(R.drawable.map_marker_icon));
-		mapMarkerIcon_new = boundCenterBottom(resources.getDrawable(R.drawable.map_marker_icon_new));
-		mapMarkerIcon_old = boundCenterBottom(resources.getDrawable(R.drawable.map_marker_icon_old));
-		mapMarkerIcon_owned = boundCenterBottom(resources.getDrawable(R.drawable.map_marker_property_icon));
-		mapMarkerIcon_cluster = boundCenterBottom(resources.getDrawable(R.drawable.map_marker_icon_cluster));
+		mapMarkerIcon = boundCenter(resources.getDrawable(R.drawable.map_marker_icon));
+		mapMarkerIcon_new = boundCenter(resources.getDrawable(R.drawable.map_marker_icon_new));
+		mapMarkerIcon_old = boundCenter(resources.getDrawable(R.drawable.map_marker_icon_old));
+		mapMarkerIcon_owned = boundCenter(resources.getDrawable(R.drawable.map_marker_property_icon));
+		mapMarkerIcon_cluster = boundCenter(resources.getDrawable(R.drawable.map_marker_icon_cluster));
 
 		markerBounds = mapMarkerIcon.getBounds();
 

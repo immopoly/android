@@ -25,102 +25,136 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.WebHelper;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.OAuthData;
-import org.immopoly.android.model.Regions;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class IS24ApiService extends IntentService {
 
-	private static final String SEARCH_VALUE = "search";
-	private static final String RADIUS = "radius";
-	public static final String COMMAND = "command";
 	public static final String API_RECEIVER = "api_receiver";
 	public static final String LAT = "lat";
 	public static final String LNG = "lng";
+	public static final String NO_FLATS = "no_flats";
 
-	public IS24ApiService() {
-		super("");
-	}
-	
-	public static final int CMD_REGION = 0x10;
-	public static final int CMD_SEARCH = 0x11;
-	
 	public static final int STATUS_RUNNING = 1;
 	public static final int STATUS_FINISHED = 2;
 	public static final int STATUS_ERROR = 3;
+	
+	public IS24ApiService() {
+		super("");
+	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		final ResultReceiver receiver = intent
-				.getParcelableExtra(API_RECEIVER);
-		final int cmd = intent.getIntExtra(COMMAND,-1);
+		final ResultReceiver receiver = intent.getParcelableExtra(API_RECEIVER);
+		double lat = intent.getDoubleExtra(LAT, 0.0);
+		double lon = intent.getDoubleExtra(LNG, 0.0);
 		Bundle b = new Bundle();
-
+		Log.d( Const.LOG_TAG, "IS24 search started" ); 
 		try {
-			
 			receiver.send(STATUS_RUNNING, Bundle.EMPTY);
-			double lat = 0.0d;
-			double lng = 0.0d;
-			float r = 0.0f;
-			URL url;
-			JSONObject obj;
-			switch (cmd) {
-			case CMD_REGION:
-				lat = intent.getDoubleExtra(LAT, 0.0);
-				lng = intent.getDoubleExtra(LNG, 0.0);
-				r = intent.getFloatExtra(RADIUS, 1.0f);
-				String searchValue = intent.getStringExtra(SEARCH_VALUE);
-				url = new URL(OAuthData.SERVER + OAuthData.SEARCH_PREFIX
-						+ "region.json?q=" + searchValue + "&geocoordinates=" + lat
-						+ ";" + lng + ";" + r);
-				obj = WebHelper.getHttpData(url, true, this);
-				Regions.parseJSON(obj);
-
-				receiver.send(STATUS_FINISHED, b);
-				break;
-			case CMD_SEARCH:
-				Flats flats = new Flats();
-
-				lat = intent.getDoubleExtra(LAT, 0.0);
-				lng = intent.getDoubleExtra(LNG, 0.0);
-				r = intent.getFloatExtra(RADIUS, 3.0f);
-
-				final int size = 5;
-				for (int i = 1; i < size; i++) {
-					url = new URL(
-							OAuthData.SERVER
-									+ OAuthData.SEARCH_PREFIX
-									+ "search/radius.json?realEstateType=apartmentrent&pagenumber="
-									+ i + "&geocoordinates=" + lat + ";" + lng
-									+ ";" + r);
-					obj = WebHelper.getHttpData(url, true, this);
-					Log.d("IS24ApiService", "expose api request loop :" + i);
-					if (obj == null) {
-						break;
-					}
-
-					flats.parse(obj);
-
+			final float[] radii = Const.SEARCH_RADII;
+			// search for flats in radii[i]. finish if enough flats found (1 is enough in the last run)
+			for ( int i = 0; i < radii.length; i++ ) {
+				int min = i == radii.length-1 ? 1 : Const.SEARCH_MIN_RESULTS; 
+				Flats flats = loadFlats(lat, lon, radii[i], min, Const.SEARCH_MAX_RESULTS );
+				if ( flats != null ) {
+					Log.d( Const.LOG_TAG, "IS24 search finished. #flats: " + flats.size() ); 
+					b.putParcelableArrayList("flats", flats);
+					receiver.send(STATUS_FINISHED, b);
+					this.stopSelf();
+					return;
 				}
-				b.putParcelableArrayList("flats", flats);
-				receiver.send(STATUS_FINISHED, b);
-				break;
-			
-			default:
-				break;
 			}
-			
-
+			// no flats found
+			Log.d( Const.LOG_TAG, "IS24 search finished with no flats: " ); 
+			b.putString(Intent.EXTRA_TEXT, NO_FLATS);
 		} catch (Exception e) {
-			b.putString(Intent.EXTRA_TEXT, e.toString());
-			receiver.send(STATUS_ERROR, b);
+			Log.e( Const.LOG_TAG, "IS24 search caught Exception: ", e );
 		}
+		receiver.send(STATUS_ERROR, b); 
 		this.stopSelf();
-
 	}
 
+	/**
+	 * Runs an IS2 search with the given lat,lon,r
+	 * Returns at most 'max' Flats or null if there are less than 'min' flats.   
+	 * @param lat Latitude
+	 * @param lon Longitude
+	 * @param r Radius
+	 * @param min minimum nuber of flats
+	 * @param max maximum nuber of flats
+	 * @return Flats or null
+	 * @throws JSONException. MalformedURLException, NullPointerException 
+	 */
+	private Flats loadFlats(double lat, double lon, float r, int min, int max ) throws JSONException, MalformedURLException 
+	{
+		Log.d( Const.LOG_TAG, "IS24 search: Lat: " + lat + " Lon: " + lon + " R: " + r + " min: " + min + " max: " + max ); 
+		// get the first result page and extract paging info
+		JSONObject json = loadPage(lat, lon, r, 1 );  // IS24 page nr starts at 1
+		JSONObject resultList = json.getJSONObject("resultlist.resultlist");
+		JSONObject pagingInfo = resultList.getJSONObject("paging");
+		int numPages = pagingInfo.getInt( "numberOfPages" );
+		int results  = pagingInfo.getInt( "numberOfHits" );
+		int pageSize = pagingInfo.getInt( "pageSize" );
+
+		Log.d( Const.LOG_TAG, "IS24 search got first page, numPages: " + numPages + " results: " + results +  " pageSize: " + pageSize   ); 
+		// return if there aren't enough results
+		if ( results < min || numPages*pageSize < min || results <= 0 )
+			return null;
+		
+		// parse flats from 1st result page
+		Flats flats = new Flats( max );
+		flats.parse( json );
+		
+		// calc pages to get
+		int pages = max / pageSize;
+		if ( pages >= 0 && max % pageSize > 0 )
+			pages++;
+		if ( pages > numPages ) // if this happens theres something wrong here or in the json
+			pages = numPages;
+		
+		// evtly get more pages
+		for ( int i = 2; i <= pages; i++ ) {
+			json = loadPage(lat, lon, r, i);
+			flats.parse( json );
+			Log.d( Const.LOG_TAG, "IS24 search got page " + i + "/" + pages + " #flats: " + flats.size() ); 
+		}
+
+		// restrict number of results
+		if ( flats.size() > max ) {
+			Flats lessFlats = new Flats( max );
+			lessFlats.addAll( flats.subList(0, max) );
+			flats = lessFlats;
+		}
+		return flats;
+	}
+
+	/**
+	 * Gets result page number 'page' from IS24 for the given lat,lon,r
+	 * @param lat
+	 * @param lon
+	 * @param r
+	 * @param page
+	 * @return
+	 * @throws MalformedURLException
+	 * @throws JSONException
+	 */
+	private JSONObject loadPage( double lat, double lon, float r, int page ) throws MalformedURLException, JSONException {
+		URL url = new URL( OAuthData.SERVER + OAuthData.SEARCH_PREFIX
+				+ "search/radius.json?realEstateType=apartmentrent&pagenumber="
+				+ page + "&geocoordinates=" + lat + ";" + lon + ";" + r );
+		JSONObject obj = WebHelper.getHttpData(url, true, this);
+		if (obj == null) { // does this ever happen?
+			throw new JSONException( "Got (JSONObject) null for search result. Lat: " + lat + "Lon: " 
+									+ lon + " R: " + r + " pageNr: " + page );
+		}
+		return obj;
+	}
 }

@@ -84,8 +84,6 @@ public class HistoryAdapter extends BaseAdapter {
 
 		ImmopolyHistory entry = (ImmopolyHistory) getItem(position);
 
-		Log.i( Const.LOG_TAG, "History entry expos'e id: " + entry.getExposeId() );
-		
 		boolean showButton = false;
 		int type = entry.getType();
 		switch (type) {
@@ -125,8 +123,11 @@ public class HistoryAdapter extends BaseAdapter {
 
 	@Override
 	public boolean isEnabled(int position) {
-		// TODO only enable list items which are clickable
-		return true;
+		ImmopolyHistory entry = (ImmopolyHistory) getItem(position);
+		if ( entry == null )
+			return false;
+		return entry.getExposeId() > 0 && entry.getType() == History.TYPE_EXPOSE_ADDED ||
+										  entry.getType() == History.TYPE_EXPOSE_REMOVED;
 	}
 
 }

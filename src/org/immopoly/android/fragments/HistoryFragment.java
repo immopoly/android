@@ -5,10 +5,13 @@ import java.util.List;
 import org.immopoly.android.adapter.HistoryAdapter;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
+import org.immopoly.android.model.Flat;
+import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyHistory;
 import org.immopoly.android.model.ImmopolyUser;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
@@ -53,11 +56,28 @@ public class HistoryFragment extends ListFragment implements UserDataListener{
 		}
 	}
 	
-	// TODO geht nicht ... wiiieeessoooooo?
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		List<ImmopolyHistory> history = ImmopolyUser.getInstance().getHistory();
 		ImmopolyHistory entry = history.get(position);
-		Toast.makeText(getActivity(), "ExposeId: " + entry.getExposeId(), Toast.LENGTH_LONG).show();
+		
+		long fid = entry.getExposeId();
+		
+		// get flat object from users portfolio or create empty Flat object with just an id
+		Flats userFlats = ImmopolyUser.getInstance().getPortfolio();
+		Flat flat = null;
+		for ( Flat f : userFlats ) {
+			if ( f.uid == fid ) {
+				flat = f;
+				break;
+			}
+		}
+		if ( flat == null ) {
+			flat = new Flat();
+			flat.uid = (int) fid;
+		}
+		
+		DialogFragment newFragment = ExposeFragment.newInstance(flat);
+		newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
 	}
 }
