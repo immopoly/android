@@ -14,8 +14,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="auto"
     package="org.immopoly.android"
-    android:versionCode="8"
-    android:versionName="2.0" >
+    android:versionCode="9"
+    android:versionName="2.1" >
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="10" />
