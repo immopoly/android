@@ -82,12 +82,6 @@ public class ImmopolyActivity extends FragmentActivity implements
 		UserDataManager.instance.setActivity(this);
 		setContentView(R.layout.immopoly_activity);
 
-		// mFragmentContainer = (FrameLayout)
-		// findViewById(R.id.fragment_container);
-		if (savedInstanceState == null) {
-			parseData();
-		}
-
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 
@@ -134,9 +128,14 @@ public class ImmopolyActivity extends FragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		parseData();
+		boolean retrieveUserInfo = parseData();
+		if ( retrieveUserInfo || UserDataManager.instance.getState() == UserDataManager.USER_UNKNOWN ) {
+			UserDataManager.instance.getUserInfo();
+		}
 	}
 
+
+	
 	/**
 	 * n Activity is visible but someone called for a action
 	 */
@@ -154,12 +153,12 @@ public class ImmopolyActivity extends FragmentActivity implements
 
 	/*
 	 * parse intent and do action
+	 * @return whether userInfo should be updated 
 	 */
-	private void parseData() {
+	private boolean parseData() {
 		// Start with specific fragment
 		Intent i = getIntent();
 		if (mTabHost != null && i.hasExtra(ImmopolyActivity.C2DM_START)) {
-			UserDataManager.instance.getUserInfo();
 			switch (i.getIntExtra(ImmopolyActivity.C2DM_START,
 					ImmopolyActivity.START_HISTORY)) {
 			case ImmopolyActivity.START_HISTORY:
@@ -171,7 +170,9 @@ public class ImmopolyActivity extends FragmentActivity implements
 				break;
 			}
 			i.removeExtra(ImmopolyActivity.C2DM_START);
+			return true;
 		}
+		return false;
 	}
 
 	@Override

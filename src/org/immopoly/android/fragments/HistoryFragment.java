@@ -50,7 +50,7 @@ public class HistoryFragment extends ListFragment implements UserDataListener{
 			setListAdapter(new HistoryAdapter(getActivity()));
 			setEmptyText("Noch keine Einträge in der History");
 		} else if ( userState == UserDataManager.LOGIN_PENDING ) {
-			setEmptyText("Anmeldung läuft...");
+			setEmptyText("Wird geladen...");
 		} else {
 			setEmptyText("Anmelden um hier History Einträge zu sehen");
 		}

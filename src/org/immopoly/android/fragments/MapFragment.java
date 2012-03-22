@@ -373,6 +373,8 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 
 	public void updateMap(boolean centerMap) {
+		if ( mMapView == null ) // currently not attached
+			return;
 		int count = 0;
 		double minX = 999, minY = 999, maxX = -999, maxY = -999;
 		myLocationOverlays.clear();
@@ -504,26 +506,6 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
 			return super.onSingleTapConfirmed(e);
-		}
-	}
-
-	private class GetUserInfoUpdateTask extends GetUserInfoTask {
-
-		public GetUserInfoUpdateTask(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected void onPostExecute(ImmopolyUser result) {
-			if (result != null && ImmopolyUser.getInstance().flats != null) {
-				updateMap(false);
-			} else if (Settings.isOnline(getActivity())) {
-				Intent intent = new Intent(getActivity(), UserSignupActivity.class);
-				startActivity(intent);
-			} else {
-				Toast.makeText(getActivity(), R.string.no_internet_connection, Toast.LENGTH_LONG).show();
-			}
-			updateHud(null, 0);
 		}
 	}
 

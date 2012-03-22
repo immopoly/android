@@ -21,19 +21,13 @@ package org.immopoly.android.tasks;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 
-import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.helper.WebHelper;
-import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.ImmopolyUser;
-import org.immopoly.android.provider.FlatsProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.os.AsyncTask;
 
 public abstract class GetUserInfoTask extends
