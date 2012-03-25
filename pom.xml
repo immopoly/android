@@ -246,7 +246,7 @@
                   <keystore>${keystore}</keystore>
                   <storepass>${storepass}</storepass>
                   <keypass>${keypass}</keypass>
-                  <alias>immopoly</alias>
+									<alias>${alias}</alias>
                 </configuration>
               </execution>
             </executions>
