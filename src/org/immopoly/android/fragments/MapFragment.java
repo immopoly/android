@@ -179,6 +179,16 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		mProgressIndicator = (ProgressBar) layout.findViewById(R.id.map_progress);
 		mCompassButton = (ImageView) layout.findViewById(R.id.map_reload);
 		mSplashscreen = layout.findViewById(R.id.splashscreen);
+		ImageButton itemsButton = (ImageButton) layout.findViewById(R.id.items_button);
+		itemsButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				new ItemsFragment().show(getFragmentManager(), "itemsDialog");
+
+			}
+		});
+
 		if (mMapOverlays == null) {
 			showSplashScreen();
 		}
@@ -201,39 +211,41 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			mCompassButton.setVisibility(showProgress ? View.GONE : View.VISIBLE);
 	}
 
-	
 	private void showSplashScreen() {
 		mSplashscreen.setVisibility(View.VISIBLE);
 		PackageInfo packInfo;
 		String version = "";
 		try {
-			packInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(),0);
-			version =  "Version " + packInfo.versionName + " (" + packInfo.versionCode + ")";
+			packInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+			version = "Version " + packInfo.versionName + " (" + packInfo.versionCode + ")";
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
-		((TextView)mSplashscreen.findViewById( R.id.splash_version )).setText( version );
-		new Handler().postDelayed( new Runnable() {
+		((TextView) mSplashscreen.findViewById(R.id.splash_version)).setText(version);
+		new Handler().postDelayed(new Runnable() {
 			public void run() {
 				hideSplashScreen();
 			}
-		}, 10000 );
+		}, 10000);
 	}
-	
+
 	private void hideSplashScreen() {
-		if ( ! isAdded() || ! mSplashscreen.isShown() )
+		if (!isAdded() || !mSplashscreen.isShown())
 			return;
-	    Animation fadeOutAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
-	    fadeOutAnim.setAnimationListener( new Animation.AnimationListener() {
-			public void onAnimationStart(Animation animation) {}
-			public void onAnimationRepeat(Animation animation) {}
-			
+		Animation fadeOutAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
+		fadeOutAnim.setAnimationListener(new Animation.AnimationListener() {
+			public void onAnimationStart(Animation animation) {
+			}
+
+			public void onAnimationRepeat(Animation animation) {
+			}
+
 			public void onAnimationEnd(Animation animation) {
-				if ( isAdded() &&  mSplashscreen.isShown())
+				if (isAdded() && mSplashscreen.isShown())
 					mSplashscreen.setVisibility(View.GONE);
 			}
 		});
-	    mSplashscreen.startAnimation(fadeOutAnim);
+		mSplashscreen.startAnimation(fadeOutAnim);
 	}
 
 	@Override
@@ -273,16 +285,6 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			syncFlats(); // flats may have been released in portfolio fragments
 			updateMap(true);
 		}
-		
-		mActionItemFreeFlats = getView().findViewById(R.id.actionItemFreeFlats);
-		mActionItemFreeFlats.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				filterFreeFlats();
-			}
-		});
 	}
 
 	class MapLocationCallback implements LocationHelper.LocationCallback {
@@ -290,9 +292,9 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		@Override
 		public void onLocationChanged(boolean center) {
 			if (getActivity() != null) {
-				if ( mMapView != null )
-					mMapView.getController().setCenter( 
-						new GeoPoint( (int) (LocationHelper.sLat*1E6), (int)(LocationHelper.sLng * 1E6)));
+				if (mMapView != null)
+					mMapView.getController().setCenter(
+							new GeoPoint((int) (LocationHelper.sLat * 1E6), (int) (LocationHelper.sLng * 1E6)));
 				requestFlatUpdate(center);
 			}
 		}
@@ -396,8 +398,8 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			// handle the error;
 			showProgress(false);
 			hideSplashScreen();
-			if ( IS24ApiService.NO_FLATS.equals(resultData.getString(Intent.EXTRA_TEXT)) )
-				Toast.makeText( getActivity(), R.string.sorry_no_flats, Toast.LENGTH_LONG ).show();
+			if (IS24ApiService.NO_FLATS.equals(resultData.getString(Intent.EXTRA_TEXT)))
+				Toast.makeText(getActivity(), R.string.sorry_no_flats, Toast.LENGTH_LONG).show();
 			// else there was an exception (probably logged already). what TODO?
 			break;
 		}
@@ -424,7 +426,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 
 	public void updateMap(boolean centerMap) {
-		if ( mMapView == null ) // currently not attached
+		if (mMapView == null) // currently not attached
 			return;
 		int count = 0;
 		double minX = 999, minY = 999, maxX = -999, maxY = -999;
@@ -449,17 +451,17 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 						if (f.lng > maxX) {
 							maxX = f.lng;
 						}
-	
+
 						if (f.lat < minY)
 							minY = f.lat;
 						if (f.lat > maxY)
 							maxY = f.lat;
-	
+
 						count++;
 					}
 				}
 			}
-			
+
 			overlays.setFlats(mFlats);
 
 			if (LocationHelper.sLng < minX)
@@ -600,22 +602,21 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		if (mProgressIndicator.getVisibility() != View.VISIBLE)
 			mCompassButton.setVisibility(View.VISIBLE);
 	}
-	
-	
+
 	public void filterFreeFlats() {
+		Log.d(TAG, "filter flats");
 		new FilterFreeExposesTask().execute(mFlats);
 	}
-	
+
 	private class FilterFreeExposesTask extends FreeFlatsTask {
-		
+
 		@Override
 		protected void onPostExecute(Flats result) {
-			if ( result != null) {
+			if (result != null) {
 				mFlats = result;
 				updateMap(true);
 			}
 			super.onPostExecute(result);
 		}
 	}
-	
 }

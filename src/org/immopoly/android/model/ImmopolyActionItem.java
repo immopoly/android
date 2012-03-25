@@ -9,6 +9,7 @@ public class ImmopolyActionItem extends ActionItem {
 	// mandatory
 	private int type;
 	private String text;
+	private String description;
 	private String url;
 	private int amount;
 
@@ -16,7 +17,6 @@ public class ImmopolyActionItem extends ActionItem {
 		super(o);
 	}
 
-	
 	/**
 	 * Wird im Client nicht mehr serialisiert.
 	 */
@@ -42,6 +42,32 @@ public class ImmopolyActionItem extends ActionItem {
 
 	@Override
 	public void setText(String text) {
-		this.text = text;
+		String[] split = text.split(":");
+		this.text = split[0];
+		description = split[1];
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getImageUrl() {
+		return url;
+	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void removeAmount(int i) {
+		amount = amount - i;
 	}
 }

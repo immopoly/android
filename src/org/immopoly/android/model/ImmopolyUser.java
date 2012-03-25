@@ -289,4 +289,12 @@ public class ImmopolyUser extends User {
 	public void setNumExposes(int numExposes) {
 		// numExposes == flats.size() !
 	}
+	
+	public void removeActionItem(int type) {
+		for (ImmopolyActionItem item : actionItems) {
+			if (item.getType() == type) {
+				item.removeAmount(1);
+			}
+		}
+	}
 }

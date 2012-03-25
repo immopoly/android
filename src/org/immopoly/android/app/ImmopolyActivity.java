@@ -13,6 +13,7 @@ import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.fragments.ExposeFragment;
 import org.immopoly.android.fragments.HistoryFragment;
+import org.immopoly.android.fragments.ItemsFragment;
 import org.immopoly.android.fragments.MapFragment;
 import org.immopoly.android.fragments.OnMapItemClickedListener;
 import org.immopoly.android.fragments.PortfolioListFragment;
@@ -34,6 +35,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,9 +57,9 @@ import com.google.android.maps.MapView;
  * @author tosa,sebastia,björn Example implementation of fragments communication
  */
 
-public class ImmopolyActivity extends FragmentActivity implements
-		OnMapItemClickedListener, OnTrackingEventListener {
+public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener, OnTrackingEventListener {
 
+	public static final String FRAGMENT_MAP = "map";
 	public static final String C2DM_START = "c2dm_start";
 	public static final int START_HISTORY = 0x1;
 	private MapView mMapView;
@@ -76,8 +78,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 		mTracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
 
-		mTracker.startNewSession(TrackingManager.UA_ACCOUNT,
-				Const.ANALYTICS_INTERVAL, getApplicationContext());
+		mTracker.startNewSession(TrackingManager.UA_ACCOUNT, Const.ANALYTICS_INTERVAL, getApplicationContext());
 
 		UserDataManager.instance.setActivity(this);
 		setContentView(R.layout.immopoly_activity);
@@ -89,13 +90,16 @@ public class ImmopolyActivity extends FragmentActivity implements
 
 		// TODO cleanup fragment management for fragments with an without tabs
 		// (currently in widget.TabManager)
-		addTab(R.drawable.ic_tab_map, "map", MapFragment.class, false);
-		addTab(R.drawable.ic_tab_portfolio, "portfolio",
-				PortfolioListFragment.class, false);
-		addTab(R.drawable.ic_tab_portfolio, "portfolio_map",
-				PortfolioMapFragment.class, true);
+		addTab(R.drawable.ic_tab_map, FRAGMENT_MAP, MapFragment.class, false);
+		addTab(R.drawable.ic_tab_portfolio, "portfolio", PortfolioListFragment.class, false);
+		addTab(R.drawable.ic_tab_portfolio, "portfolio_map", PortfolioMapFragment.class, true);
 		addTab(R.drawable.ic_tab_profile, "profile", ProfileFragment.class, false);
 		addTab(R.drawable.ic_tab_history, "history", HistoryFragment.class, false);
+		FragmentManager.enableDebugLogging(true);
+//		getSupportFragmentManager().beginTransaction().add(android.R.id.tabhost, new ItemsFragment(), "itemsFragment")
+//				.commit();
+		
+		
 
 		if (savedInstanceState != null) {
 			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
@@ -107,8 +111,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 	private void addTab(int imageId, String name, Class<?> clss, boolean tabless) {
 		TabSpec tabSpec = mTabHost.newTabSpec(name);
 		if (!tabless) {
-			ImageButton tab = (ImageButton) LayoutInflater.from(this).inflate(
-					R.layout.tab_map, null);
+			ImageButton tab = (ImageButton) LayoutInflater.from(this).inflate(R.layout.tab_map, null);
 			tab.setImageResource(imageId);
 			tab.setBackgroundResource(R.drawable.tab_button);
 			tabSpec.setIndicator(tab);
@@ -124,25 +127,23 @@ public class ImmopolyActivity extends FragmentActivity implements
 	public TabManager getTabManager() {
 		return mTabManager;
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		boolean retrieveUserInfo = parseData();
-		if ( retrieveUserInfo || UserDataManager.instance.getState() == UserDataManager.USER_UNKNOWN ) {
+		if (retrieveUserInfo || UserDataManager.instance.getState() == UserDataManager.USER_UNKNOWN) {
 			UserDataManager.instance.getUserInfo();
 		}
 	}
 
-
-	
 	/**
 	 * n Activity is visible but someone called for a action
 	 */
 	@Override
 	public void onNewIntent(Intent newIntent) {
 		// update original intent
-		setIntent(newIntent);	
+		setIntent(newIntent);
 	}
 
 	@Override
@@ -153,14 +154,14 @@ public class ImmopolyActivity extends FragmentActivity implements
 
 	/*
 	 * parse intent and do action
-	 * @return whether userInfo should be updated 
+	 * 
+	 * @return whether userInfo should be updated
 	 */
 	private boolean parseData() {
 		// Start with specific fragment
 		Intent i = getIntent();
 		if (mTabHost != null && i.hasExtra(ImmopolyActivity.C2DM_START)) {
-			switch (i.getIntExtra(ImmopolyActivity.C2DM_START,
-					ImmopolyActivity.START_HISTORY)) {
+			switch (i.getIntExtra(ImmopolyActivity.C2DM_START, ImmopolyActivity.START_HISTORY)) {
 			case ImmopolyActivity.START_HISTORY:
 				mTabHost.setCurrentTabByTag("history");
 				break;
@@ -181,8 +182,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 		DialogFragment newFragment = ExposeFragment.newInstance(flat);
 		// newFragment.setArguments(tmp);
 		newFragment.show(getSupportFragmentManager(), "dialog");
-		mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
-				TrackingManager.ACTION_EXPOSE,
+		mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_EXPOSE,
 				TrackingManager.LABEL_EXPOSE_MAP, 0);
 
 	}
@@ -196,14 +196,12 @@ public class ImmopolyActivity extends FragmentActivity implements
 	 */
 	public MapView acquireMapView(Fragment mapViewHolder) {
 		if (this.mMapViewHolder != null) {
-			throw new IllegalStateException(
-					"The one and only MapView was not released by "
-							+ mMapViewHolder.getClass().getName());
+			throw new IllegalStateException("The one and only MapView was not released by "
+					+ mMapViewHolder.getClass().getName());
 		}
 		this.mMapViewHolder = mapViewHolder;
 		if (mMapView == null) {
-			mMapView = new MapView(this,
-					getString(R.string.google_maps_key));
+			mMapView = new MapView(this, getString(R.string.google_maps_key));
 			mMapView.setClickable(true);
 			mMapView.setTag("map_view");
 		}
@@ -218,15 +216,10 @@ public class ImmopolyActivity extends FragmentActivity implements
 	 */
 	public void releaseMapView(Fragment mapViewHolder) {
 		if (mapViewHolder != mMapViewHolder) {
-			throw new IllegalStateException(
-					"Wrong Fragment tried to release the one and only MapView "
-							+ " Holder: "
-							+ this.mMapViewHolder.getClass().getName()
-							+ " Releaser: "
-							+ mapViewHolder.getClass().getName());
+			throw new IllegalStateException("Wrong Fragment tried to release the one and only MapView " + " Holder: "
+					+ this.mMapViewHolder.getClass().getName() + " Releaser: " + mapViewHolder.getClass().getName());
 		}
-		if (mMapView.getParent() != null
-				&& mMapView.getParent() instanceof ViewGroup)
+		if (mMapView.getParent() != null && mMapView.getParent() instanceof ViewGroup)
 			((ViewGroup) mMapView.getParent()).removeView(mMapView);
 		mMapView.getOverlays().clear();
 		mMapView.removeAllViews();
@@ -240,8 +233,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		UserDataManager.instance
-				.onActivityResult(requestCode, resultCode, data);
+		UserDataManager.instance.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -281,9 +273,9 @@ public class ImmopolyActivity extends FragmentActivity implements
 			startActivity(intent);
 			break;
 		case R.id.menu_help:
-//			intent = new Intent(Intent.ACTION_VIEW);
-//			intent.setData(Uri.parse("http://immopoly.org/frameless-helpandroid.html"));
-//			startActivity(intent);
+			// intent = new Intent(Intent.ACTION_VIEW);
+			// intent.setData(Uri.parse("http://immopoly.org/frameless-helpandroid.html"));
+			// startActivity(intent);
 			showHelpDialog();
 			break;
 		// case R.id.menu_recommend:
@@ -296,8 +288,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 		case R.id.menu_contact:
 			intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("message/rfc822");
-			intent.putExtra(Intent.EXTRA_EMAIL,
-					new String[] { "immopolyteam@gmail.com" });
+			intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "immopolyteam@gmail.com" });
 			intent.putExtra(Intent.EXTRA_SUBJECT, "Immopoly Feedback");
 			startActivity(Intent.createChooser(intent, "Feedback:"));
 			break;
@@ -342,10 +333,8 @@ public class ImmopolyActivity extends FragmentActivity implements
 		} else {
 			OAuthData.getInstance(this).signedIn = false;
 			try {
-				authUrl = OAuthData.getInstance(this).provider
-						.retrieveRequestToken(
-								OAuthData.getInstance(this).consumer,
-								OAuth.OUT_OF_BAND);
+				authUrl = OAuthData.getInstance(this).provider.retrieveRequestToken(
+						OAuthData.getInstance(this).consumer, OAuth.OUT_OF_BAND);
 			} catch (OAuthMessageSignerException e) {
 				e.printStackTrace();
 			} catch (OAuthNotAuthorizedException e) {
@@ -364,29 +353,27 @@ public class ImmopolyActivity extends FragmentActivity implements
 		}
 
 	}
-	
-	// TODO url constant & string externalisation 
+
+	// TODO url constant & string externalisation
 	private void showHelpDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder( this );
-		builder.setTitle( "Hilfe wird geladen..." );
-		WebView webView = new WebView( this );
-		builder.setView( webView );
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Hilfe wird geladen...");
+		WebView webView = new WebView(this);
+		builder.setView(webView);
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.setBackgroundColor( 0 );
-		webView.setMinimumHeight( 300 );
-		builder.setCancelable(false)
-			   .setPositiveButton("Schließen",
-					new DialogInterface.OnClickListener() {
-						public void onClick( DialogInterface dialog, int id) {
-							dialog.dismiss();
-						}
-				});
+		webView.setBackgroundColor(0);
+		webView.setMinimumHeight(300);
+		builder.setCancelable(false).setPositiveButton("Schließen", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.dismiss();
+			}
+		});
 		final AlertDialog alert = builder.create();
-		webView.loadUrl( "http://immopoly.org/frameless-helpandroid.html" );
-		webView.setWebViewClient( new WebViewClient() {
+		webView.loadUrl("http://immopoly.org/frameless-helpandroid.html");
+		webView.setWebViewClient(new WebViewClient() {
 			@Override
 			public void onPageFinished(WebView view, String url) {
-				alert.setTitle( "Hilfe" );
+				alert.setTitle("Hilfe");
 			}
 		});
 		alert.show();
