@@ -31,7 +31,19 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
 import org.immopoly.android.model.OAuthData;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -49,6 +61,10 @@ public class WebHelper {
 	
 	public static final int SOCKET_TIMEOUT = 30000;
 
+		
+	
+
+	
 	public static JSONObject getHttpsData(URL url, boolean signed,
 			Context context) throws JSONException {
 		JSONObject obj = null;
@@ -135,7 +151,41 @@ public class WebHelper {
 		}
 		return obj;
 	}
+	
+	private static HttpResponse postHttp(String url, JSONObject jsonObject)
+			throws ClientProtocolException, IOException {
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(url);
 
+		httppost.setHeader("User-Agent", "immopoly android client");
+		httppost.setHeader("Accept-Encoding", "gzip");
+		
+		HttpEntity entity;
+		entity = new StringEntity(jsonObject.toString());
+		// sets the post request as the resulting string
+		httppost.setEntity(entity);
+		// Pass local context as a parameter
+		return httpclient.execute(httppost);
+	}
+	
+	public static JSONArray postFlatIdsHttpData(String url, JSONObject jsonObject) throws JSONException {
+		try {
+			InputStream in;
+			HttpResponse response = postHttp(url, jsonObject);
+			Header contentEncoding = response.getFirstHeader("Content-Encoding");
+			if (response != null && contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
+				in = new GZIPInputStream(response.getEntity().getContent());
+			} else {
+				in = new BufferedInputStream(response.getEntity().getContent());
+			}
+			String s = readInputStream(in);
+			return new JSONArray(s);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public static String readInputStream(InputStream in) throws IOException {
 		StringBuffer stream = new StringBuffer();
 		byte[] b = new byte[4096];

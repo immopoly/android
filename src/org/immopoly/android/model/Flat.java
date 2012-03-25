@@ -76,6 +76,7 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 	public int    age;
 	public int    takeoverTries;
 	public long   takeoverDate;
+	public boolean visible = true;
 	
 	public int describeContents() {
 		// TODO Auto-generated method stub
