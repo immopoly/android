@@ -81,7 +81,7 @@
     <dependency>
       <groupId>android.support</groupId>
       <artifactId>compatibility-v4</artifactId>
-      <version>r7</version>
+      <version>r4</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
