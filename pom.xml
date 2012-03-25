@@ -63,30 +63,31 @@
     <!-- this trick of loading build timestamp into other property is necessary 
 			due to http://jira.codehaus.org/browse/MRESOURCES-99 and also more readable -->
     <versionCode>${maven.build.timestamp}</versionCode>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
     <dependency>
       <groupId>android</groupId>
       <artifactId>android</artifactId>
-      <version>4.0_r1</version>
+      <version>4.0.3_r2</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.android.maps</groupId>
       <artifactId>maps</artifactId>
-      <version>14_r1</version>
+      <version>15_r1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>android.support</groupId>
       <artifactId>compatibility-v4</artifactId>
-      <version>r4</version>
+      <version>r7</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.immopoly</groupId>
       <artifactId>common</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -98,7 +99,7 @@
     <dependency>
       <groupId>com.google.android.apps</groupId>
       <artifactId>analytics</artifactId>
-      <version>1.3.1</version>
+      <version>1.4.2</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -206,101 +207,136 @@
   <profiles>
     <profile>
       <id>android-release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jarsigner-plugin</artifactId>
-            <version>1.2</version>
-            <executions>
-              <execution>
-                <id>signing</id>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-                <phase>package</phase>
-                <inherited>true</inherited>
-                <configuration>
-                  <archiveDirectory/>
-                  <includes>
-                    <include>target/*.apk</include>
-                  </includes>
-                  <keystore>immopoly-release-key.keystore</keystore>
-                  <storepass>${env.KEY_PASSWORD}</storepass>
-                  <keypass>${env.KEY_PASSWORD}</keypass>
-                  <alias>immopoly</alias>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-            <artifactId>maven-android-plugin</artifactId>
-            <configuration>
-              <zipalign>
-                <verbose>false</verbose>
-                <skip>false</skip>
-                <!-- defaults to true -->
-              </zipalign>
-            </configuration>
-            <executions>
-              <execution>
-                <id>zipalign</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>zipalign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
-    </profile>
-  </profiles>
-  <repositories>
-    <repository>
-      <id>immopoly-snapshots</id>
-      <url>https://raw.github.com/immopoly/mavenrepo/master/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>immopoly-releases</id>
-      <releases>
-        <enabled>false</enabled>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
-      </snapshots>
-      <url>https://raw.github.com/immopoly/mavenrepo/master/releases</url>
-    </repository>
-    <repository>
-      <id>signpost-snapshots</id>
-      <url>http://oss.sonatype.org/content/repositories/signpost-snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
+			<build>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/filteredRes</directory>
+						<filtering>true</filtering>
+						<targetPath>${project.basedir}/res/values/</targetPath>
+						<includes>
+							<include>**/*.xml</include>
+						</includes>
+					</resource>
+					<resource>
+						<directory>${basedir}/filteredRes</directory>
+						<filtering>false</filtering>
+						<excludes>
+							<exclude>**/*.xml</exclude>
+						</excludes>
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jarsigner-plugin</artifactId>
+						<version>1.2</version>
+						<executions>
+							<execution>
+								<id>signing</id>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<phase>package</phase>
+								<inherited>true</inherited>
+								<configuration>
+									<archiveDirectory/>
+									<includes>
+										<include>target/*.apk</include>
+									</includes>
+									<keystore>${keystore}</keystore>
+									<storepass>${storepass}</storepass>
+									<keypass>${keypass}</keypass>
+									<alias>immopoly</alias>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>maven-android-plugin</artifactId>
+						<configuration>
+							<zipalign>
+								<verbose>false</verbose>
+								<skip>false</skip>
+								<!-- defaults to true -->
+							</zipalign>
+						</configuration>
+						<executions>
+							<execution>
+								<id>zipalign</id>
+								<phase>package</phase>
+								<goals>
+									<goal>zipalign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>properties-maven-plugin</artifactId>
+						<version>1.0-alpha-2</version>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<goals>
+									<goal>read-project-properties</goal>
+								</goals>
+								<configuration>
+									<files>
+										<file>config.properties</file>
+									</files>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+		</profile>
+	</profiles>
+	<repositories>
+		<repository>
+			<id>immopoly-snapshots</id>
+			<url>https://raw.github.com/immopoly/mavenrepo/master/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>immopoly-releases</id>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+			<url>https://raw.github.com/immopoly/mavenrepo/master/releases</url>
+		</repository>
+		<repository>
+			<id>signpost-snapshots</id>
+			<url>http://oss.sonatype.org/content/repositories/signpost-snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 </project>
