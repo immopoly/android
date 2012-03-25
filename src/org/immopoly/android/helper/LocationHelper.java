@@ -119,20 +119,12 @@ public class LocationHelper {
 		// double tmpLng = sLng;
 		sCountRequest++;
 
-		if (mCriteria == null) {
-			mCriteria = new Criteria();
-		}
-		mCriteria.setAccuracy(Criteria.ACCURACY_COARSE);
-		mCriteria.setAltitudeRequired(false);
-		mCriteria.setBearingRequired(false);
-		mCriteria.setCostAllowed(true);
-		mCriteria.setPowerRequirement(Criteria.POWER_LOW);
+		getCriteria(context);
 		if (mLocationManager == null) {
 			mLocationManager = (LocationManager) context
 					.getApplicationContext().getSystemService(
 							Context.LOCATION_SERVICE);
 		}
-
 		// if (sTime < MAX_TIME || sAccuracy > MAX_DISTANCE || sCountRequest >
 		// LOCATION_REFRESH_TRESH) {
 		sCountRequest = 0;
@@ -198,10 +190,22 @@ public class LocationHelper {
 
 	}
 
+	private static void getCriteria(final Context context) {
+		if (mCriteria == null) {
+			mCriteria = new Criteria();
+			mCriteria.setAccuracy(Criteria.ACCURACY_COARSE);
+			mCriteria.setAltitudeRequired(false);
+			mCriteria.setBearingRequired(false);
+			mCriteria.setCostAllowed(true);
+			mCriteria.setPowerRequirement(Criteria.POWER_LOW);
+		}
+	}
+
 	public static void getLastLocationFromProvider(Context context) {
 
 		Location lastLocation = null;
 		try {
+			getCriteria(context);
 			lastLocation = mLocationManager
 					.getLastKnownLocation(mLocationManager.getBestProvider(
 							mCriteria, true));
@@ -219,6 +223,7 @@ public class LocationHelper {
 	}
 
 	public static String getBestProvider(Context context) {
+		getCriteria(context);
 		if (mLocationManager == null) {
 			mLocationManager = (LocationManager) context
 					.getApplicationContext().getSystemService(
