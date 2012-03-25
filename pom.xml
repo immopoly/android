@@ -194,7 +194,7 @@
               <includes>
                 <include>target/*.apk</include>
               </includes>
-              <keystore>debug.keystore</keystore>
+              <keystore>~/.android/debug.keystore</keystore>
               <storepass>android</storepass>
               <keypass>android</keypass>
               <alias>androiddebugkey</alias>
