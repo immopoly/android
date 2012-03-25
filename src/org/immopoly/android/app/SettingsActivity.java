@@ -12,7 +12,12 @@ public class SettingsActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 
 		addPreferencesFromResource(R.xml.preferences);
-
+		try {
+			setTitle( "Immopoly " + getPackageManager().getPackageInfo( getPackageName(), 0 ).versionName 
+					  + " (" + getPackageManager().getPackageInfo( getPackageName(), 0 ).versionCode + ")" );
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

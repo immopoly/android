@@ -31,10 +31,14 @@ import org.immopoly.android.widget.PlaceOverlayItem;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -45,11 +49,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
@@ -169,9 +176,8 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		mCompassButton = (ImageView) layout.findViewById(R.id.map_reload);
 		mSplashscreen = layout.findViewById(R.id.splashscreen);
 		if (mMapOverlays == null) {
-			mSplashscreen.setVisibility(View.VISIBLE);
+			showSplashScreen();
 		}
-		
 		mCompassButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -189,6 +195,41 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			mProgressIndicator.setVisibility(showProgress ? View.VISIBLE : View.GONE);
 		if (null != mCompassButton)
 			mCompassButton.setVisibility(showProgress ? View.GONE : View.VISIBLE);
+	}
+
+	
+	private void showSplashScreen() {
+		mSplashscreen.setVisibility(View.VISIBLE);
+		PackageInfo packInfo;
+		String version = "";
+		try {
+			packInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(),0);
+			version =  "Version " + packInfo.versionName + " (" + packInfo.versionCode + ")";
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		((TextView)mSplashscreen.findViewById( R.id.splash_version )).setText( version );
+		new Handler().postDelayed( new Runnable() {
+			public void run() {
+				hideSplashScreen();
+			}
+		}, 10000 );
+	}
+	
+	private void hideSplashScreen() {
+		if ( ! isAdded() || ! mSplashscreen.isShown() )
+			return;
+	    Animation fadeOutAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
+	    fadeOutAnim.setAnimationListener( new Animation.AnimationListener() {
+			public void onAnimationStart(Animation animation) {}
+			public void onAnimationRepeat(Animation animation) {}
+			
+			public void onAnimationEnd(Animation animation) {
+				if ( isAdded() &&  mSplashscreen.isShown())
+					mSplashscreen.setVisibility(View.GONE);
+			}
+		});
+	    mSplashscreen.startAnimation(fadeOutAnim);
 	}
 
 	@Override
@@ -335,16 +376,12 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			// do something interesting
 			// hide progress
 			showProgress(false);
-			if (mSplashscreen.isShown()) {
-				mSplashscreen.setVisibility(View.GONE);
-			}
+			hideSplashScreen();
 			break;
 		case IS24ApiService.STATUS_ERROR:
 			// handle the error;
 			showProgress(false);
-			if (mSplashscreen.isShown()) {
-				mSplashscreen.setVisibility(View.GONE);
-			}
+			hideSplashScreen();
 			if ( IS24ApiService.NO_FLATS.equals(resultData.getString(Intent.EXTRA_TEXT)) )
 				Toast.makeText( getActivity(), R.string.sorry_no_flats, Toast.LENGTH_LONG ).show();
 			// else there was an exception (probably logged already). what TODO?
@@ -373,6 +410,8 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 
 	public void updateMap(boolean centerMap) {
+		if ( mMapView == null ) // currently not attached
+			return;
 		int count = 0;
 		double minX = 999, minY = 999, maxX = -999, maxY = -999;
 		myLocationOverlays.clear();
@@ -504,26 +543,6 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
 			return super.onSingleTapConfirmed(e);
-		}
-	}
-
-	private class GetUserInfoUpdateTask extends GetUserInfoTask {
-
-		public GetUserInfoUpdateTask(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected void onPostExecute(ImmopolyUser result) {
-			if (result != null && ImmopolyUser.getInstance().flats != null) {
-				updateMap(false);
-			} else if (Settings.isOnline(getActivity())) {
-				Intent intent = new Intent(getActivity(), UserSignupActivity.class);
-				startActivity(intent);
-			} else {
-				Toast.makeText(getActivity(), R.string.no_internet_connection, Toast.LENGTH_LONG).show();
-			}
-			updateHud(null, 0);
 		}
 	}
 

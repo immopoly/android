@@ -21,14 +21,9 @@ package org.immopoly.android.app;
 
 import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
-import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.TrackingManager;
-import org.immopoly.android.model.ImmopolyUser;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,8 +34,7 @@ import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class UserSignupActivity extends Activity {
 
-	public static final int MIN_PASSWORTH_LENGTH = 4;
-	private static final int MIN_USERNAME_LENGTH = 1;
+	
 	private static final int REGISTER_REQUEST = 123;
 	private static final int LOGIN_REQUEST = 124;
 
@@ -62,39 +56,6 @@ public class UserSignupActivity extends Activity {
 		// init login
 		toggleProgressHandler = new Handler();
 		setContentView(R.layout.user_signup_activity);
-		// check if user as token and is already logedin
-		ImmopolyUser.getInstance().readToken(this);
-		// LocationHelper.getLastLocation(this);
-		if (LocationHelper.getBestProvider(getApplicationContext()) == null) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.allow_localization_title);
-			builder.setMessage(R.string.allow_localization_message);
-			builder.setCancelable(true).setNegativeButton(
-					R.string.button_cancel,
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int id) {
-						}
-					});
-			builder.setPositiveButton("Einstellungen",
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int id) {
-
-							final ComponentName toLaunch = new ComponentName(
-									"com.android.settings",
-									"com.android.settings.SecuritySettings");
-							final Intent intent = new Intent(
-									android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-							intent.addCategory(Intent.CATEGORY_LAUNCHER);
-							intent.setComponent(toLaunch);
-							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							startActivityForResult(intent, 0);
-						}
-					});
-			AlertDialog alert = builder.create();
-			alert.show();
-		}
 
 	}
 
@@ -140,61 +101,12 @@ public class UserSignupActivity extends Activity {
 	public void loginUser(View v) {
 		Intent login = new Intent(this, UserLoginActivity.class);
 		startActivityForResult(login, LOGIN_REQUEST);
-		//
-	}
-
-	private void toggleProgress() {
-		toggleProgressHandler.post(new Runnable() {
-			public void run() {
-				View progress = findViewById(R.id.login_register_progress);
-				if (progress.getVisibility() == View.GONE) {
-					progress.setVisibility(View.VISIBLE);
-					findViewById(R.id.login).setVisibility(View.GONE);
-					findViewById(R.id.register).setVisibility(View.GONE);
-				} else {
-					progress.setVisibility(View.GONE);
-					findViewById(R.id.login).setVisibility(View.VISIBLE);
-					findViewById(R.id.register).setVisibility(View.VISIBLE);
-				}
-			}
-		});
 	}
 
 	public void startGame() {
-		// start game
-		// Intent i = new Intent(this, PlacesMapActivity.class);
-		// startActivity(i);
-		// login success, trigger action requested before login
 		setResult(Activity.RESULT_OK);
 		finish();
 	}
-
-	// public void showInfo(View v) {
-	//
-	// LayoutInflater inflater = LayoutInflater.from(UserSignupActivity.this);
-	//
-	// View alertDialogView = inflater.inflate(R.layout.info_webview, null);
-	//
-	// WebView myWebView = (WebView) alertDialogView
-	// .findViewById(R.id.DialogWebView);
-	// myWebView.setWebViewClient(new WebViewClient());
-	// myWebView.getSettings().setSupportZoom(true);
-	// myWebView.getSettings().setUseWideViewPort(true);
-	//
-	// myWebView.loadUrl(WebHelper.SERVER_URL_PREFIX);
-	// AlertDialog.Builder builder = new AlertDialog.Builder(
-	// UserSignupActivity.this);
-	// builder.setView(alertDialogView);
-	// builder.setPositiveButton(R.string.button_ok,
-	// new DialogInterface.OnClickListener() {
-	//
-	// @Override
-	// public void onClick(DialogInterface dialog, int which) {
-	// dialog.cancel();
-	// }
-	// }).show();
-	//
-	// }
 
 	@Override
 	protected void onDestroy() {

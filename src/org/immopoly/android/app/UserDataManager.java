@@ -56,12 +56,6 @@ public class UserDataManager {
 	public void setActivity(Activity activity) {
 		this.activity = activity;
 
-		// try to get user info on first activity start if we have a token
-		String token = ImmopolyUser.getInstance().readToken(activity);
-		if (state == USER_UNKNOWN && token != null && token.length() > 0) {
-			getUserInfo();
-		}
-
 		if (mTracker == null) {
 			mTracker = GoogleAnalyticsTracker.getInstance();
 			// Start the tracker in manual dispatch mode...
@@ -160,6 +154,11 @@ public class UserDataManager {
 	 * informs listeners on successful operation
 	 */
 	public void getUserInfo() {
+		String token = ImmopolyUser.getInstance().readToken(activity);
+		if ( token == null || token.length() == 0 ) {
+			Log.i(Const.LOG_TAG, "UserDataManager.getUserInfo() called, but no token there. Returning... ");
+			return;
+		}
 		Log.i(Const.LOG_TAG, "UserDataManager.getUserInfo() state = " + state);
 //		if (actionPending) {
 //			Log.w(Const.LOG_TAG,
@@ -184,7 +183,7 @@ public class UserDataManager {
 				fireUsedDataChanged();
 			}
 		};
-		task.execute(ImmopolyUser.getInstance().getToken());
+		task.execute(token);
 	}
 
 	/**
@@ -232,7 +231,9 @@ public class UserDataManager {
 	protected void showExposeDialog(final Flat flat, final Result result, final String title ) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle( title );
-		final String text = null != result.history ? result.history.getText() : (null != result.exception ? result.exception.getMessage(): "Häää?");
+		final String text = null != result.history ? result.history.getText() 
+			: (null != result.exception ? result.exception.getMessage()
+			: "Ein Fehler ist aufgetreten.");
 
 		builder.setMessage(text);
 		// builder.setContentView(R.layout.maindialog);

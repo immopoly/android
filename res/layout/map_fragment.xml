@@ -28,17 +28,31 @@
         android:clickable="true"
         android:gravity="center_horizontal"
         android:visibility="gone" >
+        <TextView
+            android:id="@+id/splash_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingRight="2dp"
+            android:text="Version 2.9 (12)"
+            android:textColor="@color/orange"
+            android:textSize="12dp" />
         <ImageView
             android:id="@+id/splash_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="50dp"
+            android:paddingTop="10dp"
             android:scaleType="centerInside"
             android:src="@drawable/logo_splash" />
         <TextView
+            android:id="@+id/splash_poweredBy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="15dp"
             android:text="powered by Immobilienscout API"
             android:textColor="@color/hud_text"
