@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.immopoly.android.constants.Const;
+import org.immopoly.common.ActionItem;
 import org.immopoly.common.Badge;
 import org.immopoly.common.History;
 import org.immopoly.common.User;
@@ -51,6 +52,9 @@ public class ImmopolyUser extends User {
 	private static ImmopolyUser sInstance = null;
 
 	private List<ImmopolyBadge> badges;
+
+	private List<ImmopolyActionItem> actionItems;
+
 	private int maxExposes;
 
 	
@@ -249,6 +253,20 @@ public class ImmopolyUser extends User {
 		this.badges.clear();
 		for (Badge badge: badges) {
 			this.badges.add((ImmopolyBadge) badge);
+		}
+
+	}
+
+	@Override
+	public ActionItem instantiateActionItem(JSONObject o) {
+		return new ImmopolyActionItem(o);
+	}
+
+	@Override
+	public void setActionItems(List<ActionItem> actionItems) {
+		this.actionItems.clear();
+		for (ActionItem actionItem : actionItems) {
+			this.actionItems.add((ImmopolyActionItem) actionItem);
 		}
 
 	}
