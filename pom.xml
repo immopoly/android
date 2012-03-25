@@ -69,7 +69,7 @@
     <dependency>
       <groupId>android</groupId>
       <artifactId>android</artifactId>
-      <version>4.0.3_r2</version>
+      <version>4.0.3_r3</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -246,7 +246,7 @@
                   <keystore>${keystore}</keystore>
                   <storepass>${storepass}</storepass>
                   <keypass>${keypass}</keypass>
-									<alias>${alias}</alias>
+                  <alias>${alias}</alias>
                 </configuration>
               </execution>
             </executions>
