@@ -166,7 +166,7 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 		// create tmp items with flat, geopoint & screenBounds
 		for (int i = 0; i < flats.size(); i++) {
 			final Flat flat = flats.get(i);
-			if (flat.lat == 0 && flat.lng == 0)
+			if (flat.lat == 0 && flat.lng == 0 || !flat.visible)
 				continue;
 			Rect itemBounds = new Rect(markerBounds);
 			GeoPoint point = new GeoPoint((int) (flat.lat * 1E6), (int) (flat.lng * 1E6));
@@ -264,5 +264,6 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 			return overlayItem;
 		}
 	}
+	
 
 }

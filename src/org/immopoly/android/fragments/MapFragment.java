@@ -23,6 +23,7 @@ import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyUser;
+import org.immopoly.android.tasks.FreeFlatsTask;
 import org.immopoly.android.tasks.GetUserInfoTask;
 import org.immopoly.android.widget.ImmoscoutPlacesOverlay;
 import org.immopoly.android.widget.MyPositionOverlay;
@@ -47,6 +48,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -93,6 +95,8 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	private ImageView mCompassButton;
 
 	private View mSplashscreen;
+
+	private View mActionItemFreeFlats;
 
 	public OnMapItemClickedListener getOnMapItemClickedListener() {
 		return mOnMapItemClickedListener;
@@ -269,6 +273,16 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			syncFlats(); // flats may have been released in portfolio fragments
 			updateMap(true);
 		}
+		
+		mActionItemFreeFlats = getView().findViewById(R.id.actionItemFreeFlats);
+		mActionItemFreeFlats.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				filterFreeFlats();
+			}
+		});
 	}
 
 	class MapLocationCallback implements LocationHelper.LocationCallback {
@@ -427,22 +441,25 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 		if (mMapView != null && mFlats != null) {
 			for (Flat f : mFlats) {
-				if (f.lat != 0.0 || f.lng != 0.0) {
-					if (f.lng < minX) {
-						minX = f.lng;
+				if (f.visible) {
+					if (f.lat != 0.0 || f.lng != 0.0) {
+						if (f.lng < minX) {
+							minX = f.lng;
+						}
+						if (f.lng > maxX) {
+							maxX = f.lng;
+						}
+	
+						if (f.lat < minY)
+							minY = f.lat;
+						if (f.lat > maxY)
+							maxY = f.lat;
+	
+						count++;
 					}
-					if (f.lng > maxX) {
-						maxX = f.lng;
-					}
-
-					if (f.lat < minY)
-						minY = f.lat;
-					if (f.lat > maxY)
-						maxY = f.lat;
-
-					count++;
 				}
 			}
+			
 			overlays.setFlats(mFlats);
 
 			if (LocationHelper.sLng < minX)
@@ -583,5 +600,22 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		if (mProgressIndicator.getVisibility() != View.VISIBLE)
 			mCompassButton.setVisibility(View.VISIBLE);
 	}
-
+	
+	
+	public void filterFreeFlats() {
+		new FilterFreeExposesTask().execute(mFlats);
+	}
+	
+	private class FilterFreeExposesTask extends FreeFlatsTask {
+		
+		@Override
+		protected void onPostExecute(Flats result) {
+			if ( result != null) {
+				mFlats = result;
+				updateMap(true);
+			}
+			super.onPostExecute(result);
+		}
+	}
+	
 }
