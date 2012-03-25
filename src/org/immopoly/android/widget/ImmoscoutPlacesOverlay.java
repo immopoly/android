@@ -264,6 +264,5 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 			return overlayItem;
 		}
 	}
-	
 
 }
