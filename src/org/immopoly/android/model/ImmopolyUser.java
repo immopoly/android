@@ -63,6 +63,7 @@ public class ImmopolyUser extends User {
 	private ImmopolyUser() {
 		mUserHistory = new ArrayList<ImmopolyHistory>();
 		badges = new ArrayList<ImmopolyBadge>();
+		actionItems = new ArrayList<ImmopolyActionItem>();
 		flats = new Flats();
 	}
 
@@ -255,6 +256,10 @@ public class ImmopolyUser extends User {
 			this.badges.add((ImmopolyBadge) badge);
 		}
 
+	}
+
+	public List<ImmopolyActionItem> getActionItems() {
+		return actionItems;
 	}
 
 	@Override
