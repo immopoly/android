@@ -35,7 +35,9 @@ public class C2DMReceiver extends C2DMBaseReceiver {
 			JSONObject obj = WebHelper.getHttpData(new URL(registerC2DM), false, context);
 			Log.d("C2DM", "registration with immopoly server YES");
 			Log.d("C2DM", "request->" + registerC2DM);
-			Log.d("C2DM", "DATA " + obj.toString());
+			if (obj != null) {
+				Log.d("C2DM", "DATA " + obj.toString());
+			}
 		} catch (JSONException e) {
 			Log.d("C2DM", "registration with immopoly NOOOOOOOOOOOOOOO");
 			e.printStackTrace();

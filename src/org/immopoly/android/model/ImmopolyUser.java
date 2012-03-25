@@ -45,7 +45,7 @@ public class ImmopolyUser extends User {
 	private String mTwitter;
 	private double mBalance;
 	private List<ImmopolyHistory> mUserHistory;
-	public Flats flats;
+	private Flats flats;
 	private double sLastProvision;
 	private double sLastRent;
 	private static ImmopolyUser sInstance = null;
@@ -162,7 +162,6 @@ public class ImmopolyUser extends User {
 					item.livingSpace   = realEstate.optInt("livingSpace");
 					
 					if (realEstate.has("titlePicture")) {
-						Log.i(Const.LOG_TAG, "REAL_ESTATE: " + realEstate.toString() );
 						JSONObject objPicture = realEstate.getJSONObject("titlePicture");
 						if (objPicture.has("urls") && objPicture.getJSONArray("urls").length() > 0) {
 							JSONObject urls = objPicture.getJSONArray("urls").getJSONObject(0).getJSONObject("url");

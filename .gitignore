@@ -7,6 +7,8 @@ target/
 #key stuff
 
 res/values/config_data.xml
+res/values/config.xml
+config.properties
 
 # eclipse stuff
 .classpath
@@ -14,8 +16,6 @@ res/values/config_data.xml
 .settings/
 
 #maven eclipse stuff
-
-pom.xml
 
 .externalToolBuilders/
 maven-eclipse.xml
