@@ -82,7 +82,7 @@
       <groupId>android.support</groupId>
       <artifactId>compatibility-v4</artifactId>
       <version>r4</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.immopoly</groupId>

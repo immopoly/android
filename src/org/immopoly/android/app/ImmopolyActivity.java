@@ -11,6 +11,8 @@ import oauth.signpost.exception.OAuthNotAuthorizedException;
 
 import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.dialog.HighScoreDialog;
+import org.immopoly.android.dialog.WebViewDialog;
 import org.immopoly.android.fragments.ExposeFragment;
 import org.immopoly.android.fragments.HistoryFragment;
 import org.immopoly.android.fragments.ItemsFragment;
@@ -41,11 +43,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
@@ -57,7 +62,8 @@ import com.google.android.maps.MapView;
  * @author tosa,sebastia,björn Example implementation of fragments communication
  */
 
-public class ImmopolyActivity extends FragmentActivity implements OnMapItemClickedListener, OnTrackingEventListener {
+public class ImmopolyActivity extends FragmentActivity implements
+		OnMapItemClickedListener, OnTrackingEventListener {
 
 	public static final String FRAGMENT_MAP = "map";
 	public static final String C2DM_START = "c2dm_start";
@@ -86,6 +92,8 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 
+		getSharedPreferences("", 1);
+		
 		mTabManager = new TabManager(this, mTabHost, R.id.fragment_container);
 
 		// TODO cleanup fragment management for fragments with an without tabs
@@ -127,23 +135,25 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	public TabManager getTabManager() {
 		return mTabManager;
 	}
-
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
 		boolean retrieveUserInfo = parseData();
-		if (retrieveUserInfo || UserDataManager.instance.getState() == UserDataManager.USER_UNKNOWN) {
+		if ( retrieveUserInfo || UserDataManager.instance.getState() == UserDataManager.USER_UNKNOWN ) {
 			UserDataManager.instance.getUserInfo();
 		}
 	}
 
+
+	
 	/**
 	 * n Activity is visible but someone called for a action
 	 */
 	@Override
 	public void onNewIntent(Intent newIntent) {
 		// update original intent
-		setIntent(newIntent);
+		setIntent(newIntent);	
 	}
 
 	@Override
@@ -155,7 +165,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	/*
 	 * parse intent and do action
 	 * 
-	 * @return whether userInfo should be updated
+	 * @return whether userInfo should be updated 
 	 */
 	private boolean parseData() {
 		// Start with specific fragment
@@ -197,7 +207,7 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 	public MapView acquireMapView(Fragment mapViewHolder) {
 		if (this.mMapViewHolder != null) {
 			throw new IllegalStateException("The one and only MapView was not released by "
-					+ mMapViewHolder.getClass().getName());
+							+ mMapViewHolder.getClass().getName());
 		}
 		this.mMapViewHolder = mapViewHolder;
 		if (mMapView == null) {
@@ -268,15 +278,18 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 			startActivity(intent);
 			break;
 		case R.id.menu_highscore:
-			intent = new Intent(Intent.ACTION_VIEW);
-			intent.setData(Uri.parse("http://immopoly.org/livestats.html?c=android"));
-			startActivity(intent);
+//			intent = new Intent(Intent.ACTION_VIEW);
+//			intent.setData(Uri.parse("http://immopoly.org/livestats.html?c=android"));
+//			startActivity(intent);
+			new HighScoreDialog( this ).show();
+//			showHighscoreDialog( "Highscores werden geladen...", "Highscores", "http://immopoly.org/frameless-topx_balance.html" );
 			break;
 		case R.id.menu_help:
-			// intent = new Intent(Intent.ACTION_VIEW);
-			// intent.setData(Uri.parse("http://immopoly.org/frameless-helpandroid.html"));
-			// startActivity(intent);
-			showHelpDialog();
+//			intent = new Intent(Intent.ACTION_VIEW);
+//			intent.setData(Uri.parse("http://immopoly.org/frameless-helpandroid.html"));
+//			startActivity(intent);
+//			showWebDialog( "Hilfe wird geladen...", "Hilfe",  );
+			new WebViewDialog( this, "Hilfe", "http://immopoly.org/frameless-helpandroid.html" ).show();
 			break;
 		// case R.id.menu_recommend:
 		// intent = new Intent(Intent.ACTION_SEND);
@@ -329,7 +342,6 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 		if (accessToken.length() > 0) {
 			OAuthData.getInstance(this).signedIn = true;
 			OAuthData.getInstance(this).accessToken = accessToken;
-
 		} else {
 			OAuthData.getInstance(this).signedIn = false;
 			try {
@@ -351,32 +363,5 @@ public class ImmopolyActivity extends FragmentActivity implements OnMapItemClick
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);
 		}
-
 	}
-
-	// TODO url constant & string externalisation
-	private void showHelpDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Hilfe wird geladen...");
-		WebView webView = new WebView(this);
-		builder.setView(webView);
-		webView.getSettings().setJavaScriptEnabled(true);
-		webView.setBackgroundColor(0);
-		webView.setMinimumHeight(300);
-		builder.setCancelable(false).setPositiveButton("Schließen", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.dismiss();
-			}
-		});
-		final AlertDialog alert = builder.create();
-		webView.loadUrl("http://immopoly.org/frameless-helpandroid.html");
-		webView.setWebViewClient(new WebViewClient() {
-			@Override
-			public void onPageFinished(WebView view, String url) {
-				alert.setTitle("Hilfe");
-			}
-		});
-		alert.show();
-	}
-
 }

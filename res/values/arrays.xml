@@ -16,13 +16,17 @@
   ~
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see http://www.gnu.org/licenses/.
-  -->
-
+-->
 <resources>
     <string-array name="realestate_types">
-    	<item>FLAT_SHARE_ROOM</item>
-    	<item>APARTMENT_RENT</item>
-    	<item></item>
+        <item>FLAT_SHARE_ROOM</item>
+        <item>APARTMENT_RENT</item>
+        <item></item>
     </string-array>
     <string-array name="profile_keys"></string-array>
+    <string-array name="highscore_types">
+        <item>Gesamt</item>
+        <item>Dieser Monat</item>
+        <item>Release-Tester-Contest</item>
+    </string-array>
 </resources>
