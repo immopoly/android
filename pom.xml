@@ -134,7 +134,7 @@
           </emulator>
           <zipalign>
             <inputApk>${project.build.directory}/${project.build.finalName}.apk</inputApk>
-            <outputApk>${project.build.directory}/${apk.prefix}-${project.artifactId}.apk</outputApk>
+            <outputApk>${project.build.directory}/immopoly-android-aligned.apk</outputApk>
           </zipalign>
           <undeployBeforeDeploy>true</undeployBeforeDeploy>
           <deleteConflictingFiles>true</deleteConflictingFiles>
