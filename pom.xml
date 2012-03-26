@@ -81,8 +81,7 @@
     <dependency>
       <groupId>android.support</groupId>
       <artifactId>compatibility-v4</artifactId>
-      <version>r4</version>
-      <scope>provided</scope>
+      <version>r6-petedoyle</version>
     </dependency>
     <dependency>
       <groupId>org.immopoly</groupId>
@@ -304,20 +303,21 @@
       <id>immopoly-snapshots</id>
       <url>https://raw.github.com/immopoly/mavenrepo/master/snapshots</url>
       <releases>
-        <enabled>false</enabled>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
+          <enabled>false</enabled>
+          <updatePolicy>always</updatePolicy>
+          <checksumPolicy>warn</checksumPolicy>
       </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+        </snapshots>
     </repository>
-    <repository>
-      <id>immopoly-releases</id>
-      <releases>
-        <enabled>false</enabled>
+      <repository>
+          <id>immopoly-releases</id>
+          <url>https://raw.github.com/immopoly/mavenrepo/master/releases</url>
+          <releases>
+        <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
         <checksumPolicy>fail</checksumPolicy>
       </releases>
@@ -326,7 +326,6 @@
         <updatePolicy>always</updatePolicy>
         <checksumPolicy>warn</checksumPolicy>
       </snapshots>
-      <url>https://raw.github.com/immopoly/mavenrepo/master/releases</url>
     </repository>
     <repository>
       <id>signpost-snapshots</id>
