@@ -15,7 +15,7 @@
   <inceptionYear>2011</inceptionYear>
   <organization>
     <name>Team immopoly</name>
-    <url>http://immopoly.blogspot.com</url>
+    <url>http://immopoly.org</url>
   </organization>
   <developers>
     <developer>
@@ -24,7 +24,7 @@
       <email>keyboardsurfer@c-base.org</email>
       <url>http://gplus.to/keyboardsurfer</url>
       <organization>Team immopoly</organization>
-      <organizationUrl>http://immopoly.blogspot.com</organizationUrl>
+      <organizationUrl>http://immopoly.org</organizationUrl>
       <roles>
         <role>owner</role>
       </roles>
@@ -36,7 +36,7 @@
       <email>sh@jnamic.com</email>
       <url>http://stefanhoth.de</url>
       <organization>Team immopoly</organization>
-      <organizationUrl>http://immopoly.blogspot.com</organizationUrl>
+      <organizationUrl>http://immopoly.org</organizationUrl>
       <roles>
         <role>owner</role>
       </roles>
@@ -48,7 +48,7 @@
       <email>t@c-base.org</email>
       <url>http://t.crew.c-base.org</url>
       <organization>Team immopoly</organization>
-      <organizationUrl>http://immopoly.blogspot.com</organizationUrl>
+      <organizationUrl>http://immopoly.org</organizationUrl>
       <roles>
         <role>owner</role>
       </roles>
