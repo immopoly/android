@@ -15,6 +15,10 @@ config.properties
 .project
 .settings/
 
+#intellij-stuff
+.idea
+android.iml
+
 #maven eclipse stuff
 
 .externalToolBuilders/
