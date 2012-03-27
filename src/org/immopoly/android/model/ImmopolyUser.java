@@ -22,6 +22,7 @@ package org.immopoly.android.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.constants.Const;
 import org.immopoly.common.ActionItem;
 import org.immopoly.common.Badge;
@@ -262,6 +263,14 @@ public class ImmopolyUser extends User {
 		return actionItems;
 	}
 
+	public boolean hasActionItemWithAmount() {
+		for (ImmopolyActionItem actionItem : actionItems) {
+			if (actionItem.getAmount() > 0)
+				return true;
+		}
+		return false;
+	}
+
 	@Override
 	public ActionItem instantiateActionItem(JSONObject o) {
 		return new ImmopolyActionItem(o);
@@ -296,5 +305,6 @@ public class ImmopolyUser extends User {
 				item.removeAmount(1);
 			}
 		}
+		UserDataManager.instance.fireUsedDataChanged();
 	}
 }

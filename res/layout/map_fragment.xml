@@ -20,6 +20,7 @@
         android:layout_alignParentRight="true"
         android:layout_margin="5dp"
         android:background="@null"
+        android:visibility="gone"
         android:src="@drawable/ic_action_items" />
     <ProgressBar
         android:id="@+id/map_progress"

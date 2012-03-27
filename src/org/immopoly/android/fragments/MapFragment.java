@@ -13,27 +13,22 @@ import org.immopoly.android.api.ReceiverState;
 import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
-import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.OnTrackingEventListener;
-import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.tasks.FreeFlatsTask;
-import org.immopoly.android.tasks.GetUserInfoTask;
 import org.immopoly.android.widget.ImmoscoutPlacesOverlay;
 import org.immopoly.android.widget.MyPositionOverlay;
 import org.immopoly.android.widget.PlaceOverlayItem;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Address;
 import android.location.Geocoder;
@@ -97,6 +92,8 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	private View mSplashscreen;
 
 	private View mActionItemFreeFlats;
+
+	private ImageButton itemsButton;
 
 	public OnMapItemClickedListener getOnMapItemClickedListener() {
 		return mOnMapItemClickedListener;
@@ -179,13 +176,11 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		mProgressIndicator = (ProgressBar) layout.findViewById(R.id.map_progress);
 		mCompassButton = (ImageView) layout.findViewById(R.id.map_reload);
 		mSplashscreen = layout.findViewById(R.id.splashscreen);
-		ImageButton itemsButton = (ImageButton) layout.findViewById(R.id.items_button);
+		itemsButton = (ImageButton) layout.findViewById(R.id.items_button);
 		itemsButton.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				new ItemsFragment().show(getFragmentManager(), "itemsDialog");
-
 			}
 		});
 
@@ -592,6 +587,11 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		syncFlats();
 		updateMap(false);
 		overlays.updateBubble();
+		// check if there are actionItems with amount > 0
+		if (ImmopolyUser.getInstance().hasActionItemWithAmount())
+			itemsButton.setVisibility(View.VISIBLE);
+		else
+			itemsButton.setVisibility(View.GONE);
 	}
 
 	public void hideCompass() {

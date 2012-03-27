@@ -305,7 +305,7 @@ public class UserDataManager {
 		}.execute(flat);
 	}
 
-	private void fireUsedDataChanged() {
+	public void fireUsedDataChanged() {
 		Log.i(Const.LOG_TAG, "UserDataManager.fireUsedDataChanged()");
 		for (UserDataListener listener : listeners)
 			listener.onUserDataUpdated();
