@@ -77,7 +77,9 @@ public class ItemsFragment extends DialogFragment implements OnItemClickListener
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		ItemActivateFragment.newInstance(position).show(getFragmentManager(), "activate");
+		ImmopolyActionItem item = ImmopolyUser.getInstance().getActionItems().get(position);
+		if (item.getAmount() > 0)
+			ItemActivateFragment.newInstance(position).show(getFragmentManager(), "activate");
 		dismiss();
 	}
 
