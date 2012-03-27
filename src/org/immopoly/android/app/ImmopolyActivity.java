@@ -28,6 +28,7 @@ import org.immopoly.android.widget.TabManager;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -290,14 +291,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 			intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("message/rfc822");
 			intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "immopolyteam@gmail.com" });
-
-			String versionInfo =  "";
-			try{
-				versionInfo = getPackageManager().getPackageInfo(getPackageName(), 0).versionName+ " (" + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode + ")";
-			} catch (Exception e) {
-			}
-
-			intent.putExtra(Intent.EXTRA_SUBJECT, "Immopoly Feedback " + versionInfo);
+			intent.putExtra(Intent.EXTRA_SUBJECT, "Immopoly Feedback " + getVersionInfo());
 			startActivity(Intent.createChooser(intent, "Feedback:"));
 			break;
 		case R.id.menu_logout:
@@ -312,6 +306,15 @@ public class ImmopolyActivity extends FragmentActivity implements
 		}
 
 		return true;
+	}
+
+	private String getVersionInfo() {
+		try {
+			return getPackageManager().getPackageInfo(getPackageName(), 0).versionName + " ("
+					+ getPackageManager().getPackageInfo(getPackageName(), 0).versionCode + ")";
+		} catch (NameNotFoundException e) {
+			return "";
+		}
 	}
 
 	@Override
