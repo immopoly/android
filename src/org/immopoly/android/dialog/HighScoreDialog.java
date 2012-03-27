@@ -1,20 +1,11 @@
 package org.immopoly.android.dialog;
 
 import org.immopoly.android.R;
-import org.immopoly.android.app.ImmopolyActivity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.opengl.Visibility;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 /**
  * loads highscore html from website
@@ -32,7 +23,7 @@ public class HighScoreDialog extends WebViewDialog implements AdapterView.OnItem
 	};
 
 	public HighScoreDialog( Activity activity ) {
-		super( activity, "Hisghscore", URLS[0] );
+		super(activity, "Highscore", URLS[0]);
 	}
 
 	protected View getLayout() {

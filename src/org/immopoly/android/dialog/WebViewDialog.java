@@ -1,22 +1,16 @@
 package org.immopoly.android.dialog;
 
 import org.immopoly.android.R;
-import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.constants.Const;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
-import android.opengl.Visibility;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 /**
  * Dialog for displaying small pages in a WebView.
@@ -40,7 +34,7 @@ public class WebViewDialog extends WebViewClient
 	
 	public WebViewDialog( Activity activity, String title, String url ) {
 		this.activity = activity;
-		this.url      = url + "_haha";
+		this.url = url;
 		this.title    = title;
 	}
 
