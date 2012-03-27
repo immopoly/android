@@ -15,7 +15,6 @@ import org.immopoly.android.dialog.HighScoreDialog;
 import org.immopoly.android.dialog.WebViewDialog;
 import org.immopoly.android.fragments.ExposeFragment;
 import org.immopoly.android.fragments.HistoryFragment;
-import org.immopoly.android.fragments.ItemsFragment;
 import org.immopoly.android.fragments.MapFragment;
 import org.immopoly.android.fragments.OnMapItemClickedListener;
 import org.immopoly.android.fragments.PortfolioListFragment;
@@ -24,12 +23,9 @@ import org.immopoly.android.fragments.ProfileFragment;
 import org.immopoly.android.helper.OnTrackingEventListener;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
-import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.android.model.OAuthData;
 import org.immopoly.android.widget.TabManager;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -38,22 +34,14 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
-import android.widget.Toast;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.MapView;
@@ -302,7 +290,14 @@ public class ImmopolyActivity extends FragmentActivity implements
 			intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("message/rfc822");
 			intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "immopolyteam@gmail.com" });
-			intent.putExtra(Intent.EXTRA_SUBJECT, "Immopoly Feedback");
+
+			String versionInfo =  "";
+			try{
+				versionInfo = getPackageManager().getPackageInfo(getPackageName(), 0).versionName+ " (" + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode + ")";
+			} catch (Exception e) {
+			}
+
+			intent.putExtra(Intent.EXTRA_SUBJECT, "Immopoly Feedback " + versionInfo);
 			startActivity(Intent.createChooser(intent, "Feedback:"));
 			break;
 		case R.id.menu_logout:

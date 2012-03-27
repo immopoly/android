@@ -15,7 +15,7 @@
     android:installLocation="auto"
     package="org.immopoly.android"
     android:versionCode="10"
-    android:versionName="2.1" >
+    android:versionName="2.2" >
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="10" />
