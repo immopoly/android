@@ -264,6 +264,8 @@ public class ImmopolyUser extends User {
 	}
 
 	public boolean hasActionItemWithAmount() {
+		if (null == actionItems)
+			return false;
 		for (ImmopolyActionItem actionItem : actionItems) {
 			if (actionItem.getAmount() > 0)
 				return true;

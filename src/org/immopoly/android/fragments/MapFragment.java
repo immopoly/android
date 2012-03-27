@@ -183,6 +183,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 				new ItemsFragment().show(getFragmentManager(), "itemsDialog");
 			}
 		});
+		updateActionItem();
 
 		if (mMapOverlays == null) {
 			showSplashScreen();
@@ -587,11 +588,16 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		syncFlats();
 		updateMap(false);
 		overlays.updateBubble();
+		updateActionItem();
+	}
+
+	private void updateActionItem() {
 		// check if there are actionItems with amount > 0
 		if (ImmopolyUser.getInstance().hasActionItemWithAmount())
 			itemsButton.setVisibility(View.VISIBLE);
 		else
 			itemsButton.setVisibility(View.GONE);
+
 	}
 
 	public void hideCompass() {
