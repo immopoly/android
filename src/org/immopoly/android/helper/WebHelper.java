@@ -42,6 +42,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
+import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.model.ImmopolyException;
 import org.immopoly.android.model.OAuthData;
 import org.json.JSONArray;
@@ -73,6 +74,7 @@ public class WebHelper {
 			HttpURLConnection request;
 			try {
 				request = (HttpURLConnection) url.openConnection();
+				request.addRequestProperty("User-Agent", "immopoly android client "+ImmopolyActivity.getStaticVersionInfo());
 
 				if (signed)
 					OAuthData.getInstance(context).consumer.sign(request);
@@ -84,8 +86,7 @@ public class WebHelper {
 						.getInputStream());
 				String s = readInputStream(in);
 				JSONTokener tokener = new JSONTokener(s);
-				obj = new JSONObject(tokener);
-
+				return  new JSONObject(tokener);
 			} catch (JSONException e) {
 				throw new ImmopolyException("Kommunikationsproblem (beim lesen der Antwort)",e);
 			} catch (MalformedURLException e) {
@@ -99,8 +100,8 @@ public class WebHelper {
 			} catch (IOException e) {
 				throw new ImmopolyException("Kommunikationsproblem",e);
 			}
-		}
-		return obj;
+		}else
+			throw new ImmopolyException("Kommunikationsproblem (Offline)");
 	}
 
 	public static JSONObject getHttpData(URL url, boolean signed,
@@ -111,7 +112,8 @@ public class WebHelper {
 			try {
 
 				request = (HttpURLConnection) url.openConnection();
-
+				
+				request.addRequestProperty("User-Agent", "immopoly android client "+ImmopolyActivity.getStaticVersionInfo());
 				request.addRequestProperty("Accept-Encoding", "gzip");
 				if (signed)
 					OAuthData.getInstance(context).consumer.sign(request);
@@ -155,7 +157,7 @@ public class WebHelper {
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(url);
 
-		httppost.setHeader("User-Agent", "immopoly android client");
+		httppost.setHeader("User-Agent", "immopoly android client "+ImmopolyActivity.getStaticVersionInfo());
 		httppost.setHeader("Accept-Encoding", "gzip");
 		
 		HttpEntity entity;

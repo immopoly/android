@@ -64,6 +64,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 	private TabManager mTabManager;
 	private GoogleAnalyticsTracker mTracker;
 
+	private static String VERISONINFO="";
 	/**
 	 * Init the game
 	 */
@@ -103,6 +104,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 		}
 		// for generating oauth token
 		// signIn();
+		VERISONINFO=getVersionInfo();
 	}
 
 	private void addTab(int imageId, String name, Class<?> clss, boolean tabless) {
@@ -308,7 +310,7 @@ public class ImmopolyActivity extends FragmentActivity implements
 		return true;
 	}
 
-	private String getVersionInfo() {
+	public String getVersionInfo() {
 		try {
 			return getPackageManager().getPackageInfo(getPackageName(), 0).versionName + " ("
 					+ getPackageManager().getPackageInfo(getPackageName(), 0).versionCode + ")";
@@ -317,6 +319,10 @@ public class ImmopolyActivity extends FragmentActivity implements
 		}
 	}
 
+	public static String getStaticVersionInfo() {
+		return VERISONINFO;
+	}
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
