@@ -125,4 +125,5 @@
     <string name="still_loading">lädt noch...</string>
     <string name="badge_vertical">B\na\nd\ng\ne\ns</string>
     <string name="sorry_no_flats">In deiner Nähe werden leider keine Wohnungen zur Miete angeboten.</string>
+    <string name="login_failed">Login fehlgeschlagen</string>
 </resources>

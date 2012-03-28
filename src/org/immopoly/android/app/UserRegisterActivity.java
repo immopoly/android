@@ -10,25 +10,20 @@ import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.helper.WebHelper;
-import org.immopoly.android.model.ImmopolyException;
 import org.immopoly.android.model.ImmopolyUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class UserRegisterActivity extends Activity {
 
