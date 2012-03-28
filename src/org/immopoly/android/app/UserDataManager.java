@@ -20,6 +20,7 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.util.Log;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
@@ -307,8 +308,14 @@ public class UserDataManager {
 
 	public void fireUsedDataChanged() {
 		Log.i(Const.LOG_TAG, "UserDataManager.fireUsedDataChanged()");
-		for (UserDataListener listener : listeners)
-			listener.onUserDataUpdated();
+		for (final UserDataListener listener : listeners){
+			new Handler().post(new Runnable() {	
+				@Override
+				public void run() {
+					listener.onUserDataUpdated();
+				}
+			});
+		}
 	}
 
 	private boolean checkState() {
