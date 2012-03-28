@@ -114,7 +114,7 @@ public class UserLoginActivity extends Activity {
 			String username = params[0];
 			String password = params[1];
 			JSONObject obj = null;
-			ImmopolyUser user;
+			ImmopolyUser user=null;
 
 			try {
 				toggleProgress();
@@ -124,22 +124,22 @@ public class UserLoginActivity extends Activity {
 								+ URLEncoder.encode(username) + "&password="
 								+ URLEncoder.encode(password)), false,
 						UserLoginActivity.this);
+				if (obj != null && obj.has(Const.MESSAGE_IMMOPOLY_EXCEPTION)) {
+					result.exception = new ImmopolyException(UserLoginActivity.this, obj);
+				} else {
+					user = ImmopolyUser.getInstance();
+					user.fromJSON(obj);
+					if(user != null && user.getToken().length() > 0)
+						result.success=true;
+				}
+			} catch (ImmopolyException e) {
+				e.printStackTrace();
+				result.exception = e;
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 				result.exception = new ImmopolyException(e);
-			} catch (JSONException e) {
-				e.printStackTrace();
-				result.exception = new ImmopolyException(e);
 			}
-			if (obj == null || obj.has(Const.MESSAGE_IMMOPOLY_EXCEPTION)) {
-				user = null;
-				result.exception = new ImmopolyException(UserLoginActivity.this, obj);
-			} else {
-				user = ImmopolyUser.getInstance();
-				user.fromJSON(obj);
-				if(user != null && user.getToken().length() > 0)
-					result.success=true;
-			}
+			
 			toggleProgress();
 			return user;
 		}
@@ -207,7 +207,7 @@ public class UserLoginActivity extends Activity {
 						UserLoginActivity.this);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
-			} catch (JSONException e) {
+			} catch (ImmopolyException e) {
 				e.printStackTrace();
 			}
 			toggleProgress();

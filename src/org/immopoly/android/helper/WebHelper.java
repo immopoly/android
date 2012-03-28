@@ -42,6 +42,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
+import org.immopoly.android.model.ImmopolyException;
 import org.immopoly.android.model.OAuthData;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,7 +67,7 @@ public class WebHelper {
 
 	
 	public static JSONObject getHttpsData(URL url, boolean signed,
-			Context context) throws JSONException {
+			Context context) throws ImmopolyException {
 		JSONObject obj = null;
 		if (Settings.isOnline(context)) {
 			HttpURLConnection request;
@@ -85,21 +86,18 @@ public class WebHelper {
 				JSONTokener tokener = new JSONTokener(s);
 				obj = new JSONObject(tokener);
 
+			} catch (JSONException e) {
+				throw new ImmopolyException("Kommunikationsproblem (beim lesen der Antwort)",e);
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ImmopolyException("Kommunikationsproblem (fehlerhafte URL)",e);
 			} catch (OAuthMessageSignerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ImmopolyException("Kommunikationsproblem (Signierung)",e);
 			} catch (OAuthExpectationFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ImmopolyException("Kommunikationsproblem (Sicherherit)",e);
 			} catch (OAuthCommunicationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ImmopolyException("Kommunikationsproblem (Sicherherit)",e);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ImmopolyException("Kommunikationsproblem",e);
 			}
 		}
 		return obj;
