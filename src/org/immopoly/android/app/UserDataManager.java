@@ -309,7 +309,7 @@ public class UserDataManager {
 	public void fireUsedDataChanged() {
 		Log.i(Const.LOG_TAG, "UserDataManager.fireUsedDataChanged()");
 		for (final UserDataListener listener : listeners){
-			new Handler().post(new Runnable() {	
+			activity.runOnUiThread(new Runnable() {	
 				@Override
 				public void run() {
 					listener.onUserDataUpdated();
