@@ -37,14 +37,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -151,7 +147,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		mMapView = ((ImmopolyActivity) getActivity()).acquireMapView(this);
 		mMapView.setBuiltInZoomControls(true);
 		mMapController = mMapView.getController();
-
+		
 		// mState = (ReceiverState) getActivity()
 		// .getLastNonConfigurationInstance();
 		if (mState != null) {
@@ -265,15 +261,6 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		// setMapViewWithZoom(R.id.mapview, R.id.map_zoom_controls);
 		mMapView.setBuiltInZoomControls(true);
 		mMapView.invalidate();
-
-		// maybe do this in your init or something
-		final GestureDetector gDetector = new GestureDetector(new MyDetector());
-		mMapView.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				return gDetector.onTouchEvent(event);
-			}
-		});
 
 		if (mFlats == null) {
 			LocationHelper.getLastLocation(getActivity(), new MapLocationCallback());
@@ -547,19 +534,6 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	// // .setText(R.string.no_location_value);
 	// }
 	// }
-
-	class MyDetector extends SimpleOnGestureListener {
-		@Override
-		public boolean onDoubleTap(MotionEvent event) {
-			mMapView.getController().zoomInFixing((int) event.getX(), (int) event.getY());
-			return super.onDoubleTap(event);
-		}
-
-		@Override
-		public boolean onSingleTapConfirmed(MotionEvent e) {
-			return super.onSingleTapConfirmed(e);
-		}
-	}
 
 	public void updateHud(Intent data, int element) {
 		if (mapButton != null) {
