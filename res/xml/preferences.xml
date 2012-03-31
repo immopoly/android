@@ -2,9 +2,17 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory android:title="@string/notification_setting" >
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="notification"
             android:summary="@string/notification_setting_detail"
-            android:title="@string/notification_setting" 
-            android:defaultValue="true" />
+            android:title="@string/notification_setting" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/options" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showFirstAid"
+            android:summary="@string/show_intro_setting_detail"
+            android:title="@string/show_intro_setting" />
     </PreferenceCategory>
 </PreferenceScreen>

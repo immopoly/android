@@ -19,16 +19,12 @@
     <string name="username_hint">Benutzername</string>
     <string name="password_hint">Passwort</string>
     <string name="password_confirm_hint">Passwort bestätigen</string>
-    <string name="password_min_lenght">Passwort muss mindestens %1$s Zeichen lang sein
-	</string>
-    <string name="username_min_lenght">Username muss mindestens %1$s Zeichen lang sein"
-	</string>
+    <string name="password_min_lenght">Passwort muss mindestens %1$s Zeichen lang sein</string>
+    <string name="username_min_lenght">Username muss mindestens %1$s Zeichen lang sein"</string>
     <string name="username_already_used">Benutzername ist bereits vergeben, wähl doch einen
-		anderen!
-	</string>
+		anderen!</string>
     <string name="no_internet_connection">Keine Internet Verbindung, diese ist notwending um
-		das Spiel zu spielen.
-	</string>
+		das Spiel zu spielen.</string>
     <string name="welcome_message">Willkommen zu Immopoly, vergrößere dein Portfolio
 		und somit deine Provision- und Mieteinamen!</string>
     <string name="register">Registrieren</string>
@@ -40,12 +36,10 @@
     <string name="history_title">History</string>
     <string name="link_share_flat">Schau mal habe ich bei @immopoly gefunden</string>
     <string name="no_location_value">&amp;lt;Keine Lokation&amp;gt;</string>
-    <string name="flat_already_in_portifolio">Die Wohnung ist bereits in deinem Portfolio!
-	</string>
+    <string name="flat_already_in_portifolio">Die Wohnung ist bereits in deinem Portfolio!</string>
     <string name="flat_does_not_exist_anymore">"Expose gibt es nicht mehr."</string>
     <string name="flat_has_no_raw_rent">Expose hat keine Kaltmiete und kann nicht
-		übernommen werden
-	</string>
+		übernommen werden</string>
     <string name="take_over_success_dlg_title">Übernahme erfolgreich!</string>
     <string name="take_over_fail_dlg_title">Übernahme gescheitert!</string>
     <string name="flat_released_dlg_title">Wohnung abgegeben!</string>
@@ -55,17 +49,13 @@
     <string name="allow_localization_title">Lokalisierung erlauben!</string>
     <string name="allow_localization_message">Für das Spiel ist die Lokalisierung notwendig, bitte Erlaube dies in den Einstellungen.</string>
     <string name="allow_localization_message_manuel">Die Einstellungen konnten nicht geöffnet werden. Schreib und eine Email wenn du weiter Probleme hast. Wenn du das spiel spielen möchtest schalte die Lokalisierung in den Geräte Einstellungen ein.</string>
-    
     <!-- Toasty stuff -->
-    <string name="toast_min_lenght_username">Username muss mindestens %s Zeichen lang sein
-	</string>
-    <string name="toast_min_lenght_password">Passwort muss mindestens %s Zeichen lang sein
-	</string>
+    <string name="toast_min_lenght_username">Username muss mindestens %s Zeichen lang sein</string>
+    <string name="toast_min_lenght_password">Passwort muss mindestens %s Zeichen lang sein</string>
     <string name="toast_wrong_username_or_pasword">Benutzername oder Password falsch!</string>
     <string name="toast_no_connection">Keine Internet Verbindung, diese ist notwending um
 		das Spiel zu spielen.</string>
-    <string name="toast_session_timeout">Zu lange nicht angemeldet, bitte erneut anmelden!
-	</string>
+    <string name="toast_session_timeout">Zu lange nicht angemeldet, bitte erneut anmelden!</string>
     <string name="toast_passwords_must_match">Passwörter müssen übereinstimmen</string>
     <string name="portfolio">Portfolio:</string>
     <string name="provision">Provision:</string>
@@ -87,8 +77,14 @@
     <string name="num_flats_text">Wohnungen:</string>
     <string name="login_button">Anmelden</string>
     <string name="please_wait">10 Sekunden warten &amp; lesen ;)</string>
+    <string name="close">Schließen</string>
+    <!-- settings -->
     <string name="notification_setting_detail">Benachrichtigungen erhalten</string>
     <string name="notification_setting">Benachrichtigungen</string>
+    <string name="options">Optionen</string>
+    <string name="show_intro_setting">Spielanweisungen</string>
+    <string name="show_intro_setting_detail">Spielanweisungen beim Start anzeigen</string>
+    <!-- menu -->
     <string name="menu_settings">Einstellungen</string>
     <string name="menu_logout">Abmelden</string>
     <string name="menu_website">Webseite</string>
@@ -126,4 +122,6 @@
     <string name="badge_vertical">B\na\nd\ng\ne\ns</string>
     <string name="sorry_no_flats">In deiner Nähe werden leider keine Wohnungen zur Miete angeboten.</string>
     <string name="login_failed">Login fehlgeschlagen</string>
+    <string name="first_aid_dlg_title">Erste Hilfe</string>
+    <string name="first_aid_do_show"> bei jedem Start anzeigen</string>
 </resources>

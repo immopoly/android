@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.opengl.Visibility;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -23,23 +24,23 @@ import android.widget.Toast;
 
 public class FirstAidDialog extends WebViewDialog
 {
-	public static String URL = "http://immopoly.org/frameless-firstaid.html";
+	public static String URL = "http://immopoly.org/frameless-description.html";
 	private CheckBox cbox;
 	
 	public FirstAidDialog( Activity activity ) {
-		super( activity, "Erste Hilfe", URL );
+		super( activity, activity.getString(R.string.first_aid_dlg_title), URL );
 	}
 
 	@Override
 	protected View getLayout() {
 		View layout = activity.getLayoutInflater().inflate( R.layout.first_aid_dialog, null );
-		cbox = (CheckBox) layout.findViewById( R.id.never_again_cb );
+		cbox = (CheckBox) layout.findViewById( R.id.show_again_cb );
 		return layout;
 	}
 	
 	@Override
 	protected void onClose() {
-		SharedPreferences prefs = activity.getSharedPreferences( "FirstAid", Context.MODE_PRIVATE);  // TODO const
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
 		Editor editor = prefs.edit();
 		editor.putBoolean( "showFirstAid", cbox.isChecked() );
 		editor.commit();

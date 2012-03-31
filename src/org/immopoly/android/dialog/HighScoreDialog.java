@@ -26,6 +26,7 @@ public class HighScoreDialog extends WebViewDialog implements AdapterView.OnItem
 		super(activity, "Highscore", URLS[0]);
 	}
 
+	@Override
 	protected View getLayout() {
 		View layout = activity.getLayoutInflater().inflate( R.layout.highscore_webview, null );
 		Spinner dropDown = (Spinner) layout.findViewById( R.id.hscore_dropdown );

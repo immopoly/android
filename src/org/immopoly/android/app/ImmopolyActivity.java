@@ -11,6 +11,7 @@ import oauth.signpost.exception.OAuthNotAuthorizedException;
 
 import org.immopoly.android.R;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.dialog.FirstAidDialog;
 import org.immopoly.android.dialog.HighScoreDialog;
 import org.immopoly.android.dialog.WebViewDialog;
 import org.immopoly.android.fragments.ExposeFragment;
@@ -31,6 +32,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -82,8 +85,6 @@ public class ImmopolyActivity extends FragmentActivity implements
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 
-		getSharedPreferences("", 1);
-		
 		mTabManager = new TabManager(this, mTabHost, R.id.fragment_container);
 
 		// TODO cleanup fragment management for fragments with an without tabs
@@ -96,11 +97,20 @@ public class ImmopolyActivity extends FragmentActivity implements
 		FragmentManager.enableDebugLogging(true);
 //		getSupportFragmentManager().beginTransaction().add(android.R.id.tabhost, new ItemsFragment(), "itemsFragment")
 //				.commit();
-		
-		
 
 		if (savedInstanceState != null) {
 			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+		} else {
+			// show game description if wanted
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			if ( prefs.getBoolean( "showFirstAid", true ) ) {
+				new Handler().postDelayed( new Runnable() {
+					@Override
+					public void run() {
+						new FirstAidDialog(ImmopolyActivity.this).show();
+					}
+				}, 4000 );
+			}
 		}
 		// for generating oauth token
 		// signIn();

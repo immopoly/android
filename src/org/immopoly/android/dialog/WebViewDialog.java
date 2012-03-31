@@ -14,12 +14,13 @@ import android.widget.ProgressBar;
 
 /**
  * Dialog for displaying small pages in a WebView.
+ * (it's actually not a dialog, but creates one in show())
  * 
- * Uses webview_dialog.xml as its layout.
+ * Uses webview_dialog.xml as its default layout.
  * 
  * Subclasses may provide a different layout by overriding getLayout().
- * Custom layouts must have a WebView with id = R.id.webView and should have a
- * so called ProgressBar with id=R.id.progress
+ * Custom layouts _must_ have a WebView with id=R.id.webView and should
+ * have a so called ProgressBar with id=R.id.progress
  * 
  * @author bjoern
  */
@@ -44,8 +45,11 @@ public class WebViewDialog extends WebViewClient
 		webView = (WebView) layout.findViewById( R.id.webView );
 		if ( webView == null ) {
 			Log.e( Const.LOG_TAG, "You must supply a WebView with id 'webView' in your dialog layout" );
+			return;
 		}
 		webView.getSettings().setJavaScriptEnabled(true);
+		webView.setVerticalScrollbarOverlay(true);
+		webView.setHorizontalScrollbarOverlay(true);
 		webView.setBackgroundColor( 0 );
 		webView.setMinimumHeight( 300 );
 		webView.setWebViewClient( this );
@@ -55,7 +59,7 @@ public class WebViewDialog extends WebViewClient
 		AlertDialog.Builder builder = new AlertDialog.Builder( activity );
 		builder.setTitle( title );
 		builder.setCancelable(false)
-			   .setPositiveButton("Schließen",
+			   .setPositiveButton( activity.getString(R.string.close),
 					new DialogInterface.OnClickListener() {
 						public void onClick( DialogInterface dialog, int id) {
 							onClose();
@@ -70,12 +74,15 @@ public class WebViewDialog extends WebViewClient
 
 	/**
 	 * override this method to roll & return your layout
-	 * @return
+	 * @return top-level view of the layout
 	 */
 	protected View getLayout() {
 		return activity.getLayoutInflater().inflate( R.layout.webview_dialog, null );
 	}
 	
+	/**
+	 * this method is called before the dialog is closed
+	 */
 	protected void onClose() {
 	}
 	
