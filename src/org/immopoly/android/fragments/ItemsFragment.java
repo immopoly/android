@@ -31,7 +31,7 @@ public class ItemsFragment extends DialogFragment implements OnItemClickListener
 		grid.setColumnWidth(GridView.AUTO_FIT);
 		grid.setOnItemClickListener(this);
 
-		return new AlertDialog.Builder(getActivity()).setView(grid).show();
+		return new AlertDialog.Builder(getActivity()).setView(grid).setTitle("Items").show();
 	}
 
 	class SimpleAdapter extends BaseAdapter {
@@ -77,8 +77,9 @@ public class ItemsFragment extends DialogFragment implements OnItemClickListener
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		if (null != ImmopolyUser.getInstance().getActionItems() && ImmopolyUser.getInstance().getActionItems().size() > position) {
-			ImmopolyActionItem item = ImmopolyUser.getInstance().getActionItems().get(position);
+		List<ImmopolyActionItem> actionItems = ImmopolyUser.getInstance().getActionItems();
+		if (null != actionItems && actionItems.size() > position) {
+			ImmopolyActionItem item = actionItems.get(position);
 			if (null != item && item.getAmount() > 0)
 				ItemActivateFragment.newInstance(position).show(getFragmentManager(), "activate");
 		}

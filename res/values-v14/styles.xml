@@ -34,9 +34,5 @@
 -->
 <resources>
     <!-- Base application theme is the default theme. -->
-    <style name="Theme.Immopoly" parent="@android:style/Theme.Holo.Light.NoActionBar">
-        <item name="android:textColor">@color/blue</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/blue_grey</item>
-    </style>
+    <style name="Theme.Immopoly" parent="@android:style/Theme.Holo.Light.NoActionBar"></style>
 </resources>

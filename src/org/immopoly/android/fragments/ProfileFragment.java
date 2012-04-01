@@ -9,45 +9,40 @@ import org.immopoly.android.model.ImmopolyBadge;
 import org.immopoly.android.model.ImmopolyUser;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class ProfileFragment extends Fragment implements UserDataListener {
 
 	private ImageListDownloader imageDownloader;
 	private int badgeSize;
 	private int badgePadding;
-	
+
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View layout = inflater.inflate(R.layout.fragment_profile, container,
-				false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View layout = inflater.inflate(R.layout.fragment_profile, container, false);
 		UserDataManager.instance.addUserDataListener(this);
 		imageDownloader = Settings.getExposeImageDownloader(getActivity());
 		updateVisibility(layout);
-	
-		
+
 		return layout;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
-		badgeSize    = (int) Settings.dp2px( getActivity(), 100 );
-		badgePadding = (int) Settings.dp2px( getActivity(), 8 );
+
+		badgeSize = (int) Settings.dp2px(getActivity(), 100);
+		badgePadding = (int) Settings.dp2px(getActivity(), 8);
 
 		GridView gridView = (GridView) getView().findViewById(R.id.gridview);
 		final BadgeAdapter badgeAdapter = new BadgeAdapter();
@@ -55,38 +50,27 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int position, long arg3) {
-				if (null != badgeAdapter.getItem(position)) {
-					Toast.makeText(getActivity(), badgeAdapter
-							.getItem(position).getText(), Toast.LENGTH_LONG);
-					AlertDialog.Builder builder = new AlertDialog.Builder(
-							getActivity());
-//					builder.setTitle(R.string.badge_info);
-					View layout = getActivity().getLayoutInflater().inflate( R.layout.badge_dialog, null );
+			public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
+				ImmopolyBadge item = badgeAdapter.getItem(position);
+
+				if (item != null) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+					// builder.setTitle(R.string.badge_info);
+					View layout = getActivity().getLayoutInflater().inflate(R.layout.badge_dialog, null);
 					builder.setView(layout);
-					if (arg1 instanceof ImageView) {
-						ImageView badgeImage = (ImageView) layout.findViewById( R.id.badgeImage );
-						ImageView imageView = (ImageView) arg1;
+					if (view instanceof ImageView) {
+						ImageView badgeImage = (ImageView) layout.findViewById(R.id.badgeImage);
+						ImageView imageView = (ImageView) view;
 						badgeImage.setImageDrawable(imageView.getDrawable());
 					}
-					((TextView) layout.findViewById(R.id.badgeText)).setText(badgeAdapter.getItem(position).getText()); 
-					
-					builder.setCancelable(false)
-						   .setPositiveButton("Tschüss",
-									new DialogInterface.OnClickListener() {
-										public void onClick(
-												DialogInterface dialog, int id) {
-											dialog.dismiss();
-										}
-									});
-					AlertDialog alert = builder.create();
-					alert.show();
+					((TextView) layout.findViewById(R.id.badgeText)).setText(item.getText());
+
+					builder.setPositiveButton("Tschüss", null);
+					builder.create().show();
 				}
 			}
 		});
-		((TextView) getView().findViewById(R.id.username)).setText(ImmopolyUser
-				.getInstance().getUserName());
+		((TextView) getView().findViewById(R.id.username)).setText(ImmopolyUser.getInstance().getUserName());
 	}
 
 	class BadgeAdapter extends BaseAdapter {
@@ -120,9 +104,9 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 				imageView = new ImageView(getActivity());
 				imageView.setTag("badge_image");
 				imageView.setLayoutParams(new GridView.LayoutParams(badgeSize, badgeSize));
-//				imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
+				// imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
 				imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//				imageView.setPadding(8, 8, 8, 8);
+				// imageView.setPadding(8, 8, 8, 8);
 				imageView.setPadding(badgePadding, badgePadding, badgePadding, badgePadding);
 			} else {
 				imageView = (ImageView) convertView;
@@ -143,8 +127,7 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 			// helptext deaktiveren
 			v.findViewById(R.id.profile_notloggedin).setVisibility(View.GONE);
 		} else {
-			v.findViewById(R.id.profile_notloggedin)
-					.setVisibility(View.VISIBLE);
+			v.findViewById(R.id.profile_notloggedin).setVisibility(View.VISIBLE);
 		}
 	}
 
