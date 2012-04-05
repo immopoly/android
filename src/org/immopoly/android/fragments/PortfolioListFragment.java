@@ -12,6 +12,8 @@ import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyUser;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 public class PortfolioListFragment extends ListFragment implements UserDataListener, OnClickListener {
 	private Flats mFlats;
 	private OnTrackingEventListener mEventListener;
+	private GoogleAnalyticsTracker mTracker;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -47,6 +50,12 @@ public class PortfolioListFragment extends ListFragment implements UserDataListe
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		mTracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+		mTracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getActivity().getApplicationContext());
+
+		mTracker.trackPageView(TrackingManager.VIEW_PORTFOLIO_LIST);
 		UserDataManager.instance.addUserDataListener(this);
 		getListView().setDividerHeight(0);
 	}
@@ -64,6 +73,7 @@ public class PortfolioListFragment extends ListFragment implements UserDataListe
 
 	@Override
 	public void onDestroyView() {
+		mTracker.stopSession();
 		UserDataManager.instance.removeUserDataListener(this);
 		super.onDestroyView();
 	}

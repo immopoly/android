@@ -38,6 +38,7 @@ public class HighScoreDialog extends WebViewDialog implements AdapterView.OnItem
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id ) {
 		if ( position == selection )
 			return;
+		mTracker.stopSession();
 		loadURL( URLS[position] );
 		selection = position;
 	}

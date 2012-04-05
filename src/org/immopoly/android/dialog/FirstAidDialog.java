@@ -3,6 +3,7 @@ package org.immopoly.android.dialog;
 import org.immopoly.android.R;
 import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.helper.TrackingManager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -43,6 +44,12 @@ public class FirstAidDialog extends WebViewDialog
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
 		Editor editor = prefs.edit();
 		editor.putBoolean( "showFirstAid", cbox.isChecked() );
+		if (!cbox.isChecked()) {
+			mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_FIRST_AID, TrackingManager.LABEL_DISABLED, 0);
+		} else {
+			mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_FIRST_AID, TrackingManager.LABEL_ENABLED, 0);
+		}
 		editor.commit();
+		super.onClose();
 	}
 }

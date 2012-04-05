@@ -53,6 +53,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -90,6 +91,8 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	private View mActionItemFreeFlats;
 
 	private ImageButton itemsButton;
+
+	private GoogleAnalyticsTracker mTracker;
 
 	public OnMapItemClickedListener getOnMapItemClickedListener() {
 		return mOnMapItemClickedListener;
@@ -144,6 +147,13 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		mTracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+		mTracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getActivity().getApplicationContext());
+
+		mTracker.trackPageView(TrackingManager.VIEW_MAP);
+		
 		mMapView = ((ImmopolyActivity) getActivity()).acquireMapView(this);
 		mMapView.setBuiltInZoomControls(true);
 		mMapController = mMapView.getController();
@@ -189,6 +199,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			@Override
 			public void onClick(View v) {
 				showProgress(true);
+				mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_SEARCH, TrackingManager.LABEL_REFRESH, 0);
 				LocationHelper.getLastLocation(getActivity(), new MapLocationCallback());
 			}
 
@@ -309,6 +320,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 
 	public void onDestroyView() {
+		mTracker.stopSession();
 		UserDataManager.instance.removeUserDataListener(this);
 		((ImmopolyActivity) getActivity()).releaseMapView(this);
 		Log.i("IMPO", "MapFragment.onDestroyView");

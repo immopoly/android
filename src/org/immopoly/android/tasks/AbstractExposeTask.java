@@ -42,12 +42,12 @@ public abstract class AbstractExposeTask extends AsyncTask<Flat, Void, Result> {
 				result.history = new ImmopolyHistory(obj);
 				result.success = getSuccess(result.history);
 	
-				tracker.trackEvent(TrackingManager.CATEGORY_ALERT, this.trackerLabel,
+				tracker.trackEvent(TrackingManager.CATEGORY_ALERT_EXPOSE_TAKEN, this.trackerLabel,
 						TrackingManager.LABEL_TRY, 0);
 			} else if (obj != null && obj.has("org.immopoly.common.ImmopolyException")) {
 				result.exception = new ImmopolyException(context, obj);
 	
-				tracker.trackEvent(TrackingManager.CATEGORY_ALERT, this.trackerLabel,
+				tracker.trackEvent(TrackingManager.CATEGORY_ALERT_EXPOSE_TAKEN, this.trackerLabel,
 						TrackingManager.LABEL_NEGATIVE, 0);
 			}
 		} catch (Exception e) {

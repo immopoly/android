@@ -5,10 +5,14 @@ import java.util.List;
 import org.immopoly.android.adapter.HistoryAdapter;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
+import org.immopoly.android.constants.Const;
+import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyHistory;
 import org.immopoly.android.model.ImmopolyUser;
+
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -18,6 +22,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class HistoryFragment extends ListFragment implements UserDataListener{
+	private GoogleAnalyticsTracker mTracker;
+
 	@Override
 	public void onActivityCreated(Bundle arg0) {
 		super.onActivityCreated(arg0);
@@ -34,11 +40,18 @@ public class HistoryFragment extends ListFragment implements UserDataListener{
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		UserDataManager.instance.addUserDataListener(this);
+		mTracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+		mTracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getActivity().getApplicationContext());
+
+		mTracker.trackPageView(TrackingManager.VIEW_HISTORY);
 	}
 
 	@Override
 	public void onDestroyView() {
 		UserDataManager.instance.removeUserDataListener(this);
+		mTracker.stopSession();
 		super.onDestroyView();
 	}
 

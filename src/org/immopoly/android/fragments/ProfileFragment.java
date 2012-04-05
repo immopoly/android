@@ -3,10 +3,14 @@ package org.immopoly.android.fragments;
 import org.immopoly.android.R;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.ImageListDownloader;
 import org.immopoly.android.helper.Settings;
+import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.ImmopolyBadge;
 import org.immopoly.android.model.ImmopolyUser;
+
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -26,10 +30,20 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 	private ImageListDownloader imageDownloader;
 	private int badgeSize;
 	private int badgePadding;
+	private GoogleAnalyticsTracker mTracker;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View layout = inflater.inflate(R.layout.fragment_profile, container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		mTracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+		mTracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getActivity().getApplicationContext());
+
+		mTracker.trackPageView(TrackingManager.VIEW_PROFILE);
+
+		View layout = inflater.inflate(R.layout.fragment_profile, container,
+				false);
 		UserDataManager.instance.addUserDataListener(this);
 		imageDownloader = Settings.getExposeImageDownloader(getActivity());
 		updateVisibility(layout);
@@ -50,27 +64,36 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View view,
+					int position, long arg3) {
 				ImmopolyBadge item = badgeAdapter.getItem(position);
 
 				if (item != null) {
-					AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							getActivity());
 					// builder.setTitle(R.string.badge_info);
-					View layout = getActivity().getLayoutInflater().inflate(R.layout.badge_dialog, null);
+					View layout = getActivity().getLayoutInflater().inflate(
+							R.layout.badge_dialog, null);
 					builder.setView(layout);
 					if (view instanceof ImageView) {
-						ImageView badgeImage = (ImageView) layout.findViewById(R.id.badgeImage);
+						ImageView badgeImage = (ImageView) layout
+								.findViewById(R.id.badgeImage);
 						ImageView imageView = (ImageView) view;
 						badgeImage.setImageDrawable(imageView.getDrawable());
 					}
-					((TextView) layout.findViewById(R.id.badgeText)).setText(item.getText());
+					mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+							TrackingManager.ACTION_BADGE,
+							TrackingManager.LABEL_VIEW, item.getType());
+					((TextView) layout.findViewById(R.id.badgeText))
+							.setText(item.getText());
 
 					builder.setPositiveButton("Tschüss", null);
 					builder.create().show();
 				}
 			}
 		});
-		((TextView) getView().findViewById(R.id.username)).setText(ImmopolyUser.getInstance().getUserName());
+		((TextView) getView().findViewById(R.id.username)).setText(ImmopolyUser
+				.getInstance().getUserName());
 	}
 
 	class BadgeAdapter extends BaseAdapter {
@@ -103,11 +126,13 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 										// attributes
 				imageView = new ImageView(getActivity());
 				imageView.setTag("badge_image");
-				imageView.setLayoutParams(new GridView.LayoutParams(badgeSize, badgeSize));
+				imageView.setLayoutParams(new GridView.LayoutParams(badgeSize,
+						badgeSize));
 				// imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
 				imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 				// imageView.setPadding(8, 8, 8, 8);
-				imageView.setPadding(badgePadding, badgePadding, badgePadding, badgePadding);
+				imageView.setPadding(badgePadding, badgePadding, badgePadding,
+						badgePadding);
 			} else {
 				imageView = (ImageView) convertView;
 			}
@@ -127,12 +152,14 @@ public class ProfileFragment extends Fragment implements UserDataListener {
 			// helptext deaktiveren
 			v.findViewById(R.id.profile_notloggedin).setVisibility(View.GONE);
 		} else {
-			v.findViewById(R.id.profile_notloggedin).setVisibility(View.VISIBLE);
+			v.findViewById(R.id.profile_notloggedin)
+					.setVisibility(View.VISIBLE);
 		}
 	}
 
 	@Override
 	public void onDestroyView() {
+		mTracker.stopSession();
 		UserDataManager.instance.removeUserDataListener(this);
 		super.onDestroyView();
 	}

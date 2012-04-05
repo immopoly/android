@@ -3,9 +3,13 @@ package org.immopoly.android.fragments;
 import java.util.List;
 
 import org.immopoly.android.R;
+import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.ImageListDownloader;
+import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.ImmopolyActionItem;
 import org.immopoly.android.model.ImmopolyUser;
+
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -24,14 +28,28 @@ import android.widget.TextView;
 
 public class ItemsFragment extends DialogFragment implements OnItemClickListener {
 
+	private GoogleAnalyticsTracker mTracker;
+
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		mTracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+		mTracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getActivity().getApplicationContext());
+
+		mTracker.trackPageView(TrackingManager.VIEW_ITEMS);
 		GridView grid = new GridView(getActivity());
 		grid.setAdapter(new SimpleAdapter(getActivity()));
 		grid.setColumnWidth(GridView.AUTO_FIT);
 		grid.setOnItemClickListener(this);
 
 		return new AlertDialog.Builder(getActivity()).setView(grid).setTitle("Items").show();
+	}
+	
+	@Override
+	public void onDestroyView() {
+		mTracker.stopSession();
+		super.onDestroyView();
 	}
 
 	class SimpleAdapter extends BaseAdapter {
