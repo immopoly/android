@@ -36,6 +36,7 @@ public class Const {
 	public static final String MESSAGE_IMMOPOLY_EXCEPTION = "org.immopoly.common.ImmopolyException";
 
 	public static final String IMMOPOLY_EMAIL = "immopolyteam@gmail.com";
+	public static final String IMMOPOLY_WEBSITE = "http://immopoly.org";
 	public static final int ANALYTICS_INTERVAL = 20;
 
 	public static final int USER_SIGNUP = 110;
@@ -44,4 +45,5 @@ public class Const {
 	public static final float[] SEARCH_RADII 	   = { 1, 3, 10 }; // in km
 	public static final int     SEARCH_MIN_RESULTS = 50;		   // ignored for last search radius
 	public static final int     SEARCH_MAX_RESULTS = 80;		   // forced result limit. fernglas me, baby!
+
 }

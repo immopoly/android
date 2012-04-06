@@ -25,6 +25,7 @@ import org.immopoly.android.helper.OnTrackingEventListener;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.OAuthData;
+import org.immopoly.android.tasks.CheckNewsTask;
 import org.immopoly.android.widget.TabManager;
 
 import android.content.Intent;
@@ -101,20 +102,43 @@ public class ImmopolyActivity extends FragmentActivity implements
 		if (savedInstanceState != null) {
 			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
 		} else {
-			// show game description if wanted
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-			if ( prefs.getBoolean( "showFirstAid", true ) ) {
-				new Handler().postDelayed( new Runnable() {
-					@Override
-					public void run() {
-						new FirstAidDialog(ImmopolyActivity.this).show();
-					}
-				}, 4000 );
-			}
+			// show game description if wanted and news dialog
+			new Handler().postDelayed( new Runnable() {
+				@Override
+				public void run() {
+					showStartupDialogs();
+				}
+			}, 4000 );
 		}
 		// for generating oauth token
 		// signIn();
 		VERISONINFO=getVersionInfo();
+	}
+
+	// possibly displays the "first aid" dialog and then maybe shows the news dialog
+	private void showStartupDialogs() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		if ( prefs.getBoolean( "showFirstAid", true ) ) {
+			new FirstAidDialog(ImmopolyActivity.this) {
+				protected void onClose() {
+					super.onClose();
+					showNewsDialog();
+				};
+			}.show();
+		} else {
+			showNewsDialog();
+		}
+	}
+	
+	// starts a CheckNewsTask and displays the news dialog if there are news
+	private void showNewsDialog() {
+		new CheckNewsTask( this ) {
+			@Override
+			protected void onPostExecute(String newsURL) {
+				if ( newsURL != null )
+					new WebViewDialog(ImmopolyActivity.this, getString(R.string.menu_news), newsURL).show();
+			}
+		}.execute();
 	}
 
 	private void addTab(int imageId, String name, Class<?> clss, boolean tabless) {
@@ -312,6 +336,10 @@ public class ImmopolyActivity extends FragmentActivity implements
 			} else {
 				UserDataManager.instance.login();
 			}
+			break;
+		case R.id.menu_news:
+			new WebViewDialog( this, getString(R.string.menu_news),
+					Const.IMMOPOLY_WEBSITE + "/frameless-news.html" ).show();
 			break;
 		default:
 			break;

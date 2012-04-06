@@ -2,20 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:id="@+id/menu_settings"
-        android:title="@string/menu_settings"></item>
-    <item
-        android:id="@+id/menu_logout"
-        android:title="@string/menu_logout"></item>
-    <item
-        android:id="@+id/menu_website"
-        android:title="@string/menu_website"></item>
+        android:title="@string/menu_settings">
+    </item>
     <item
         android:id="@+id/menu_highscore"
-        android:title="@string/menu_highscore"></item>
+        android:title="@string/menu_highscore">
+    </item>
     <item
         android:id="@+id/menu_help"
-        android:title="@string/menu_help"></item>
+        android:title="@string/menu_help">
+    </item>
+    <item
+        android:id="@+id/menu_news"
+        android:title="@string/menu_news">
+    </item>
     <item
         android:id="@+id/menu_contact"
-        android:title="@string/menu_contact"></item>
+        android:title="@string/menu_contact">
+    </item>
+    <item
+        android:id="@+id/menu_website"
+        android:title="@string/menu_website">
+    </item>
+    <item
+        android:id="@+id/menu_logout"
+        android:title="@string/menu_logout">
+    </item>
 </menu>
