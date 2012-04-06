@@ -68,9 +68,11 @@ public abstract class AbstractExposeTask extends AsyncTask<Flat, Void, Result> {
 		{
 			UserDataManager.instance.update(result.history);
 		} else if (Settings.isOnline(this.context)) {
-			if (null != result.exception)
-				Toast.makeText(this.context, result.exception.getMessage(), Toast.LENGTH_LONG).show();
-			else
+			if (null != result.exception) {
+				// exception wird über dialog ausgegegeben
+				// Toast.makeText(this.context, result.exception.getMessage(),
+				// Toast.LENGTH_LONG).show();
+			} else
 				Toast.makeText(this.context, "Error", Toast.LENGTH_LONG).show();
 		} else {
 			Toast.makeText(this.context, R.string.no_internet_connection, Toast.LENGTH_LONG).show();
