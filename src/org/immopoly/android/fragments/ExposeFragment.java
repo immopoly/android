@@ -7,8 +7,6 @@ import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -16,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -25,15 +24,13 @@ import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class ExposeFragment extends DialogFragment {
 
-	private Boolean mLoadTwice = false;
 	private WebView mWebView;
 
-	private GoogleAnalyticsTracker tracker;
+	private GoogleAnalyticsTracker mTracker;
 	private Flat flat = null;
 
 	private final static String sInjectJString;
 	private Button takeOrReleaseButton;
-	// Handler buttonDelayFinishedHandler = null;
 	static {
 		StringBuilder jsInjectString;
 		jsInjectString = new StringBuilder(
@@ -70,12 +67,12 @@ public class ExposeFragment extends DialogFragment {
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.expose_detail_web_view,
 				container, false);
-		tracker = GoogleAnalyticsTracker.getInstance();
+		mTracker = GoogleAnalyticsTracker.getInstance();
 		// Start the tracker in manual dispatch mode...
-		tracker.startNewSession(TrackingManager.UA_ACCOUNT,
+		mTracker.startNewSession(TrackingManager.UA_ACCOUNT,
 				Const.ANALYTICS_INTERVAL, getActivity().getApplicationContext());
 
-		tracker.trackPageView(TrackingManager.VIEW_EXPOSE);
+		mTracker.trackPageView(TrackingManager.VIEW_EXPOSE);
 
 		final ImageButton shareButton = (ImageButton) view
 				.findViewById(R.id.shareExpose);
@@ -85,14 +82,17 @@ public class ExposeFragment extends DialogFragment {
 		takeOrReleaseButton.setText(R.string.still_loading);
 		
 		mWebView = (WebView) view.findViewById(R.id.exposeWevView);
-		mWebView.getSettings().setJavaScriptEnabled(true);
+		WebSettings webSettings = mWebView.getSettings();
+		webSettings.setSavePassword(false);
+        webSettings.setSaveFormData(false);
+        webSettings.setJavaScriptEnabled(true);
 		mWebView.setWebViewClient(new WebViewClient() {
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
 				// String urlstring = view.getUrl();
 				if (url.matches(".+?\\/suche\\/$")) {
-					tracker.trackEvent(
+					mTracker.trackEvent(
 							TrackingManager.CATEGORY_CLICKS,
 							TrackingManager.ACTION_EXPOSE,
 							TrackingManager.LABEL_BACK_INSIDE_IMMOSCOUT_WEBSITE,
@@ -107,28 +107,26 @@ public class ExposeFragment extends DialogFragment {
 				view.loadUrl(sInjectJString);
 				if (url.matches(".+?\\/bilder\\.htm$")) {
 					// match image details
-					tracker.trackPageView(TrackingManager.ACTION_EXPOSE + "/"
+					mTracker.trackPageView(TrackingManager.ACTION_EXPOSE + "/"
 							+ TrackingManager.LABEL_IMAGES);
 				}
 				if (url.matches(".+?\\/bilder\\.htm#bigpicture$")) {
 					// navigate in details images
-					tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+					mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
 							TrackingManager.ACTION_VIEW,
 							TrackingManager.LABEL_IMAGES_DETAILS, 0);
 				}
-				if (mLoadTwice) {
-					mWebView.loadUrl(url);
-					mLoadTwice = false;
+				
+				
+				getView().findViewById(R.id.progress).setVisibility(
+						View.GONE);
+				takeOrReleaseButton.setEnabled(true);
+				if (null != flat && flat.owned) {
+					takeOrReleaseButton.setText(getString(R.string.release_expose));
 				} else {
-					getView().findViewById(R.id.progress).setVisibility(
-							View.GONE);
-					takeOrReleaseButton.setEnabled(true);
-					if (null != flat && flat.owned) {
-						takeOrReleaseButton.setText(getString(R.string.release_expose));
-					} else {
-						takeOrReleaseButton.setText(getString(R.string.try_takeover));
-					}
+					takeOrReleaseButton.setText(getString(R.string.try_takeover));
 				}
+				
 			}
 
 			@Override
@@ -151,10 +149,9 @@ public class ExposeFragment extends DialogFragment {
 					Settings.shareMessage(getActivity(), getActivity()
 							.getString(R.string.share), flat.name, Settings
 							.getFlatLink(Integer.toString(flat.uid), false) /* LINk */);
-					tracker.trackEvent(TrackingManager.CATEGORY_ALERT,
+					mTracker.trackEvent(TrackingManager.CATEGORY_SHAREBUTTON,
 							TrackingManager.ACTION_SHARE,
 							TrackingManager.LABEL_POSITIVE, 0);
-
 				}
 			});
 		}
@@ -195,7 +192,7 @@ public class ExposeFragment extends DialogFragment {
 		if (null == flat)
 			return;
 		if (!flat.owned) {
-			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+			mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
 					TrackingManager.ACTION_EXPOSE, TrackingManager.LABEL_TRY, 0);
 		}
 		UserDataManager.instance.addToPortfolio(flat);
@@ -208,7 +205,7 @@ public class ExposeFragment extends DialogFragment {
 		// assuming user is logged in - there shouldn't be any "release flat"
 		// button otherwise
 		if (flat.owned) { // TODO if that isn't true, why are we here anyway
-			tracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
+			mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS,
 					TrackingManager.ACTION_EXPOSE,
 					TrackingManager.LABEL_RELEASE, 0);
 		}
@@ -216,19 +213,16 @@ public class ExposeFragment extends DialogFragment {
 		dismiss();
 	}
 
-	public void shareExpose(View v) {
-		if (null == flat)
-			return;
-		Settings.shareMessage(getActivity(),
-				getString(R.string.link_share_flat), flat.name,
-				Settings.getFlatLink(String.valueOf(flat.uid), false));
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		mTracker.stopSession();
 	}
-
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		mWebView.destroy();
 		mWebView = null;
-		tracker.stopSession();
 	}
 }

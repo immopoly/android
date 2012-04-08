@@ -32,7 +32,9 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
 
@@ -56,6 +58,8 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 	private int prevLatProjection = -1;
 	private TeaserView bubble;
 	private boolean isPortfolio;
+	private GestureDetector gestureDetector;
+	private long itemTapTime;
 
 	static Drawable mapMarkerIcon;
 	static Drawable mapMarkerIcon_old;
@@ -80,6 +84,13 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 		MIN_INTERSECTION_AREA = (int) (markerBounds.width() * markerBounds.height() * MIN_INTERSECTION_AMOUNT);
 
 		ClusterMarker.init(resources.getDisplayMetrics(), mapMarkerIcon.getIntrinsicHeight());
+		gestureDetector = new GestureDetector( new GestureDetector.SimpleOnGestureListener() {
+			public boolean onDoubleTap(MotionEvent e) {
+				if ( System.currentTimeMillis() - itemTapTime > 500 ) // hack to prevent zoom for double tap on item
+					mMapView.getController().zoomInFixing((int) e.getX(), (int) e.getY());
+				return super.onDoubleTap(e);
+			}
+		});
 	}
 
 	public void setFlats(Flats mFlats) {
@@ -117,6 +128,7 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 		bubble = new TeaserView( mMapFragment, mMapView, item.flats, isPortfolio );
 		if (mMapFragment instanceof MapFragment) // hide wind rose (hack)
 			((MapFragment) mMapFragment).hideCompass();
+		itemTapTime = System.currentTimeMillis(); // hack to prevent zoom for double tap on item
 		return true;
 	}
 
@@ -126,10 +138,17 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 			hideBubble();
 			mMapView.setBuiltInZoomControls(true);
 			mMapView.getZoomButtonsController().setVisible(true);
+			return true;
 		}
-		return true;
+		return false;
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event, MapView mapView) {
+		return gestureDetector.onTouchEvent(event);
 	}
 
+	
 	// TODO we're doing a lot of strange things here and draw() doesnt feel comfortable with that off-purpose stuff 
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
 		// test for map movement. Remove Balloon evtly. 
@@ -166,7 +185,7 @@ public class ImmoscoutPlacesOverlay extends ItemizedOverlay<OverlayItem> {
 		// create tmp items with flat, geopoint & screenBounds
 		for (int i = 0; i < flats.size(); i++) {
 			final Flat flat = flats.get(i);
-			if (flat.lat == 0 && flat.lng == 0)
+			if (flat.lat == 0 && flat.lng == 0 || !flat.visible)
 				continue;
 			Rect itemBounds = new Rect(markerBounds);
 			GeoPoint point = new GeoPoint((int) (flat.lat * 1E6), (int) (flat.lng * 1E6));

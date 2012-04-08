@@ -12,6 +12,7 @@ import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.helper.WebHelper;
 import org.immopoly.android.model.ImmopolyException;
 import org.immopoly.android.model.ImmopolyUser;
+import org.immopoly.android.tasks.Result;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,9 +22,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -105,13 +108,14 @@ public class UserLoginActivity extends Activity {
 	}
 
 	private class LoginUserTask extends AsyncTask<String, Void, ImmopolyUser> {
-
+		Result result = new Result();
 		@Override
 		protected ImmopolyUser doInBackground(String... params) {
 			String username = params[0];
 			String password = params[1];
 			JSONObject obj = null;
-			ImmopolyUser user;
+			ImmopolyUser user=null;
+
 			try {
 				toggleProgress();
 				obj = WebHelper.getHttpsData(
@@ -120,42 +124,55 @@ public class UserLoginActivity extends Activity {
 								+ URLEncoder.encode(username) + "&password="
 								+ URLEncoder.encode(password)), false,
 						UserLoginActivity.this);
-
+				if (obj != null && obj.has(Const.MESSAGE_IMMOPOLY_EXCEPTION)) {
+					result.exception = new ImmopolyException(UserLoginActivity.this, obj);
+				} else {
+					user = ImmopolyUser.getInstance();
+					user.fromJSON(obj);
+					if(user != null && user.getToken().length() > 0)
+						result.success=true;
+				}
+			} catch (ImmopolyException e) {
+				e.printStackTrace();
+				result.exception = e;
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
+				result.exception = new ImmopolyException(e);
 			}
-			if (obj == null || obj.has(Const.MESSAGE_IMMOPOLY_EXCEPTION)) {
-				user = null;
-			} else {
-				user = ImmopolyUser.getInstance();
-				user.fromJSON(obj);
-			}
+			
 			toggleProgress();
 			return user;
 		}
 
 		@Override
 		protected void onPostExecute(ImmopolyUser user) {
-			if (user != null && user.getToken().length() > 0) {
-				UserDataManager.setToken(UserLoginActivity.this,
-						user.getToken());
-				C2DMessaging.register(UserLoginActivity.this,
-						Const.IMMOPOLY_EMAIL);
+			if (result.success) {
+				UserDataManager.setToken(UserLoginActivity.this,user.getToken());
+
+				// c2dm only if wanted
+				SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(UserLoginActivity.this);
+				if(sharedPreferences.getBoolean("notification", true))
+					C2DMessaging.register(UserLoginActivity.this,Const.IMMOPOLY_EMAIL);
 				setResult(RESULT_OK);
 				finish();
 			} else if (Settings.isOnline(UserLoginActivity.this)) {
-				Toast.makeText(UserLoginActivity.this,
-						R.string.toast_wrong_username_or_pasword,
-						Toast.LENGTH_LONG).show();
+				if(result.exception != null )
+					showLoginFailedDialog(result.exception.getMessage());
+				else
+					showLoginFailedDialog("merkwürdiger Fehler, bitte versuche es nochmal!");
+//				Toast.makeText(UserLoginActivity.this,R.string.toast_wrong_username_or_pasword,Toast.LENGTH_LONG).show();
 			} else {
-
-				Toast.makeText(UserLoginActivity.this,
-						R.string.toast_no_connection, Toast.LENGTH_LONG).show();
-				// findViewById(R.id.loginview).setVisibility(View.VISIBLE);
-
+				showLoginFailedDialog(getString(R.string.toast_no_connection));
+//				Toast.makeText(UserLoginActivity.this,, Toast.LENGTH_LONG).show();
 			}
+		}
+		
+		private void showLoginFailedDialog(String message) {
+			AlertDialog.Builder dialog = new AlertDialog.Builder(UserLoginActivity.this);
+			dialog.setTitle(getString(R.string.login_failed)); 
+			dialog.setMessage(message);
+			dialog.setPositiveButton(getString(R.string.button_mist), null );
+			dialog.show();
 		}
 	}
 	
@@ -190,7 +207,7 @@ public class UserLoginActivity extends Activity {
 						UserLoginActivity.this);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
-			} catch (JSONException e) {
+			} catch (ImmopolyException e) {
 				e.printStackTrace();
 			}
 			toggleProgress();

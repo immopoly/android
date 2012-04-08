@@ -12,6 +12,16 @@
         android:layout_alignParentRight="true"
         android:src="@android:drawable/ic_menu_compass" >
     </ImageView>
+    <ImageButton
+        android:id="@+id/items_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="5dp"
+        android:background="@null"
+        android:visibility="gone"
+        android:src="@drawable/ic_action_items" />
     <ProgressBar
         android:id="@+id/map_progress"
         style="@android:style/Widget.ProgressBar"

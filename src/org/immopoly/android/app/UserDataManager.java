@@ -20,6 +20,7 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.util.Log;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
@@ -214,6 +215,7 @@ public class UserDataManager {
 					flat.owned = true;
 					flat.takeoverDate = System.currentTimeMillis();
 					ImmopolyUser.getInstance().getPortfolio().add(flat);
+					mTracker.trackEvent(TrackingManager.CATEGORY_ALERT_EXPOSE_TAKEN, TrackingManager.ACTION_TOOK_EXPOSE, TrackingManager.LABEL_POSITIVE, 0);
 				}
 				/**
 				 * show the feedback in a dialog, from there the user can either
@@ -243,13 +245,13 @@ public class UserDataManager {
 				Settings.getFlatLink( Integer.toString(flat.uid), false);
 				Settings.shareMessage(activity, title, text, Settings.getFlatLink(
 						Integer.toString(flat.uid), false) /* LINk */);
-				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_SHARE, TrackingManager.LABEL_POSITIVE, 0);
+				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT_EXPOSE_TAKEN, TrackingManager.ACTION_SHARE, TrackingManager.LABEL_POSITIVE, 0);
 			}
 		});
 		builder.setPositiveButton(result.success ? R.string.button_ok : R.string.button_mist, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
-				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT, TrackingManager.ACTION_SHARE, TrackingManager.LABEL_NEGATIVE, 0);
+				mTracker.trackEvent(TrackingManager.CATEGORY_ALERT_EXPOSE_TAKEN, TrackingManager.ACTION_SHARE, TrackingManager.LABEL_NEGATIVE, 0);
 			}
 		});
 		AlertDialog alert = builder.create();
@@ -305,10 +307,16 @@ public class UserDataManager {
 		}.execute(flat);
 	}
 
-	private void fireUsedDataChanged() {
+	public void fireUsedDataChanged() {
 		Log.i(Const.LOG_TAG, "UserDataManager.fireUsedDataChanged()");
-		for (UserDataListener listener : listeners)
-			listener.onUserDataUpdated();
+		for (final UserDataListener listener : listeners){
+			activity.runOnUiThread(new Runnable() {	
+				@Override
+				public void run() {
+					listener.onUserDataUpdated();
+				}
+			});
+		}
 	}
 
 	private boolean checkState() {

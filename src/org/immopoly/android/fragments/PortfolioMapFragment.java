@@ -5,6 +5,7 @@ import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.constants.Const;
+import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyUser;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 
@@ -26,9 +28,16 @@ public class PortfolioMapFragment extends Fragment implements UserDataListener {
 	private MapView mMapView;
 	private ImmoscoutPlacesOverlay flatsOverlay;
 	private Flats mFlats;
+	private GoogleAnalyticsTracker mTracker;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		mTracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+		mTracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getActivity().getApplicationContext());
+
+		mTracker.trackPageView(TrackingManager.VIEW_PORTFOLIO_MAP);
 		Log.i(Const.LOG_TAG, "PortfolioMapFragment.onCreateView");
 		View layout = inflater.inflate(R.layout.portfolio_map, null, false);
 
@@ -70,6 +79,7 @@ public class PortfolioMapFragment extends Fragment implements UserDataListener {
 
 	@Override
 	public void onDestroyView() {
+		mTracker.stopSession();
 		((ImmopolyActivity) getActivity()).releaseMapView(this);
 		super.onDestroyView();
 	}

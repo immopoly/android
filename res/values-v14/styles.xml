@@ -34,37 +34,5 @@
 -->
 <resources>
     <!-- Base application theme is the default theme. -->
-    <style name="Theme.Immopoly" parent="@android:style/Theme.Black.NoTitleBar">
-        <!-- <item name="android:textColor">@color/blue</item> -->
-        <!-- <item name="android:windowNoTitle">true</item> -->
-        <!-- <item name="android:windowBackground">@color/blue_grey</item> -->
-    </style>
-    <style name="headerText">
-        <item name="android:textSize">16dip</item>
-    </style>
-    <style name="hudElement">
-        <item name="android:padding">6dip</item>
-        <item name="android:paddingRight">12dip</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/hud_text</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-    <style name="hudElementSub" parent="hudElement">
-        <item name="android:textSize">16sp</item>
-    </style>
-    <style name="immopolyButton" parent="@style/hudElement">
-        <item name="android:background">@drawable/btn_background</item>
-        <item name="android:textColor">@color/blue</item>
-    </style>
-    <style name="immopolyHeading1">
-        <item name="android:textColor">@color/blue</item>
-    </style>
-    <style name="immopolyHeading2">
-        <item name="android:textColor">@color/orange</item>
-    </style>
-    <style name="immopolyText" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/blue_grey_dark</item>
-        <item name="android:textSize">20sp</item>
-    </style>
+    <style name="Theme.Immopoly" parent="@android:style/Theme.Holo.Light.NoActionBar"></style>
 </resources>

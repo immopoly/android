@@ -1,0 +1,20 @@
+#config properties for the immopoly project.
+#copy this file to config.properties in the same folder and fill out the properties
+
+#adjust this if you don't use the default keystore which came with your SDK
+keystore=debug.keystore
+storepass=android
+keypass=android
+alias=androiddebugkey
+
+# IS24-API-data (see http://developer.immobilienscout24.de/rest-api-zugang/ )
+consumer_key=
+consumer_secret=
+is24_access_token=
+
+#Google Maps Key must match signing certificate (e.g. debugkey-store-cert)
+google_maps_key=
+
+# Who do we want to talk to?
+immopoly_appengine_url_prefix=http://immopoly.appspot.com
+immopoly_appengine_url_prefix_https=http://immopoly.appspot.com

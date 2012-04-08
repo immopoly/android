@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
         android:background="@drawable/ic_corner_background"
-        android:gravity="right"
+        android:gravity="right|center_vertical"
         android:visibility="gone" />
     <View
         android:id="@+id/hud_progress_spacer"

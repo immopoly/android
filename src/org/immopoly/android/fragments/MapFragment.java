@@ -13,26 +13,22 @@ import org.immopoly.android.api.ReceiverState;
 import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.app.UserDataListener;
 import org.immopoly.android.app.UserDataManager;
-import org.immopoly.android.app.UserSignupActivity;
 import org.immopoly.android.constants.Const;
 import org.immopoly.android.helper.HudPopupHelper;
 import org.immopoly.android.helper.LocationHelper;
 import org.immopoly.android.helper.OnTrackingEventListener;
-import org.immopoly.android.helper.Settings;
 import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyUser;
-import org.immopoly.android.tasks.GetUserInfoTask;
+import org.immopoly.android.tasks.FreeFlatsTask;
 import org.immopoly.android.widget.ImmoscoutPlacesOverlay;
 import org.immopoly.android.widget.MyPositionOverlay;
 import org.immopoly.android.widget.PlaceOverlayItem;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Address;
 import android.location.Geocoder;
@@ -41,13 +37,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -60,6 +53,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -93,6 +87,12 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	private ImageView mCompassButton;
 
 	private View mSplashscreen;
+
+	private View mActionItemFreeFlats;
+
+	private ImageButton itemsButton;
+
+	private GoogleAnalyticsTracker mTracker;
 
 	public OnMapItemClickedListener getOnMapItemClickedListener() {
 		return mOnMapItemClickedListener;
@@ -147,10 +147,17 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		mTracker = GoogleAnalyticsTracker.getInstance();
+		// Start the tracker in manual dispatch mode...
+		mTracker.startNewSession(TrackingManager.UA_ACCOUNT,
+				Const.ANALYTICS_INTERVAL, getActivity().getApplicationContext());
+
+		mTracker.trackPageView(TrackingManager.VIEW_MAP);
+		
 		mMapView = ((ImmopolyActivity) getActivity()).acquireMapView(this);
 		mMapView.setBuiltInZoomControls(true);
 		mMapController = mMapView.getController();
-
+		
 		// mState = (ReceiverState) getActivity()
 		// .getLastNonConfigurationInstance();
 		if (mState != null) {
@@ -175,6 +182,15 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		mProgressIndicator = (ProgressBar) layout.findViewById(R.id.map_progress);
 		mCompassButton = (ImageView) layout.findViewById(R.id.map_reload);
 		mSplashscreen = layout.findViewById(R.id.splashscreen);
+		itemsButton = (ImageButton) layout.findViewById(R.id.items_button);
+		itemsButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new ItemsFragment().show(getFragmentManager(), "itemsDialog");
+			}
+		});
+		updateActionItem();
+
 		if (mMapOverlays == null) {
 			showSplashScreen();
 		}
@@ -183,6 +199,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			@Override
 			public void onClick(View v) {
 				showProgress(true);
+				mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_SEARCH, TrackingManager.LABEL_REFRESH, 0);
 				LocationHelper.getLastLocation(getActivity(), new MapLocationCallback());
 			}
 
@@ -197,39 +214,41 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			mCompassButton.setVisibility(showProgress ? View.GONE : View.VISIBLE);
 	}
 
-	
 	private void showSplashScreen() {
 		mSplashscreen.setVisibility(View.VISIBLE);
 		PackageInfo packInfo;
 		String version = "";
 		try {
-			packInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(),0);
-			version =  "Version " + packInfo.versionName + " (" + packInfo.versionCode + ")";
+			packInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+			version = "Version " + packInfo.versionName + " (" + packInfo.versionCode + ")";
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
-		((TextView)mSplashscreen.findViewById( R.id.splash_version )).setText( version );
-		new Handler().postDelayed( new Runnable() {
+		((TextView) mSplashscreen.findViewById(R.id.splash_version)).setText(version);
+		new Handler().postDelayed(new Runnable() {
 			public void run() {
 				hideSplashScreen();
 			}
-		}, 10000 );
+		}, 10000);
 	}
-	
+
 	private void hideSplashScreen() {
-		if ( ! isAdded() || ! mSplashscreen.isShown() )
+		if (!isAdded() || !mSplashscreen.isShown())
 			return;
-	    Animation fadeOutAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
-	    fadeOutAnim.setAnimationListener( new Animation.AnimationListener() {
-			public void onAnimationStart(Animation animation) {}
-			public void onAnimationRepeat(Animation animation) {}
-			
+		Animation fadeOutAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
+		fadeOutAnim.setAnimationListener(new Animation.AnimationListener() {
+			public void onAnimationStart(Animation animation) {
+			}
+
+			public void onAnimationRepeat(Animation animation) {
+			}
+
 			public void onAnimationEnd(Animation animation) {
-				if ( isAdded() &&  mSplashscreen.isShown())
+				if (isAdded() && mSplashscreen.isShown())
 					mSplashscreen.setVisibility(View.GONE);
 			}
 		});
-	    mSplashscreen.startAnimation(fadeOutAnim);
+		mSplashscreen.startAnimation(fadeOutAnim);
 	}
 
 	@Override
@@ -254,15 +273,6 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		mMapView.setBuiltInZoomControls(true);
 		mMapView.invalidate();
 
-		// maybe do this in your init or something
-		final GestureDetector gDetector = new GestureDetector(new MyDetector());
-		mMapView.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				return gDetector.onTouchEvent(event);
-			}
-		});
-
 		if (mFlats == null) {
 			LocationHelper.getLastLocation(getActivity(), new MapLocationCallback());
 		} else {
@@ -276,9 +286,9 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		@Override
 		public void onLocationChanged(boolean center) {
 			if (getActivity() != null) {
-				if ( mMapView != null )
-					mMapView.getController().setCenter( 
-						new GeoPoint( (int) (LocationHelper.sLat*1E6), (int)(LocationHelper.sLng * 1E6)));
+				if (mMapView != null)
+					mMapView.getController().setCenter(
+							new GeoPoint((int) (LocationHelper.sLat * 1E6), (int) (LocationHelper.sLng * 1E6)));
 				requestFlatUpdate(center);
 			}
 		}
@@ -310,6 +320,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 
 	public void onDestroyView() {
+		mTracker.stopSession();
 		UserDataManager.instance.removeUserDataListener(this);
 		((ImmopolyActivity) getActivity()).releaseMapView(this);
 		Log.i("IMPO", "MapFragment.onDestroyView");
@@ -382,8 +393,8 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			// handle the error;
 			showProgress(false);
 			hideSplashScreen();
-			if ( IS24ApiService.NO_FLATS.equals(resultData.getString(Intent.EXTRA_TEXT)) )
-				Toast.makeText( getActivity(), R.string.sorry_no_flats, Toast.LENGTH_LONG ).show();
+			if (IS24ApiService.NO_FLATS.equals(resultData.getString(Intent.EXTRA_TEXT)))
+				Toast.makeText(getActivity(), R.string.sorry_no_flats, Toast.LENGTH_LONG).show();
 			// else there was an exception (probably logged already). what TODO?
 			break;
 		}
@@ -410,7 +421,7 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	}
 
 	public void updateMap(boolean centerMap) {
-		if ( mMapView == null ) // currently not attached
+		if (mMapView == null) // currently not attached
 			return;
 		int count = 0;
 		double minX = 999, minY = 999, maxX = -999, maxY = -999;
@@ -427,22 +438,25 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 
 		if (mMapView != null && mFlats != null) {
 			for (Flat f : mFlats) {
-				if (f.lat != 0.0 || f.lng != 0.0) {
-					if (f.lng < minX) {
-						minX = f.lng;
-					}
-					if (f.lng > maxX) {
-						maxX = f.lng;
-					}
+				if (f.visible) {
+					if (f.lat != 0.0 || f.lng != 0.0) {
+						if (f.lng < minX) {
+							minX = f.lng;
+						}
+						if (f.lng > maxX) {
+							maxX = f.lng;
+						}
 
-					if (f.lat < minY)
-						minY = f.lat;
-					if (f.lat > maxY)
-						maxY = f.lat;
+						if (f.lat < minY)
+							minY = f.lat;
+						if (f.lat > maxY)
+							maxY = f.lat;
 
-					count++;
+						count++;
+					}
 				}
 			}
+
 			overlays.setFlats(mFlats);
 
 			if (LocationHelper.sLng < minX)
@@ -533,19 +547,6 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 	// }
 	// }
 
-	class MyDetector extends SimpleOnGestureListener {
-		@Override
-		public boolean onDoubleTap(MotionEvent event) {
-			mMapView.getController().zoomInFixing((int) event.getX(), (int) event.getY());
-			return super.onDoubleTap(event);
-		}
-
-		@Override
-		public boolean onSingleTapConfirmed(MotionEvent e) {
-			return super.onSingleTapConfirmed(e);
-		}
-	}
-
 	public void updateHud(Intent data, int element) {
 		if (mapButton != null) {
 			mapButton.setSelected(true);
@@ -573,6 +574,16 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 		syncFlats();
 		updateMap(false);
 		overlays.updateBubble();
+		updateActionItem();
+	}
+
+	private void updateActionItem() {
+		// check if there are actionItems with amount > 0
+		if (ImmopolyUser.getInstance().hasActionItemWithAmount())
+			itemsButton.setVisibility(View.VISIBLE);
+		else
+			itemsButton.setVisibility(View.GONE);
+
 	}
 
 	public void hideCompass() {
@@ -584,4 +595,20 @@ public class MapFragment extends Fragment implements Receiver, OnMapItemClickedL
 			mCompassButton.setVisibility(View.VISIBLE);
 	}
 
+	public void filterFreeFlats() {
+		Log.d(TAG, "filter flats");
+		new FilterFreeExposesTask().execute(mFlats);
+	}
+
+	private class FilterFreeExposesTask extends FreeFlatsTask {
+
+		@Override
+		protected void onPostExecute(Flats result) {
+			if (result != null) {
+				mFlats = result;
+				updateMap(true);
+			}
+			super.onPostExecute(result);
+		}
+	}
 }

@@ -14,6 +14,17 @@ public class ImmopolyException extends org.immopoly.common.ImmopolyException {
 		super(t);
 	}
 
+	public ImmopolyException(String msg,Exception t) {
+		super(t);
+		message=msg;
+	}
+
+	public ImmopolyException(String msg) {
+		super();
+		message=msg;
+	}
+	
+	
 	public ImmopolyException(Context context, JSONObject jsonObject) {
 		super(jsonObject);
 		switch (errorCode) {

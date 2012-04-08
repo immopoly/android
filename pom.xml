@@ -15,7 +15,7 @@
   <inceptionYear>2011</inceptionYear>
   <organization>
     <name>Team immopoly</name>
-    <url>http://immopoly.blogspot.com</url>
+    <url>http://immopoly.org</url>
   </organization>
   <developers>
     <developer>
@@ -24,7 +24,7 @@
       <email>keyboardsurfer@c-base.org</email>
       <url>http://gplus.to/keyboardsurfer</url>
       <organization>Team immopoly</organization>
-      <organizationUrl>http://immopoly.blogspot.com</organizationUrl>
+      <organizationUrl>http://immopoly.org</organizationUrl>
       <roles>
         <role>owner</role>
       </roles>
@@ -36,7 +36,7 @@
       <email>sh@jnamic.com</email>
       <url>http://stefanhoth.de</url>
       <organization>Team immopoly</organization>
-      <organizationUrl>http://immopoly.blogspot.com</organizationUrl>
+      <organizationUrl>http://immopoly.org</organizationUrl>
       <roles>
         <role>owner</role>
       </roles>
@@ -48,7 +48,7 @@
       <email>t@c-base.org</email>
       <url>http://t.crew.c-base.org</url>
       <organization>Team immopoly</organization>
-      <organizationUrl>http://immopoly.blogspot.com</organizationUrl>
+      <organizationUrl>http://immopoly.org</organizationUrl>
       <roles>
         <role>owner</role>
       </roles>
@@ -81,13 +81,12 @@
     <dependency>
       <groupId>android.support</groupId>
       <artifactId>compatibility-v4</artifactId>
-      <version>r4</version>
-      <scope>compile</scope>
+      <version>r6-petedoyle</version>
     </dependency>
     <dependency>
       <groupId>org.immopoly</groupId>
       <artifactId>common</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.3-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -114,7 +113,7 @@
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>android-maven-plugin</artifactId>
-        <version>3.0.0-alpha-14</version>
+        <version>3.1.1</version>
         <inherited>true</inherited>
         <configuration>
           <androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
@@ -135,7 +134,7 @@
           </emulator>
           <zipalign>
             <inputApk>${project.build.directory}/${project.build.finalName}.apk</inputApk>
-            <outputApk>${project.build.directory}/${apk.prefix}-${project.artifactId}.apk</outputApk>
+            <outputApk>${project.build.directory}/immopoly-android-aligned.apk</outputApk>
           </zipalign>
           <undeployBeforeDeploy>true</undeployBeforeDeploy>
           <deleteConflictingFiles>true</deleteConflictingFiles>
@@ -194,7 +193,7 @@
               <includes>
                 <include>target/*.apk</include>
               </includes>
-              <keystore>debug.keystore</keystore>
+              <keystore>~/.android/debug.keystore</keystore>
               <storepass>android</storepass>
               <keypass>android</keypass>
               <alias>androiddebugkey</alias>
@@ -253,7 +252,7 @@
           </plugin>
           <plugin>
             <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-            <artifactId>maven-android-plugin</artifactId>
+            <artifactId>android-maven-plugin</artifactId>
             <configuration>
               <zipalign>
                 <verbose>false</verbose>
@@ -304,20 +303,21 @@
       <id>immopoly-snapshots</id>
       <url>https://raw.github.com/immopoly/mavenrepo/master/snapshots</url>
       <releases>
-        <enabled>false</enabled>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
+          <enabled>false</enabled>
+          <updatePolicy>always</updatePolicy>
+          <checksumPolicy>warn</checksumPolicy>
       </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+        </snapshots>
     </repository>
-    <repository>
-      <id>immopoly-releases</id>
-      <releases>
-        <enabled>false</enabled>
+      <repository>
+          <id>immopoly-releases</id>
+          <url>https://raw.github.com/immopoly/mavenrepo/master/releases</url>
+          <releases>
+        <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
         <checksumPolicy>fail</checksumPolicy>
       </releases>
@@ -326,7 +326,6 @@
         <updatePolicy>always</updatePolicy>
         <checksumPolicy>warn</checksumPolicy>
       </snapshots>
-      <url>https://raw.github.com/immopoly/mavenrepo/master/releases</url>
     </repository>
     <repository>
       <id>signpost-snapshots</id>

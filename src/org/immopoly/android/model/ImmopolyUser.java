@@ -22,7 +22,9 @@ package org.immopoly.android.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.immopoly.android.app.UserDataManager;
 import org.immopoly.android.constants.Const;
+import org.immopoly.common.ActionItem;
 import org.immopoly.common.Badge;
 import org.immopoly.common.History;
 import org.immopoly.common.User;
@@ -51,6 +53,9 @@ public class ImmopolyUser extends User {
 	private static ImmopolyUser sInstance = null;
 
 	private List<ImmopolyBadge> badges;
+
+	private List<ImmopolyActionItem> actionItems;
+
 	private int maxExposes;
 
 	
@@ -59,6 +64,7 @@ public class ImmopolyUser extends User {
 	private ImmopolyUser() {
 		mUserHistory = new ArrayList<ImmopolyHistory>();
 		badges = new ArrayList<ImmopolyBadge>();
+		actionItems = new ArrayList<ImmopolyActionItem>();
 		flats = new Flats();
 	}
 
@@ -253,6 +259,34 @@ public class ImmopolyUser extends User {
 
 	}
 
+	public List<ImmopolyActionItem> getActionItems() {
+		return actionItems;
+	}
+
+	public boolean hasActionItemWithAmount() {
+		if (null == actionItems)
+			return false;
+		for (ImmopolyActionItem actionItem : actionItems) {
+			if (actionItem.getAmount() > 0)
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	public ActionItem instantiateActionItem(JSONObject o) {
+		return new ImmopolyActionItem(o);
+	}
+
+	@Override
+	public void setActionItems(List<ActionItem> actionItems) {
+		this.actionItems.clear();
+		for (ActionItem actionItem : actionItems) {
+			this.actionItems.add((ImmopolyActionItem) actionItem);
+		}
+
+	}
+
 	@Override
 	public void setMaxExposes(int maxExposes) {
 		this.maxExposes = maxExposes;
@@ -265,5 +299,14 @@ public class ImmopolyUser extends User {
 	@Override
 	public void setNumExposes(int numExposes) {
 		// numExposes == flats.size() !
+	}
+	
+	public void removeActionItem(int type) {
+		for (ImmopolyActionItem item : actionItems) {
+			if (item.getType() == type) {
+				item.removeAmount(1);
+			}
+		}
+		UserDataManager.instance.fireUsedDataChanged();
 	}
 }
