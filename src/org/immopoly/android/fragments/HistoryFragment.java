@@ -12,14 +12,13 @@ import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyHistory;
 import org.immopoly.android.model.ImmopolyUser;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
-
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class HistoryFragment extends ListFragment implements UserDataListener{
 	private GoogleAnalyticsTracker mTracker;
@@ -47,7 +46,7 @@ public class HistoryFragment extends ListFragment implements UserDataListener{
 
 		mTracker.trackPageView(TrackingManager.VIEW_HISTORY);
 	}
-
+	
 	@Override
 	public void onDestroyView() {
 		UserDataManager.instance.removeUserDataListener(this);
@@ -71,26 +70,36 @@ public class HistoryFragment extends ListFragment implements UserDataListener{
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
+		//FIXME: This is never fired and partly useless. What if the flat does no more exist?
+		
 		List<ImmopolyHistory> history = ImmopolyUser.getInstance().getHistory();
 		ImmopolyHistory entry = history.get(position);
 		
-		long fid = entry.getExposeId();
-		
-		// get flat object from users portfolio or create empty Flat object with just an id
-		Flats userFlats = ImmopolyUser.getInstance().getPortfolio();
-		Flat flat = null;
-		for ( Flat f : userFlats ) {
-			if ( f.uid == fid ) {
-				flat = f;
-				break;
+		if(entry.getOtherUsername() != null){
+			DialogFragment newFragment = SimpleUserFragment.newInstance(entry.getOtherUsername());
+			// newFragment.setArguments(tmp);
+			newFragment.show(getFragmentManager(), "dialog");
+			mTracker.trackEvent(TrackingManager.CATEGORY_CLICKS, TrackingManager.ACTION_OTHER_PROFILE,
+					TrackingManager.LABEL_EXPOSE_MAP, 0);
+		}else{
+			long fid = entry.getExposeId();
+			
+			// get flat object from users portfolio or create empty Flat object with just an id
+			Flats userFlats = ImmopolyUser.getInstance().getPortfolio();
+			Flat flat = null;
+			for ( Flat f : userFlats ) {
+				if ( f.uid == fid ) {
+					flat = f;
+					break;
+				}
 			}
+			if ( flat == null ) {
+				flat = new Flat();
+				flat.uid = (int) fid;
+			}
+			
+			DialogFragment newFragment = ExposeFragment.newInstance(flat);
+			newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
 		}
-		if ( flat == null ) {
-			flat = new Flat();
-			flat.uid = (int) fid;
-		}
-		
-		DialogFragment newFragment = ExposeFragment.newInstance(flat);
-		newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
 	}
 }

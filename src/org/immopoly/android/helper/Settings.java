@@ -22,14 +22,13 @@ package org.immopoly.android.helper;
 import org.immopoly.android.R;
 import org.immopoly.android.model.OAuthData;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -89,18 +88,18 @@ public class Settings {
 
 
 	
-	public static float getScreenDensity( Activity activity) {
+	public static float getScreenDensity(Context ctx) {
 		if ( screenDesity == 0.0f ) {
 			DisplayMetrics metrics = new DisplayMetrics();
-			activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);;
 			screenDesity = metrics.density;
 		}
 		return screenDesity;
 	}
 	
-	public static float dp2px( Activity activity, float dp ) {
+	public static float dp2px( Context ctx, float dp ) {
 		if ( screenDesity == 0.0f ) 
-			getScreenDensity(activity);
+			getScreenDensity(ctx);
 		return screenDesity*dp;
 	}
 	

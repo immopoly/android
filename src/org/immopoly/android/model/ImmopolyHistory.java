@@ -33,6 +33,7 @@ public class ImmopolyHistory extends History{
 	// optional
 	private Double amount;
 	private long exposeId;
+	private String otherUsername;
 
 
 	public ImmopolyHistory(JSONObject obj) {
@@ -92,6 +93,15 @@ public class ImmopolyHistory extends History{
 
 	public long getTime() {
 		return time;
+	}
+
+	@Override
+	public void setOtherUserName(String userName) {
+		this.otherUsername = userName;
+	}
+	
+	public String getOtherUsername(){
+		return otherUsername;
 	}
 
 }

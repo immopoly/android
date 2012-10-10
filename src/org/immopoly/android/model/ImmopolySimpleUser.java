@@ -26,7 +26,10 @@ import org.immopoly.common.Badge;
 import org.immopoly.common.SimpleUser;
 import org.json.JSONObject;
 
-public class ImmopolySimpleUser extends SimpleUser {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ImmopolySimpleUser extends SimpleUser implements Parcelable {
 
 	private String mUserName;
 	private String mEmail;
@@ -135,6 +138,18 @@ public class ImmopolySimpleUser extends SimpleUser {
 	
 	public int getNumExposes(){
 		return this.numExposes;
+	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

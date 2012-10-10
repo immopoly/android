@@ -24,15 +24,22 @@ import java.util.List;
 import java.util.Locale;
 
 import org.immopoly.android.R;
-import org.immopoly.android.constants.Const;
+import org.immopoly.android.fragments.ExposeFragment;
+import org.immopoly.android.fragments.SimpleUserFragment;
+import org.immopoly.android.helper.TrackingManager;
+import org.immopoly.android.model.Flat;
+import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyHistory;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.common.History;
 
 import android.app.Activity;
-import android.util.Log;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -43,9 +50,11 @@ public class HistoryAdapter extends BaseAdapter {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - HH:mm", Locale.GERMANY);
 	
 	private LayoutInflater inflater;
+	private FragmentActivity activity;
 
-	public HistoryAdapter(Activity context) {
+	public HistoryAdapter(FragmentActivity context) {
 		inflater = context.getLayoutInflater();
+		activity = context;
 	}
 
 	@Override
@@ -65,7 +74,7 @@ public class HistoryAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder holder = null;
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.history_list_item, parent, false);
@@ -111,6 +120,20 @@ public class HistoryAdapter extends BaseAdapter {
 		holder.date.setText(sdf.format(entry.getTime()));
 		holder.text.setText(entry.getText());
 		holder.bttn.setVisibility( showButton ? View.VISIBLE : View.GONE );
+		
+		convertView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				List<ImmopolyHistory> history = ImmopolyUser.getInstance().getHistory();
+				ImmopolyHistory entry = history.get(position);
+				if(entry.getOtherUsername() != null && !TextUtils.isEmpty(entry.getOtherUsername())){
+					DialogFragment newFragment = SimpleUserFragment.newInstance(entry.getOtherUsername());
+					newFragment.show(activity.getSupportFragmentManager(), "dialog");
+				}
+			}
+		});
+		
 		return convertView;
 	}
 

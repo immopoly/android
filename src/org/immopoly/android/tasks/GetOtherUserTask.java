@@ -5,14 +5,13 @@ import java.net.URL;
 
 import org.immopoly.android.helper.WebHelper;
 import org.immopoly.android.model.ImmopolySimpleUser;
-import org.immopoly.common.SimpleUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
-public class GetOtherUserTask extends AsyncTask<String,Void,SimpleUser> {
+public class GetOtherUserTask extends AsyncTask<String,Void,ImmopolySimpleUser> {
 	
 	private final Context mContext;
 	
@@ -21,14 +20,14 @@ public class GetOtherUserTask extends AsyncTask<String,Void,SimpleUser> {
 	}
 
 	@Override
-	protected SimpleUser doInBackground(String... params) {
+	protected ImmopolySimpleUser doInBackground(String... params) {
 		String otherUserName = params[0];
 		ImmopolySimpleUser otherUser = null;
 		JSONObject obj = null;
 		
 		try {
 			obj = WebHelper.getHttpData(new URL(
-					WebHelper.SERVER_URL_PREFIX + "/profile/" + otherUserName+".json"),
+					WebHelper.SERVER_URL_PREFIX + "/user/profile/" + otherUserName+".json"),
 					false, mContext);
 
 		} catch (MalformedURLException e) {

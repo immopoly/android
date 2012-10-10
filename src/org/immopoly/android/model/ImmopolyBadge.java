@@ -81,4 +81,9 @@ public class ImmopolyBadge extends Badge {
 	public JSONObject toJSON() throws JSONException {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public void setOtherUserName(String userName) {
+		// FIXME: macht das für Badges Sinn?
+	}
 }

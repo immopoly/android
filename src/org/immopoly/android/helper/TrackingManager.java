@@ -16,6 +16,7 @@ public class TrackingManager {
 	public static final String VIEW_PORTFOLIO_LIST = "portfolioList";
 	public static final String VIEW_PORTFOLIO_MAP = "portfolioMap";
 	public static final String VIEW_PROFILE = "profile";
+	public static final String VIEW_OTHER_PROFILE = "other_profile";
 	public static final String VIEW_SETTINGS = "settings";
 	public static final String VIEW_HELP = "help";
 	public static final String VIEW_HIGHSCORE_OVERALL = "highscoreOverall";
@@ -39,6 +40,7 @@ public class TrackingManager {
 	public static final String ACTION_TOOK_EXPOSE = "tookExpose";
 	public static final String ACTION_RELEASED_EXPOSE = "releasedExpose";
 	public static final String ACTION_CONTACT = "clickWebviewContact";
+	public static final String ACTION_OTHER_PROFILE = "clickOtherProfile";
 	public static final String ACTION_FIRST_AID = "firstAid";
 	public static final String ACTION_SEARCH = "search";
 	public static final String ACTION_BADGE = "badge";
