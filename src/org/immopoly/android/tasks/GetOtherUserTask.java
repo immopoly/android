@@ -26,7 +26,7 @@ public class GetOtherUserTask extends AsyncTask<String,Void,ImmopolySimpleUser> 
 		JSONObject obj = null;
 		
 		try {
-			obj = WebHelper.getHttpData(new URL(
+			obj = WebHelper.getHttpObjectData(new URL(
 					WebHelper.SERVER_URL_PREFIX + "/user/profile/" + otherUserName+".json"),
 					false, mContext);
 

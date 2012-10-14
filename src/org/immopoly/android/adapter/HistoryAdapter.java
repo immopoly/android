@@ -26,14 +26,12 @@ import java.util.Locale;
 import org.immopoly.android.R;
 import org.immopoly.android.fragments.ExposeFragment;
 import org.immopoly.android.fragments.SimpleUserFragment;
-import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.Flats;
 import org.immopoly.android.model.ImmopolyHistory;
 import org.immopoly.android.model.ImmopolyUser;
 import org.immopoly.common.History;
 
-import android.app.Activity;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -89,11 +87,13 @@ public class HistoryAdapter extends BaseAdapter {
 			holder.text = (TextView) convertView.findViewById(R.id.historyText);
 			holder.icon = (ImageView) convertView.findViewById(R.id.icon);
 			holder.bttn = (ImageView) convertView.findViewById(R.id.show_expo_btn);
+			
+			convertView.setTag(holder);
 		}
 
 		ImmopolyHistory entry = (ImmopolyHistory) getItem(position);
 
-		boolean showButton = false;
+		boolean showButton = entry.getOtherUsername() != null && !TextUtils.isEmpty(entry.getOtherUsername());
 		int type = entry.getType();
 		switch (type) {
 		case History.TYPE_EXPOSE_ADDED:
@@ -129,6 +129,25 @@ public class HistoryAdapter extends BaseAdapter {
 				ImmopolyHistory entry = history.get(position);
 				if(entry.getOtherUsername() != null && !TextUtils.isEmpty(entry.getOtherUsername())){
 					DialogFragment newFragment = SimpleUserFragment.newInstance(entry.getOtherUsername());
+					newFragment.show(activity.getSupportFragmentManager(), "dialog");
+				}else{
+					long fid = entry.getExposeId();
+					
+					// get flat object from users portfolio or create empty Flat object with just an id
+					Flats userFlats = ImmopolyUser.getInstance().getPortfolio();
+					Flat flat = null;
+					for ( Flat f : userFlats ) {
+						if ( f.uid == fid ) {
+							flat = f;
+							break;
+						}
+					}
+					if ( flat == null ) {
+						flat = new Flat();
+						flat.uid = (int) fid;
+					}
+					
+					DialogFragment newFragment = ExposeFragment.newInstance(flat);
 					newFragment.show(activity.getSupportFragmentManager(), "dialog");
 				}
 			}

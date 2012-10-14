@@ -45,7 +45,7 @@ public abstract class GetUserInfoTask extends
 		JSONObject obj = null;
 		ImmopolyUser user = null;
 		try {
-			obj = WebHelper.getHttpData(new URL(
+			obj = WebHelper.getHttpObjectData(new URL(
 					WebHelper.SERVER_URL_PREFIX + "/user/info?token=" + token),
 					false, mContext);
 
