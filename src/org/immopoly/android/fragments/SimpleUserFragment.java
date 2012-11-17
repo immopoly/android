@@ -82,37 +82,41 @@ public class SimpleUserFragment extends DialogFragment {
 		@Override
 		protected void onPostExecute(ImmopolySimpleUser user) {
 			super.onPostExecute(user);
-			((BadgesView)getView().findViewById(R.id.gridview)).initWithBadges(user.getBadges(), mTracker);
-			
-			TextView currentCostTextView = (TextView) getView().findViewById(R.id.current_cost);
-			if (currentCostTextView != null) {
-				nFormat.setMinimumIntegerDigits(1);
-				nFormat.setMaximumFractionDigits(0);
-				nFormat.setCurrency(Currency.getInstance(Locale.GERMANY));
-
-				currentCostTextView.setText(nFormat.format(user.getLastRent()));
+			if(mException != null)
+				dismiss();
+			else if(user != null){
+				((BadgesView)getView().findViewById(R.id.gridview)).initWithBadges(user.getBadges(), mTracker);
+				
+				TextView currentCostTextView = (TextView) getView().findViewById(R.id.current_cost);
+				if (currentCostTextView != null) {
+					nFormat.setMinimumIntegerDigits(1);
+					nFormat.setMaximumFractionDigits(0);
+					nFormat.setCurrency(Currency.getInstance(Locale.GERMANY));
+					
+					currentCostTextView.setText(nFormat.format(user.getLastRent()));
+				}
+				
+				String calculatedCosts = nFormat.format((int) (user.getLastRent() * 30));
+				TextView calculatedCostTextView = (TextView) getView().findViewById(R.id.calculated_cost);
+				if (calculatedCostTextView != null) {
+					calculatedCostTextView.setText(calculatedCosts);
+				}
+				
+				String lastProvision = nFormat.format((int) (user.getLastProvision()));
+				TextView lastProvisionTextView = (TextView) getView().findViewById(R.id.last_provision);
+				if (lastProvisionTextView != null) {
+					lastProvisionTextView
+					.setText(lastProvision);
+				}
+				
+				TextView balanceCostTextView = (TextView) getView().findViewById(R.id.current_balance);
+				if (balanceCostTextView != null) {
+					balanceCostTextView.setText(nFormat.format(user.getBalance()));
+				}
+				
+				TextView numFlatsView = (TextView) getView().findViewById( R.id.num_flats );
+				numFlatsView.setText( user.getNumExposes() +" / " + user.getMaxExposes() );
 			}
-			
-			String calculatedCosts = nFormat.format((int) (user.getLastRent() * 30));
-			TextView calculatedCostTextView = (TextView) getView().findViewById(R.id.calculated_cost);
-			if (calculatedCostTextView != null) {
-				calculatedCostTextView.setText(calculatedCosts);
-			}
-
-			String lastProvision = nFormat.format((int) (user.getLastProvision()));
-			TextView lastProvisionTextView = (TextView) getView().findViewById(R.id.last_provision);
-			if (lastProvisionTextView != null) {
-				lastProvisionTextView
-						.setText(lastProvision);
-			}
-			
-			TextView balanceCostTextView = (TextView) getView().findViewById(R.id.current_balance);
-			if (balanceCostTextView != null) {
-				balanceCostTextView.setText(nFormat.format(user.getBalance()));
-			}
-			
-			TextView numFlatsView = (TextView) getView().findViewById( R.id.num_flats );
-			numFlatsView.setText( user.getNumExposes() +" / " + user.getMaxExposes() );
 		}
 	}
 }

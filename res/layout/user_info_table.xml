@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:paddingLeft="5dp"
-            android:text="915€"
             android:textColor="#333"
             android:textSize="15dp" />
     </TableRow>
@@ -46,7 +45,6 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:paddingLeft="5dp"
-            android:text="382€"
             android:textColor="#333"
             android:textSize="15dp" />
     </TableRow>
@@ -69,7 +67,6 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:paddingLeft="5dp"
-            android:text="5.722€"
             android:textColor="#333"
             android:textSize="15dp" />
     </TableRow>
@@ -92,7 +89,6 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:paddingLeft="5dp"
-            android:text="912.324€"
             android:textColor="#333"
             android:textSize="15dp" />
     </TableRow>
@@ -115,7 +111,6 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:paddingLeft="5dp"
-            android:text="11 / 30"
             android:textColor="#333"
             android:textSize="15dp" />
     </TableRow>
