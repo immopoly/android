@@ -11,6 +11,10 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.os.AsyncTask;
 
+/**
+ * Returns another SimpleUser 
+ * @author tobi
+ */
 public class GetOtherUserTask extends AsyncTask<String,Void,ImmopolySimpleUser> {
 	
 	private final Context mContext;
