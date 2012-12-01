@@ -92,7 +92,7 @@ public class PortfolioFlatsAdapter extends BaseAdapter {
 		((TextView) convertView.findViewById( R.id.qm_text )).setText( flat.livingSpace > 0 ? 
 							Integer.toString( (int) Math.round(flat.livingSpace) ) : "?" );
 		((TextView) convertView.findViewById( R.id.price_text )).setText( 
-							flat.priceValue + " â‚¬" ); // TODO kommt im IS24 JSON immer EUR/MONTH ?
+							flat.priceValue + " Û" ); // TODO kommt im IS24 JSON immer EUR/MONTH ?
 		
 		String takeoverDate = flat.takeoverDate > 0 ? dateSDF.format( new Date(flat.takeoverDate) ) : "?";
 		((TextView) convertView.findViewById( R.id.takeover_date )).setText( takeoverDate ); 
