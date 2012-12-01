@@ -16,9 +16,9 @@ public class PaginationValues {
 	public int getOffset() {
 		return offset;
 	}
-	public void appendOffset(int newOffset) {
-		moreData = newOffset > 0 ? true : false;
-		this.offset += offset;
+	public void appendToOffset(int length) {
+		moreData = length > 0 ? true : false;
+		this.offset += length;
 	}
 	public int getLimit() {
 		return 20;

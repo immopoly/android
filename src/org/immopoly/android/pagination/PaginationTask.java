@@ -24,7 +24,7 @@ public abstract class PaginationTask extends AsyncTask<Void, Void, Integer> {
 	@Override
 	protected void onPostExecute(Integer result) {
 		super.onPostExecute(result);
-		mPagination.appendOffset(result);
+		mPagination.appendToOffset(result);
 		if(mListener != null)
 			mListener.onMoreData();
 	}
