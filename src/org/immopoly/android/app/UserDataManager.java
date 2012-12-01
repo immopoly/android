@@ -216,7 +216,7 @@ public class UserDataManager {
 				if (result.success) {
 					flat.owned = true;
 					flat.takeoverDate = System.currentTimeMillis();
-					ImmopolyUser.getInstance().getPortfolio().add(flat);
+					ImmopolyUser.getInstance().getPortfolio().add(0,flat);
 					mTracker.trackEvent(TrackingManager.CATEGORY_ALERT_EXPOSE_TAKEN, TrackingManager.ACTION_TOOK_EXPOSE, TrackingManager.LABEL_POSITIVE, 0);
 				}
 				/**
