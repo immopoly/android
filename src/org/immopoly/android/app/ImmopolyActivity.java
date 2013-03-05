@@ -52,7 +52,7 @@ import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.google.android.maps.MapView;
 
 /**
- * @author tosa,sebastia,björn Example implementation of fragments communication
+ * @author tosa,sebastia,björn,tobi Example implementation of fragments communication
  */
 
 public class ImmopolyActivity extends FragmentActivity implements

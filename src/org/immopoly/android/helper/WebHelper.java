@@ -37,11 +37,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
 import org.immopoly.android.app.ImmopolyActivity;
 import org.immopoly.android.model.ImmopolyException;
 import org.immopoly.android.model.OAuthData;
@@ -64,12 +61,66 @@ public class WebHelper {
 	public static final int SOCKET_TIMEOUT = 30000;
 
 		
+	public static JSONObject getHttpObjectData(URL url, boolean signed,
+			Context context) throws JSONException {
+		return new JSONObject(getHttpData(url, signed, context));
+	}
+
+	public static JSONArray getHttpArrayData(URL url, boolean signed,
+			Context context) throws JSONException {
+		return new JSONArray(getHttpData(url, signed, context));
+	}
 	
+	private static JSONTokener getHttpData(URL url, boolean signed,
+			Context context){
+		if (Settings.isOnline(context)) {
+			HttpURLConnection request;
+			try {
+
+				request = (HttpURLConnection) url.openConnection();
+				
+				request.addRequestProperty("User-Agent", "immopoly android client "+ImmopolyActivity.getStaticVersionInfo());
+				request.addRequestProperty("Accept-Encoding", "gzip");
+				if (signed)
+					OAuthData.getInstance(context).consumer.sign(request);
+				request.setConnectTimeout(SOCKET_TIMEOUT);
+
+				request.connect();
+				String encoding = request.getContentEncoding();
+
+				InputStream in;
+				if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
+					in = new GZIPInputStream(request.getInputStream());
+				} else {
+					in = new BufferedInputStream(request.getInputStream());
+				}
+				String s = readInputStream(in);
+				return new JSONTokener(s);
+
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthMessageSignerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthExpectationFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthCommunicationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
+	}
 
 	
 	public static JSONObject getHttpsData(URL url, boolean signed,
 			Context context) throws ImmopolyException {
-		JSONObject obj = null;
 		if (Settings.isOnline(context)) {
 			HttpURLConnection request;
 			try {
@@ -104,53 +155,7 @@ public class WebHelper {
 			throw new ImmopolyException("Kommunikationsproblem (Offline)");
 	}
 
-	public static JSONObject getHttpData(URL url, boolean signed,
-			Context context) throws JSONException {
-		JSONObject obj = null;
-		if (Settings.isOnline(context)) {
-			HttpURLConnection request;
-			try {
-
-				request = (HttpURLConnection) url.openConnection();
-				
-				request.addRequestProperty("User-Agent", "immopoly android client "+ImmopolyActivity.getStaticVersionInfo());
-				request.addRequestProperty("Accept-Encoding", "gzip");
-				if (signed)
-					OAuthData.getInstance(context).consumer.sign(request);
-				request.setConnectTimeout(SOCKET_TIMEOUT);
-
-				request.connect();
-				String encoding = request.getContentEncoding();
-
-				InputStream in;
-				if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
-					in = new GZIPInputStream(request.getInputStream());
-				} else {
-					in = new BufferedInputStream(request.getInputStream());
-				}
-				String s = readInputStream(in);
-				JSONTokener tokener = new JSONTokener(s);
-				obj = new JSONObject(tokener);
-
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OAuthMessageSignerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OAuthExpectationFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OAuthCommunicationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return obj;
-	}
+	
 	
 	private static HttpResponse postHttp(String url, JSONObject jsonObject)
 			throws ClientProtocolException, IOException {

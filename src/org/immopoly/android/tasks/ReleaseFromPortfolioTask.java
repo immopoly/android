@@ -20,7 +20,7 @@ public class ReleaseFromPortfolioTask extends AbstractExposeTask {
 
 	@Override
 	protected JSONObject request(Flat flat) throws Exception {
-		return WebHelper.getHttpData(new URL(WebHelper.SERVER_URL_PREFIX + "/portfolio/remove?token="
+		return WebHelper.getHttpObjectData(new URL(WebHelper.SERVER_URL_PREFIX + "/portfolio/remove?token="
 				+ ImmopolyUser.getInstance().getToken() + "&expose=" + flat.uid), false, super.context);
 	}
 

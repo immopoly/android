@@ -23,7 +23,7 @@ public class AddToPortfolioTask extends AbstractExposeTask {
 	}
 
 	protected JSONObject request(Flat flat) throws MalformedURLException, JSONException {
-		return WebHelper.getHttpData(new URL(WebHelper.SERVER_URL_PREFIX + "/portfolio/add?token=" + ImmopolyUser.getInstance().getToken()
+		return WebHelper.getHttpObjectData(new URL(WebHelper.SERVER_URL_PREFIX + "/portfolio/add?token=" + ImmopolyUser.getInstance().getToken()
 				+ "&expose=" + flat.uid), false, super.context);
 	}
 

@@ -32,7 +32,7 @@ public class C2DMReceiver extends C2DMBaseReceiver {
 		Log.d("C2DM", registrationId);
 		String registerC2DM = WebHelper.SERVER_URL_PREFIX + "/user/C2DMregister?token="+ ImmopolyUser.getInstance().readToken(context	) + "&c2dmregistrationid=" + registrationId;
 		try {
-			JSONObject obj = WebHelper.getHttpData(new URL(registerC2DM), false, context);
+			JSONObject obj = WebHelper.getHttpObjectData(new URL(registerC2DM), false, context);
 			Log.d("C2DM", "registration with immopoly server YES");
 			Log.d("C2DM", "request->" + registerC2DM);
 			if (obj != null) {

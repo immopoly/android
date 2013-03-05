@@ -9,8 +9,11 @@ import org.immopoly.android.helper.TrackingManager;
 import org.immopoly.android.model.Flat;
 import org.immopoly.android.model.ImmopolyHistory;
 import org.immopoly.android.model.ImmopolyUser;
+import org.immopoly.android.pagination.HistoryPaginationValues;
+import org.immopoly.android.pagination.UserPaginationHistoryListener;
 import org.immopoly.android.tasks.AddToPortfolioTask;
 import org.immopoly.android.tasks.GetUserInfoTask;
+import org.immopoly.android.tasks.LoadMoreHistoryTask;
 import org.immopoly.android.tasks.ReleaseFromPortfolioTask;
 import org.immopoly.android.tasks.Result;
 
@@ -20,7 +23,6 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.util.Log;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
@@ -214,7 +216,7 @@ public class UserDataManager {
 				if (result.success) {
 					flat.owned = true;
 					flat.takeoverDate = System.currentTimeMillis();
-					ImmopolyUser.getInstance().getPortfolio().add(flat);
+					ImmopolyUser.getInstance().getPortfolio().add(0,flat);
 					mTracker.trackEvent(TrackingManager.CATEGORY_ALERT_EXPOSE_TAKEN, TrackingManager.ACTION_TOOK_EXPOSE, TrackingManager.LABEL_POSITIVE, 0);
 				}
 				/**
@@ -355,5 +357,13 @@ public class UserDataManager {
 			u.setBalance(u.getBalance()+history.getAmount());
 
 		fireUsedDataChanged();
+	}
+	
+	public void loadMoreHistory(HistoryPaginationValues pagination)
+	{
+		for(UserDataListener listener : listeners)
+			if(listener instanceof UserPaginationHistoryListener)
+				new LoadMoreHistoryTask(activity,pagination,(UserPaginationHistoryListener)listener).execute();
+		
 	}
 }

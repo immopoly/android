@@ -309,4 +309,10 @@ public class ImmopolyUser extends User {
 		}
 		UserDataManager.instance.fireUsedDataChanged();
 	}
+
+	@Override
+	public void addHistoryEntries(List<History> historyEntries) {
+		for(History entry : historyEntries)
+			mUserHistory.add((ImmopolyHistory)entry);
+	}
 }

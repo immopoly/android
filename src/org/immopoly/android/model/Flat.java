@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.immopoly.android.constants.Const;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -169,9 +170,9 @@ public class Flat implements Parcelable, Comparable<Flat>, SQLData {
 				// JSONArray urls =
 				// objPicture.getJSONArray("urls").getJSONObject(
 				// 0).getJSONArray("url");
-				JSONObject urls = objPicture.getJSONArray("urls")
-						.getJSONObject(0).getJSONObject("url");
-				titlePictureSmall = urls.optString("@href");
+				JSONArray urls = objPicture.getJSONArray("urls").getJSONObject(0).getJSONArray("url");
+				if ( urls != null && urls.length() > 0 )
+					titlePictureSmall = urls.getJSONObject(0).optString("@href");
 				/*
 				 * if (urls.length() > 0) { titlePictureSmall =
 				 * urls.getJSONObject(0).getString("href"); } else if

@@ -150,7 +150,7 @@ public class IS24ApiService extends IntentService {
 		URL url = new URL( OAuthData.SERVER + OAuthData.SEARCH_PREFIX
 				+ "search/radius.json?realEstateType=apartmentrent&pagenumber="
 				+ page + "&geocoordinates=" + lat + ";" + lon + ";" + r );
-		JSONObject obj = WebHelper.getHttpData(url, true, this);
+		JSONObject obj = WebHelper.getHttpObjectData(url, true, this);
 		if (obj == null) { // does this ever happen?
 			throw new JSONException( "Got (JSONObject) null for search result. Lat: " + lat + "Lon: " 
 									+ lon + " R: " + r + " pageNr: " + page );
