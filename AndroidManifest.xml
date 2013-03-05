@@ -12,10 +12,10 @@
 	Public License ~ along with this program. If not, see http://www.gnu.org/licenses/.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:installLocation="auto"
     package="org.immopoly.android"
-    android:versionCode="10"
-    android:versionName="2.2" >
+    android:installLocation="auto"
+    android:versionCode="11"
+    android:versionName="2.3" >
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="10" />
