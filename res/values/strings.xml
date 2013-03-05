@@ -75,6 +75,7 @@
     <string name="calculated_cost_text">Geschätzte Kosten 30 Tage:</string>
     <string name="current_ballance_text">Verfügbares Bargeld:</string>
     <string name="num_flats_text">Wohnungen:</string>
+    <string name="balance">Kontostand:</string>
     <string name="login_button">Anmelden</string>
     <string name="please_wait">10 Sekunden warten &amp; lesen ;)</string>
     <string name="close">Schließen</string>
